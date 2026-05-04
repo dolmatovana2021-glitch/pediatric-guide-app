@@ -3,94 +3,96 @@ import Icon from "@/components/ui/icon";
 import {
   rashPhotos,
   diseases,
-  faqItems,
   SectionWrapper,
   SectionTitle,
 } from "@/components/shared/SectionShared";
 
-// DISEASES + GALLERY
+// DISEASES
 export function DiseasesSection() {
-  const [tab, setTab] = useState<"list" | "gallery">("list");
   return (
     <SectionWrapper>
       <SectionTitle emoji="🌡️" title="Болезни и симптомы" />
-      <div className="flex bg-muted rounded-2xl p-1 mb-4">
-        {(["list", "gallery"] as const).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
-              tab === t ? "bg-white shadow-sm text-primary" : "text-muted-foreground"
-            }`}
-          >
-            {t === "list" ? "🗒️ Болезни" : "📸 Галерея сыпей"}
-          </button>
-        ))}
-      </div>
-
-      {tab === "list" && (
-        <div className="space-y-3">
-          {diseases.map((d, i) => (
-            <div key={i} className="bg-white border border-border rounded-2xl p-4 shadow-sm">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl flex-shrink-0">{d.emoji}</span>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-bold text-foreground">{d.name}</h3>
-                    <span className="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-medium">{d.temp}</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-2">{d.symptoms}</p>
-                  <div className="bg-mint-50 rounded-xl p-2">
-                    <p className="text-xs text-primary font-semibold">✅ {d.action}</p>
-                  </div>
+      <div className="space-y-3">
+        {diseases.map((d, i) => (
+          <div key={i} className="bg-white border border-border rounded-2xl p-4 shadow-sm">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl flex-shrink-0">{d.emoji}</span>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-bold text-foreground">{d.name}</h3>
+                  <span className="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-medium">{d.temp}</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-2">{d.symptoms}</p>
+                <div className="bg-mint-50 rounded-xl p-2">
+                  <p className="text-xs text-primary font-semibold">✅ {d.action}</p>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      )}
-
-      {tab === "gallery" && (
-        <div>
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 mb-4 flex gap-2">
-            <span>⚠️</span>
-            <p className="text-xs text-amber-700">Галерея только для ориентира. Диагноз ставит врач при осмотре.</p>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            {rashPhotos.map((rash, i) => (
-              <div key={i} className={`bg-gradient-to-br ${rash.color} rounded-2xl p-4 border border-white shadow-sm`}>
-                <span className="text-3xl block mb-2">{rash.emoji}</span>
-                <h4 className="font-bold text-foreground text-sm mb-1">{rash.label}</h4>
-                <p className="text-xs text-muted-foreground leading-relaxed">{rash.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+        ))}
+      </div>
     </SectionWrapper>
   );
 }
 
-// FAQ
-export function FaqSection() {
-  const [open, setOpen] = useState<number | null>(null);
+// RASHES
+export function RashesSection() {
+  const [selected, setSelected] = useState<number | null>(null);
+
   return (
     <SectionWrapper>
-      <SectionTitle emoji="💬" title="Частые вопросы" subtitle="Ответы педиатра на популярные вопросы" />
-      <div className="space-y-3">
-        {faqItems.map((item, i) => (
-          <div key={i} className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm">
+      <SectionTitle emoji="🔬" title="Сыпи у детей" subtitle="Нажмите на карточку для подробной информации" />
+
+      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 mb-4 flex gap-2 items-start">
+        <span className="text-base flex-shrink-0">⚠️</span>
+        <p className="text-xs text-amber-700 leading-relaxed">Фото для ориентира. Точный диагноз ставит только врач при осмотре.</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        {rashPhotos.map((rash, i) => (
+          <div key={i} className="flex flex-col">
             <button
-              onClick={() => setOpen(open === i ? null : i)}
-              className="w-full text-left p-4 flex items-start justify-between gap-3"
+              onClick={() => setSelected(selected === i ? null : i)}
+              className={`rounded-2xl overflow-hidden border-2 transition-all shadow-sm ${
+                selected === i ? "border-primary" : "border-transparent"
+              }`}
             >
-              <p className="font-semibold text-foreground text-sm leading-relaxed">{item.q}</p>
-              <Icon name={open === i ? "ChevronUp" : "ChevronDown"} size={18} className="text-muted-foreground flex-shrink-0 mt-0.5" />
+              <div className="relative">
+                <img
+                  src={rash.photo}
+                  alt={rash.label}
+                  className="w-full h-32 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-2">
+                  <p className="text-white font-bold text-sm leading-tight">{rash.label}</p>
+                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${rash.tagColor}`}>
+                    {rash.tag}
+                  </span>
+                </div>
+              </div>
             </button>
-            {open === i && (
-              <div className="px-4 pb-4 animate-fade-in">
-                <div className="bg-mint-50 rounded-xl p-3">
-                  <p className="text-sm text-foreground leading-relaxed">{item.a}</p>
+
+            {selected === i && (
+              <div className="mt-2 bg-white border border-border rounded-2xl p-3 shadow-sm animate-fade-in col-span-2">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-medium">🌡️ {rash.temp}</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{rash.desc}</p>
+                <div className="mb-3">
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5">Признаки</p>
+                  <ul className="space-y-1">
+                    {rash.signs.map((sign, j) => (
+                      <li key={j} className="flex items-center gap-2 text-sm text-foreground">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                        {sign}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-mint-50 rounded-xl p-2.5">
+                  <p className="text-xs font-bold text-primary mb-0.5">✅ Что делать</p>
+                  <p className="text-xs text-foreground leading-relaxed">{rash.action}</p>
                 </div>
               </div>
             )}
