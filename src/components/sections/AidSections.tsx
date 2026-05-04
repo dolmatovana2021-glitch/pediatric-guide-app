@@ -5,12 +5,18 @@ import {
   DOCTOR_BEAR,
   firstAidItems,
   emergencyItems,
+  dailyTips,
   SectionWrapper,
   SectionTitle,
 } from "@/components/shared/SectionShared";
 
 // HOME
 export function HomeSection({ setSection }: { setSection: (s: Section) => void }) {
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  const tipOfDay = dailyTips[dayOfYear % dailyTips.length];
+
   const quickCards: { id: Section; emoji: string; label: string; color: string }[] = [
     { id: "firstaid", emoji: "🚑", label: "Первая помощь", color: "bg-red-50 border-red-200 hover:border-red-300" },
     { id: "emergency", emoji: "🆘", label: "Неотложка", color: "bg-rose-50 border-rose-200 hover:border-rose-300" },
@@ -63,11 +69,13 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
       </div>
 
       <div className="bg-mint-50 border border-mint-200 rounded-2xl p-4">
-        <p className="font-caveat text-primary text-base font-semibold mb-1">💡 Совет дня</p>
-        <p className="text-sm text-foreground leading-relaxed">
-          Витамин D необходим детям с первых дней жизни — особенно в осенне-зимний период.
-          Обсудите дозировку с педиатром на ближайшем приёме.
-        </p>
+        <div className="flex items-center gap-2 mb-1">
+          <p className="font-caveat text-primary text-base font-semibold">💡 Совет дня</p>
+          <span className="text-[10px] font-semibold bg-mint-100 text-primary px-2 py-0.5 rounded-full">
+            {tipOfDay.emoji} {tipOfDay.topic}
+          </span>
+        </div>
+        <p className="text-sm text-foreground leading-relaxed">{tipOfDay.text}</p>
       </div>
     </SectionWrapper>
   );
