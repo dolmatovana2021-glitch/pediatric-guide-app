@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 import { Section, navItems } from "@/components/shared/SectionShared";
-import { HomeSection, FirstAidSection, EmergencySection } from "@/components/sections/AidSections";
+import { HomeSection, FirstAidSection, EmergencySection, RedFlagsSection } from "@/components/sections/AidSections";
 import { DiseasesSection, RashesSection, ContactsSection } from "@/components/sections/InfoSections";
 
 export default function Index() {
@@ -12,6 +12,7 @@ export default function Index() {
       case "home": return <HomeSection setSection={setSection} />;
       case "firstaid": return <FirstAidSection />;
       case "emergency": return <EmergencySection />;
+      case "redflags": return <RedFlagsSection />;
       case "diseases": return <DiseasesSection />;
       case "rashes": return <RashesSection />;
       case "contacts": return <ContactsSection />;

@@ -5,6 +5,7 @@ import {
   DOCTOR_BEAR,
   firstAidItems,
   emergencyItems,
+  redFlags,
   dailyTips,
   SectionWrapper,
   SectionTitle,
@@ -26,6 +27,7 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
   const quickCards: { id: Section; emoji: string; label: string; color: string }[] = [
     { id: "firstaid", emoji: "🚑", label: "Первая помощь", color: "bg-red-50 border-red-200 hover:border-red-300" },
     { id: "emergency", emoji: "🆘", label: "Неотложка", color: "bg-rose-50 border-rose-200 hover:border-rose-300" },
+    { id: "redflags", emoji: "🚩", label: "Красные флаги", color: "bg-pink-50 border-pink-200 hover:border-pink-300" },
     { id: "diseases", emoji: "🌡️", label: "Болезни", color: "bg-orange-50 border-orange-200 hover:border-orange-300" },
     { id: "rashes", emoji: "🔬", label: "Сыпи", color: "bg-purple-50 border-purple-200 hover:border-purple-300" },
     { id: "contacts", emoji: "👩‍⚕️", label: "Врачи", color: "bg-teal-50 border-teal-200 hover:border-teal-300" },
@@ -208,6 +210,62 @@ export function EmergencySection() {
                 <div className="bg-red-50 border border-red-100 rounded-xl p-3">
                   <p className="text-xs font-bold text-red-700 mb-1">Что делать</p>
                   <p className="text-sm text-foreground leading-relaxed">{item.action}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </SectionWrapper>
+  );
+}
+
+// RED FLAGS
+export function RedFlagsSection() {
+  const [open, setOpen] = useState<number | null>(null);
+  return (
+    <SectionWrapper>
+      <SectionTitle emoji="🚩" title="Красные флаги" subtitle="Симптомы, при которых нужно срочно к врачу" />
+
+      <div className="bg-rose-50 border border-rose-200 rounded-2xl p-3 mb-4 flex gap-2 items-start">
+        <span className="text-base flex-shrink-0">⚠️</span>
+        <p className="text-xs text-rose-700 leading-relaxed">
+          Это сигналы организма, которые нельзя игнорировать. Если видите хотя бы один — немедленно к врачу или 103.
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        {redFlags.map((flag, i) => (
+          <div key={i} className={`bg-white border rounded-2xl overflow-hidden shadow-sm ${flag.color.split(" ")[2]}`}>
+            <button
+              onClick={() => setOpen(open === i ? null : i)}
+              className="w-full flex items-center gap-3 p-4 text-left"
+            >
+              <div className={`${flag.color} w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 border`}>
+                <Icon name={flag.icon} fallback="Flag" size={22} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-foreground text-sm leading-tight">{flag.title}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{flag.desc}</p>
+              </div>
+              <Icon name={open === i ? "ChevronUp" : "ChevronDown"} size={18} className="text-muted-foreground flex-shrink-0" />
+            </button>
+            {open === i && (
+              <div className="px-4 pb-4 animate-fade-in space-y-3">
+                <div>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5">Когда тревога</p>
+                  <ul className="space-y-1.5">
+                    {flag.when.map((w, j) => (
+                      <li key={j} className="flex items-start gap-2 text-sm text-foreground leading-relaxed">
+                        <span className="text-rose-500 flex-shrink-0 mt-0.5">🚩</span>
+                        {w}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-mint-50 border border-mint-200 rounded-xl p-3">
+                  <p className="text-xs font-bold text-primary mb-1">✅ Что делать</p>
+                  <p className="text-sm text-foreground leading-relaxed">{flag.action}</p>
                 </div>
               </div>
             )}
