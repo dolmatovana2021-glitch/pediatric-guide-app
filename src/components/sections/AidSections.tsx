@@ -16,8 +16,12 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
     (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
   );
   const [tipIndex, setTipIndex] = useState(dayOfYear % dailyTips.length);
+  const [tipKey, setTipKey] = useState(0);
   const tipOfDay = dailyTips[tipIndex];
-  const nextTip = () => setTipIndex((tipIndex + 1) % dailyTips.length);
+  const nextTip = () => {
+    setTipIndex((tipIndex + 1) % dailyTips.length);
+    setTipKey((k) => k + 1);
+  };
 
   const quickCards: { id: Section; emoji: string; label: string; color: string }[] = [
     { id: "firstaid", emoji: "🚑", label: "Первая помощь", color: "bg-red-50 border-red-200 hover:border-red-300" },
@@ -70,23 +74,31 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
         ))}
       </div>
 
-      <div className="bg-mint-50 border border-mint-200 rounded-2xl p-4">
+      <div className="bg-mint-50 border border-mint-200 rounded-2xl p-4 overflow-hidden">
         <div className="flex items-center gap-2 mb-2">
           <p className="font-caveat text-primary text-base font-semibold">💡 Совет дня</p>
-          <span className="text-[10px] font-semibold bg-mint-100 text-primary px-2 py-0.5 rounded-full">
+          <span
+            key={`tag-${tipKey}`}
+            className="text-[10px] font-semibold bg-mint-100 text-primary px-2 py-0.5 rounded-full animate-scale-in"
+          >
             {tipOfDay.emoji} {tipOfDay.topic}
           </span>
           <span className="ml-auto text-[10px] text-muted-foreground font-medium">
             {tipIndex + 1}/{dailyTips.length}
           </span>
         </div>
-        <p className="text-sm text-foreground leading-relaxed mb-3">{tipOfDay.text}</p>
+        <p
+          key={`text-${tipKey}`}
+          className="text-sm text-foreground leading-relaxed mb-3 animate-fade-in"
+        >
+          {tipOfDay.text}
+        </p>
         <button
           onClick={nextTip}
-          className="w-full bg-white border border-mint-200 text-primary rounded-xl py-2 px-3 text-sm font-semibold flex items-center justify-center gap-2 active:scale-95 transition-transform"
+          className="w-full bg-white border border-mint-200 text-primary rounded-xl py-2 px-3 text-sm font-semibold flex items-center justify-center gap-2 active:scale-95 transition-transform group"
         >
           Следующий совет
-          <Icon name="ArrowRight" size={14} />
+          <Icon name="ArrowRight" size={14} className="group-hover:translate-x-1 transition-transform" />
         </button>
       </div>
     </SectionWrapper>
