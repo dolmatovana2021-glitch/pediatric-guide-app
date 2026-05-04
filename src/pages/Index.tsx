@@ -3,7 +3,7 @@ import Icon from "@/components/ui/icon";
 
 const DOCTOR_BEAR = "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/fbc96f2c-8019-4441-a755-50cf8cf65882.jpg";
 
-type Section = "home" | "firstaid" | "diseases" | "nutrition" | "calculator" | "faq" | "contacts";
+type Section = "home" | "firstaid" | "emergency" | "diseases" | "faq" | "contacts";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Data
@@ -11,10 +11,9 @@ type Section = "home" | "firstaid" | "diseases" | "nutrition" | "calculator" | "
 
 const navItems: { id: Section; label: string; emoji: string }[] = [
   { id: "home", label: "Главная", emoji: "🏠" },
-  { id: "firstaid", label: "Первая помощь", emoji: "🚑" },
+  { id: "firstaid", label: "Помощь", emoji: "🚑" },
+  { id: "emergency", label: "Неотложка", emoji: "🆘" },
   { id: "diseases", label: "Болезни", emoji: "🌡️" },
-  { id: "nutrition", label: "Питание", emoji: "🥦" },
-  { id: "calculator", label: "Нормы", emoji: "📏" },
   { id: "faq", label: "Вопросы", emoji: "💬" },
   { id: "contacts", label: "Врачи", emoji: "👩‍⚕️" },
 ];
@@ -26,6 +25,73 @@ const firstAidItems = [
   { icon: "Droplets", color: "bg-red-50 text-red-500", title: "Кровотечение", steps: ["Прижмите чистую ткань к ране", "Удерживайте давление 10 минут", "Поднимите повреждённую конечность вверх", "При сильном кровотечении — скорая"] },
   { icon: "Thermometer", color: "bg-rose-50 text-rose-500", title: "Высокая температура", steps: ["Дать жаропонижающее (парацетамол/ибупрофен)", "Обеспечить питьё", "Проветрить комнату, не кутать", "Скорая если > 39 °C у детей до 3 мес"] },
   { icon: "Bug", color: "bg-green-50 text-green-500", title: "Укус насекомого", steps: ["Удалить жало пинцетом (не давить)", "Приложить холод на 10 минут", "Антигистаминный крем на место укуса", "Скорая при отёке лица, затруднении дыхания"] },
+];
+
+const emergencyItems = [
+  {
+    icon: "HeartPulse",
+    color: "bg-red-100 text-red-600 border-red-200",
+    urgency: "Немедленно 103",
+    title: "Остановка дыхания / сердца",
+    signs: ["Ребёнок не дышит", "Нет пульса", "Синюшность кожи"],
+    action: "Начните СЛР немедленно: 30 надавливаний на грудину + 2 вдоха. Не прекращайте до приезда скорой.",
+  },
+  {
+    icon: "AlertTriangle",
+    color: "bg-red-100 text-red-600 border-red-200",
+    urgency: "Немедленно 103",
+    title: "Анафилаксия (тяжёлая аллергия)",
+    signs: ["Отёк лица, губ, горла", "Затруднение дыхания", "Сыпь по всему телу + слабость"],
+    action: "Введите адреналин (эпипен если есть), уложите ребёнка, ноги выше головы. Вызовите 103.",
+  },
+  {
+    icon: "Brain",
+    color: "bg-orange-100 text-orange-600 border-orange-200",
+    urgency: "Вызвать 103",
+    title: "Потеря сознания",
+    signs: ["Ребёнок не реагирует на голос", "Не открывает глаза", "Обмяк без причины"],
+    action: "Уложите на бок (поза восстановления), проверьте дыхание. Не давайте ничего пить. Вызовите 103.",
+  },
+  {
+    icon: "Wind",
+    color: "bg-orange-100 text-orange-600 border-orange-200",
+    urgency: "Вызвать 103",
+    title: "Круп / удушье",
+    signs: ["Лающий кашель", "Свистящее дыхание", "Втяжение грудины при вдохе"],
+    action: "Откройте окно, дайте прохладный свежий воздух, успокойте ребёнка. При нарастании — 103.",
+  },
+  {
+    icon: "Zap",
+    color: "bg-orange-100 text-orange-600 border-orange-200",
+    urgency: "Вызвать 103",
+    title: "Длительные судороги",
+    signs: ["Судороги > 5 минут", "Повторные приступы", "Ребёнок не приходит в себя"],
+    action: "Уложите на бок, уберите опасные предметы. Не кладите ничего в рот. Вызовите 103.",
+  },
+  {
+    icon: "Droplets",
+    color: "bg-amber-100 text-amber-600 border-amber-200",
+    urgency: "Обратиться в скорую",
+    title: "Обезвоживание",
+    signs: ["Нет мочи > 6 часов", "Западший родничок", "Сухой рот, нет слёз при плаче"],
+    action: "Давайте маленькими глотками регидрон каждые 5 минут. При рвоте — скорая.",
+  },
+  {
+    icon: "Eye",
+    color: "bg-amber-100 text-amber-600 border-amber-200",
+    urgency: "Обратиться в скорую",
+    title: "Травма головы",
+    signs: ["Потеря сознания после удара", "Рвота после падения", "Неравные зрачки"],
+    action: "Не давайте двигаться, не давайте еду/воду. Немедленно везите в приёмное отделение или 103.",
+  },
+  {
+    icon: "Thermometer",
+    color: "bg-amber-100 text-amber-600 border-amber-200",
+    urgency: "Обратиться в скорую",
+    title: "Температура у новорождённого",
+    signs: ["Температура > 38 °C у ребёнка до 3 мес", "Вялость, отказ от еды", "Бледность или желтушность"],
+    action: "Не ждите — везите в скорую или вызовите 103. У новорождённых любая температура опасна.",
+  },
 ];
 
 const rashPhotos = [
@@ -44,24 +110,6 @@ const diseases = [
   { emoji: "😮‍💨", name: "Ларингит", temp: "37–38 °C", symptoms: "Лающий кашель, осиплость, круп", action: "Свежий воздух, влажность. При удушье — скорая" },
   { emoji: "🦷", name: "Стоматит", temp: "нет/37 °C", symptoms: "Язвочки во рту, отказ от еды, слюнотечение", action: "Полоскания, гели для дёсен, мягкая пища" },
   { emoji: "👁️", name: "Конъюнктивит", temp: "нет", symptoms: "Покраснение, выделения из глаз, склеивание", action: "Промывание ромашкой. Капли — по рецепту врача" },
-];
-
-const nutritionData = [
-  { age: "0–6 мес", icon: "🍼", title: "Грудное молоко или смесь", tips: ["Кормление по требованию", "Не нужна вода при ГВ", "Витамин D с первых дней жизни"] },
-  { age: "6–8 мес", icon: "🥣", title: "Начало прикорма", tips: ["Овощные пюре: кабачок, брокколи", "По 1/2 чайной ложки, увеличивать постепенно", "Новый продукт — раз в 3–5 дней"] },
-  { age: "8–12 мес", icon: "🍚", title: "Разнообразный прикорм", tips: ["Каши, мясо, яйца, рыба", "Творог, кефир с 8 месяцев", "Избегать соль, сахар, мёд до года"] },
-  { age: "1–3 года", icon: "🥗", title: "Общий стол", tips: ["5 приёмов пищи в день", "Порция примерно с кулачок ребёнка", "Ограничить сладкое и фастфуд"] },
-  { age: "3–7 лет", icon: "🍱", title: "Осознанное питание", tips: ["Учить названия продуктов", "Совместная готовка развивает интерес", "Разнообразие — ключ к здоровью"] },
-];
-
-const milestones = [
-  { month: 1, skill: "Фиксирует взгляд на лице" },
-  { month: 3, skill: "Держит голову, улыбается" },
-  { month: 6, skill: "Сидит с поддержкой, лепечет" },
-  { month: 9, skill: "Встаёт у опоры, говорит «ма-ма»" },
-  { month: 12, skill: "Ходит, знает 1–3 слова" },
-  { month: 18, skill: "10–20 слов, поднимается по лестнице" },
-  { month: 24, skill: "Короткие предложения, бегает" },
 ];
 
 const faqItems = [
@@ -97,9 +145,8 @@ function SectionTitle({ emoji, title, subtitle }: { emoji: string; title: string
 function HomeSection({ setSection }: { setSection: (s: Section) => void }) {
   const quickCards: { id: Section; emoji: string; label: string; color: string }[] = [
     { id: "firstaid", emoji: "🚑", label: "Первая помощь", color: "bg-red-50 border-red-200 hover:border-red-300" },
+    { id: "emergency", emoji: "🆘", label: "Неотложка", color: "bg-rose-50 border-rose-200 hover:border-rose-300" },
     { id: "diseases", emoji: "🌡️", label: "Болезни", color: "bg-orange-50 border-orange-200 hover:border-orange-300" },
-    { id: "nutrition", emoji: "🥦", label: "Питание", color: "bg-green-50 border-green-200 hover:border-green-300" },
-    { id: "calculator", emoji: "📏", label: "Калькуляторы", color: "bg-blue-50 border-blue-200 hover:border-blue-300" },
     { id: "faq", emoji: "💬", label: "Вопросы", color: "bg-purple-50 border-purple-200 hover:border-purple-300" },
     { id: "contacts", emoji: "👩‍⚕️", label: "Врачи", color: "bg-teal-50 border-teal-200 hover:border-teal-300" },
   ];
@@ -114,7 +161,7 @@ function HomeSection({ setSection }: { setSection: (s: Section) => void }) {
               МалышДок —<br />ваш педиатрический<br />помощник
             </h1>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Первая помощь, болезни, питание и развитие — всё в одном приложении
+              Первая помощь, болезни и неотложные ситуации — всё под рукой
             </p>
           </div>
           <div className="w-28 h-28 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg">
@@ -122,12 +169,12 @@ function HomeSection({ setSection }: { setSection: (s: Section) => void }) {
           </div>
         </div>
         <button
-          onClick={() => setSection("firstaid")}
+          onClick={() => setSection("emergency")}
           className="mt-4 w-full bg-red-500 text-white rounded-2xl py-3 px-4 flex items-center justify-between font-semibold text-sm shadow-md active:scale-95 transition-transform"
         >
           <span className="flex items-center gap-2">
-            <span className="text-lg">🚨</span>
-            Нужна первая помощь!
+            <span className="text-lg">🆘</span>
+            Неотложная помощь!
           </span>
           <Icon name="ChevronRight" size={18} />
         </button>
@@ -202,6 +249,75 @@ function FirstAidSection() {
   );
 }
 
+// EMERGENCY
+function EmergencySection() {
+  const [open, setOpen] = useState<number | null>(null);
+
+  const urgencyBadge = (urgency: string) => {
+    if (urgency.includes("Немедленно")) return "bg-red-500 text-white";
+    if (urgency.includes("Вызвать")) return "bg-orange-400 text-white";
+    return "bg-amber-400 text-white";
+  };
+
+  return (
+    <SectionWrapper>
+      <SectionTitle emoji="🆘" title="Неотложная помощь" subtitle="Опасные ситуации — что делать прямо сейчас" />
+
+      <div className="grid grid-cols-2 gap-2 mb-5">
+        <a href="tel:103" className="bg-red-500 text-white rounded-2xl p-3 text-center active:scale-95 transition-transform block">
+          <p className="text-2xl font-bold">103</p>
+          <p className="text-xs opacity-90">Скорая помощь</p>
+        </a>
+        <a href="tel:112" className="bg-red-700 text-white rounded-2xl p-3 text-center active:scale-95 transition-transform block">
+          <p className="text-2xl font-bold">112</p>
+          <p className="text-xs opacity-90">Единый номер</p>
+        </a>
+      </div>
+
+      <div className="space-y-3">
+        {emergencyItems.map((item, i) => (
+          <div key={i} className={`bg-white border ${item.color.includes("red") ? "border-red-200" : item.color.includes("orange") ? "border-orange-200" : "border-amber-200"} rounded-2xl overflow-hidden shadow-sm`}>
+            <button
+              onClick={() => setOpen(open === i ? null : i)}
+              className="w-full flex items-start gap-3 p-4 text-left"
+            >
+              <div className={`${item.color} w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 border`}>
+                <Icon name={item.icon} fallback="AlertCircle" size={20} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${urgencyBadge(item.urgency)} inline-block mb-1`}>
+                  {item.urgency}
+                </span>
+                <p className="font-semibold text-foreground text-sm leading-tight">{item.title}</p>
+              </div>
+              <Icon name={open === i ? "ChevronUp" : "ChevronDown"} size={18} className="text-muted-foreground flex-shrink-0 mt-1" />
+            </button>
+            {open === i && (
+              <div className="px-4 pb-4 animate-fade-in space-y-3">
+                <div>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5">Признаки</p>
+                  <ul className="space-y-1">
+                    {item.signs.map((sign, j) => (
+                      <li key={j} className="flex items-center gap-2 text-sm text-foreground">
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
+                        {sign}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-red-50 border border-red-100 rounded-xl p-3">
+                  <p className="text-xs font-bold text-red-700 mb-1">Что делать</p>
+                  <p className="text-sm text-foreground leading-relaxed">{item.action}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </SectionWrapper>
+  );
+}
+
 // DISEASES + GALLERY
 function DiseasesSection() {
   const [tab, setTab] = useState<"list" | "gallery">("list");
@@ -259,133 +375,6 @@ function DiseasesSection() {
               </div>
             ))}
           </div>
-        </div>
-      )}
-    </SectionWrapper>
-  );
-}
-
-// NUTRITION
-function NutritionSection() {
-  return (
-    <SectionWrapper>
-      <SectionTitle emoji="🥦" title="Питание и развитие" subtitle="Рекомендации по возрасту" />
-      <div className="space-y-4 mb-5">
-        {nutritionData.map((item, i) => (
-          <div key={i} className="bg-white border border-border rounded-2xl p-4 shadow-sm">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-2xl">{item.icon}</span>
-              <div>
-                <span className="text-xs font-semibold text-primary bg-mint-50 px-2 py-0.5 rounded-full">{item.age}</span>
-                <h3 className="font-bold text-foreground mt-0.5">{item.title}</h3>
-              </div>
-            </div>
-            <ul className="space-y-1.5">
-              {item.tips.map((tip, j) => (
-                <li key={j} className="flex items-start gap-2 text-sm text-foreground">
-                  <span className="text-primary mt-0.5">•</span>
-                  {tip}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-      <div className="bg-gradient-to-br from-mint-50 to-green-50 border border-mint-200 rounded-2xl p-4">
-        <h3 className="font-bold text-foreground mb-3">🏃 Этапы развития</h3>
-        <div className="space-y-2">
-          {milestones.map((m, i) => (
-            <div key={i} className="flex items-center gap-3">
-              <div className="w-12 text-right flex-shrink-0">
-                <span className="text-xs font-bold text-primary">{m.month} мес</span>
-              </div>
-              <div className="w-3 h-3 rounded-full bg-primary flex-shrink-0" />
-              <p className="text-sm text-foreground">{m.skill}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </SectionWrapper>
-  );
-}
-
-// CALCULATOR
-function CalculatorSection() {
-  const [weight, setWeight] = useState("");
-  const [age, setAge] = useState("");
-  const [height, setHeight] = useState("");
-
-  const weightNum = parseFloat(weight);
-  const ageNum = parseInt(age);
-  const heightNum = parseFloat(height);
-
-  const bmi = weight && height ? (weightNum / ((heightNum / 100) ** 2)).toFixed(1) : null;
-  const paracetamolDose = weight ? `${(weightNum * 10).toFixed(0)}–${(weightNum * 15).toFixed(0)} мг` : null;
-  const ibuprofenDose = weight ? `${(weightNum * 5).toFixed(0)}–${(weightNum * 10).toFixed(0)} мг` : null;
-  const dailyCalories = age && weight
-    ? ageNum < 1 ? "110–120 ккал/кг" : ageNum < 3 ? `${Math.round(weightNum * 100)} ккал` : `${Math.round(weightNum * 90)} ккал`
-    : null;
-
-  const hasResult = paracetamolDose || bmi || dailyCalories;
-
-  return (
-    <SectionWrapper>
-      <SectionTitle emoji="📏" title="Калькуляторы норм" subtitle="Введите данные ребёнка" />
-      <div className="bg-white border border-border rounded-2xl p-4 shadow-sm mb-4">
-        <h3 className="font-semibold text-foreground mb-3">Данные ребёнка</h3>
-        <div className="space-y-3">
-          {[
-            { label: "Вес (кг)", value: weight, setter: setWeight, placeholder: "Например: 12.5" },
-            { label: "Рост (см)", value: height, setter: setHeight, placeholder: "Например: 85" },
-            { label: "Возраст (лет)", value: age, setter: setAge, placeholder: "Например: 3" },
-          ].map((field) => (
-            <div key={field.label}>
-              <label className="text-xs font-semibold text-muted-foreground block mb-1">{field.label}</label>
-              <input
-                type="number"
-                value={field.value}
-                onChange={e => field.setter(e.target.value)}
-                placeholder={field.placeholder}
-                className="w-full border border-input rounded-xl px-3 py-2.5 text-sm outline-none focus:border-primary transition-colors bg-background"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {hasResult ? (
-        <div className="space-y-3 animate-fade-in">
-          {paracetamolDose && (
-            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4">
-              <h4 className="font-bold text-blue-700 mb-2">💊 Дозы жаропонижающих</h4>
-              <p className="text-sm text-foreground"><span className="font-semibold">Парацетамол:</span> {paracetamolDose} разово</p>
-              <p className="text-sm text-foreground"><span className="font-semibold">Ибупрофен:</span> {ibuprofenDose} разово</p>
-              <p className="text-xs text-muted-foreground mt-2">* Интервал не менее 4 ч. Не более 4 раз в сутки.</p>
-            </div>
-          )}
-          {bmi && (
-            <div className="bg-green-50 border border-green-200 rounded-2xl p-4">
-              <h4 className="font-bold text-green-700 mb-1">⚖️ Индекс массы тела</h4>
-              <p className="text-3xl font-bold text-foreground">{bmi}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {parseFloat(bmi) < 15 ? "Ниже нормы — проконсультируйтесь с врачом"
-                  : parseFloat(bmi) < 19 ? "В норме для большинства возрастов"
-                  : "Выше нормы — уточните у педиатра"}
-              </p>
-            </div>
-          )}
-          {dailyCalories && (
-            <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4">
-              <h4 className="font-bold text-orange-700 mb-1">🍽️ Норма калорий в день</h4>
-              <p className="text-3xl font-bold text-foreground">{dailyCalories}</p>
-              <p className="text-xs text-muted-foreground mt-1">Ориентировочно. Зависит от активности ребёнка.</p>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="bg-muted rounded-2xl p-6 text-center">
-          <span className="text-4xl block mb-2">📊</span>
-          <p className="text-muted-foreground text-sm">Введите данные выше, чтобы увидеть расчёты</p>
         </div>
       )}
     </SectionWrapper>
@@ -485,9 +474,8 @@ export default function Index() {
     switch (section) {
       case "home": return <HomeSection setSection={setSection} />;
       case "firstaid": return <FirstAidSection />;
+      case "emergency": return <EmergencySection />;
       case "diseases": return <DiseasesSection />;
-      case "nutrition": return <NutritionSection />;
-      case "calculator": return <CalculatorSection />;
       case "faq": return <FaqSection />;
       case "contacts": return <ContactsSection />;
     }
@@ -497,7 +485,6 @@ export default function Index() {
     <div className="min-h-screen bg-background font-golos">
       <div className="max-w-[480px] mx-auto flex flex-col min-h-screen relative">
 
-        {/* Top bar */}
         <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center gap-3">
           {section !== "home" ? (
             <>
@@ -520,12 +507,10 @@ export default function Index() {
           )}
         </div>
 
-        {/* Content */}
         <main className="flex-1 px-4 py-4 pb-24">
           {renderSection()}
         </main>
 
-        {/* Bottom Nav */}
         <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/90 backdrop-blur-md border-t border-border px-1 py-2 z-30">
           <div className="flex justify-around">
             {navItems.map((item) => (
