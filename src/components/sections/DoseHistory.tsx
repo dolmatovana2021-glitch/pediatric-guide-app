@@ -13,7 +13,66 @@ type DoseRecord = {
 };
 
 const STORAGE_KEY = "malyshdok:doseHistory";
+const NOTIFY_KEY = "malyshdok:doseNotify";
+const NOTIFIED_KEY = "malyshdok:doseNotified";
 const DAY_MS = 24 * 60 * 60 * 1000;
+
+function loadNotifyEnabled(): boolean {
+  try {
+    return localStorage.getItem(NOTIFY_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function loadNotifiedIds(): string[] {
+  try {
+    const raw = localStorage.getItem(NOTIFIED_KEY);
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveNotifiedIds(ids: string[]) {
+  try {
+    localStorage.setItem(NOTIFIED_KEY, JSON.stringify(ids.slice(-30)));
+  } catch {
+    /* ignore */
+  }
+}
+
+function playBeep() {
+  try {
+    const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.65);
+    setTimeout(() => ctx.close(), 800);
+  } catch {
+    /* ignore */
+  }
+}
+
+function showBrowserNotification(title: string, body: string) {
+  try {
+    if (typeof Notification === "undefined") return;
+    if (Notification.permission !== "granted") return;
+    new Notification(title, { body, icon: "/favicon.ico", tag: "malyshdok-dose" });
+  } catch {
+    /* ignore */
+  }
+}
 
 const DRUG_INTERVAL_HOURS: Record<DrugKey, number> = {
   paracetamol: 4,
@@ -82,15 +141,66 @@ export function DoseHistory({
 }) {
   const [records, setRecords] = useState<DoseRecord[]>([]);
   const [now, setNow] = useState(Date.now());
+  const [notifyEnabled, setNotifyEnabled] = useState<boolean>(false);
+  const [permission, setPermission] = useState<NotificationPermission | "unsupported">(
+    typeof Notification === "undefined" ? "unsupported" : Notification.permission,
+  );
 
   useEffect(() => {
     setRecords(loadHistory());
+    setNotifyEnabled(loadNotifyEnabled());
   }, []);
 
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 30000);
     return () => clearInterval(t);
   }, []);
+
+  useEffect(() => {
+    if (!notifyEnabled) return;
+    const notified = loadNotifiedIds();
+    let changed = false;
+    records.forEach((r) => {
+      const due = r.takenAt + DRUG_INTERVAL_HOURS[r.drug] * 60 * 60 * 1000;
+      if (due <= now && !notified.includes(r.id)) {
+        notified.push(r.id);
+        changed = true;
+        playBeep();
+        showBrowserNotification(
+          "МалышДок · можно дать жаропонижающее",
+          `${r.drugName}: прошло ${DRUG_INTERVAL_HOURS[r.drug]} ч с приёма в ${formatTime(r.takenAt)}`,
+        );
+      }
+    });
+    if (changed) saveNotifiedIds(notified);
+  }, [records, now, notifyEnabled]);
+
+  const toggleNotify = async () => {
+    if (notifyEnabled) {
+      setNotifyEnabled(false);
+      try {
+        localStorage.setItem(NOTIFY_KEY, "0");
+      } catch {
+        /* ignore */
+      }
+      return;
+    }
+    if (typeof Notification !== "undefined" && Notification.permission === "default") {
+      try {
+        const p = await Notification.requestPermission();
+        setPermission(p);
+      } catch {
+        /* ignore */
+      }
+    }
+    setNotifyEnabled(true);
+    try {
+      localStorage.setItem(NOTIFY_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+    playBeep();
+  };
 
   const addDose = () => {
     const rec: DoseRecord = {
@@ -150,6 +260,47 @@ export function DoseHistory({
           </button>
         )}
       </div>
+
+      <button
+        onClick={toggleNotify}
+        disabled={permission === "unsupported"}
+        className={`w-full flex items-center justify-between gap-2 rounded-xl px-3 py-2 border text-xs transition ${
+          permission === "unsupported"
+            ? "bg-muted border-border text-muted-foreground cursor-not-allowed"
+            : notifyEnabled
+              ? "bg-primary/10 border-primary/30 text-primary"
+              : "bg-mint-50 border-mint-200 text-foreground hover:bg-mint-100"
+        }`}
+      >
+        <span className="flex items-center gap-2">
+          <Icon name={notifyEnabled ? "Bell" : "BellOff"} size={14} />
+          <span className="font-semibold">
+            {permission === "unsupported"
+              ? "Уведомления недоступны"
+              : notifyEnabled
+                ? "Напоминания включены"
+                : "Напомнить, когда подойдёт время"}
+          </span>
+        </span>
+        {permission !== "unsupported" && (
+          <span
+            className={`w-8 h-4 rounded-full relative transition ${
+              notifyEnabled ? "bg-primary" : "bg-muted"
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all ${
+                notifyEnabled ? "left-4" : "left-0.5"
+              }`}
+            />
+          </span>
+        )}
+      </button>
+      {notifyEnabled && permission === "denied" && (
+        <p className="text-[10px] text-amber-700">
+          Браузер блокирует системные уведомления — будет только звуковой сигнал.
+        </p>
+      )}
 
       <div
         className={`rounded-xl p-3 border ${
