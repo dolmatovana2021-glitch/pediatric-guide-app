@@ -5,6 +5,7 @@ import {
   SectionWrapper,
   SectionTitle,
 } from "@/components/shared/SectionShared";
+import { DoseCalculator } from "./DoseCalculator";
 
 export function FirstAidSection() {
   const [open, setOpen] = useState<number | null>(null);
@@ -54,6 +55,8 @@ export function FirstAidSection() {
                     <p className="text-[11px] text-muted-foreground leading-relaxed">
                       {item.dosing.note}
                     </p>
+
+                    <DoseCalculator />
 
                     {item.dosing.drugs.map((drug, k) => (
                       <div key={k} className="bg-white border border-rose-100 rounded-xl overflow-hidden">
