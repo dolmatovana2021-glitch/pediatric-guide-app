@@ -252,19 +252,30 @@ export function RedFlagsSection() {
             </button>
             {open === i && (
               <div className="px-4 pb-4 animate-fade-in space-y-3">
-                <div>
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5">Когда тревога</p>
-                  <ul className="space-y-1.5">
-                    {flag.when.map((w, j) => (
-                      <li key={j} className="flex items-start gap-2 text-sm text-foreground leading-relaxed">
-                        <span className="text-rose-500 flex-shrink-0 mt-0.5">🚩</span>
-                        {w}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {flag.groups.map((group, gi) => {
+                  const isWarn = /НЕ делать/i.test(group.title);
+                  return (
+                    <div
+                      key={gi}
+                      className={`rounded-xl p-3 border ${isWarn ? "bg-amber-50 border-amber-200" : "bg-rose-50/50 border-rose-100"}`}
+                    >
+                      <p className={`text-xs font-bold uppercase tracking-wide mb-2 ${isWarn ? "text-amber-700" : "text-rose-700"}`}>
+                        {isWarn ? "⛔ " : "🚩 "}
+                        {group.title}
+                      </p>
+                      <ul className="space-y-1.5">
+                        {group.items.map((item, j) => (
+                          <li key={j} className="flex items-start gap-2 text-sm text-foreground leading-relaxed">
+                            <span className={`flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full ${isWarn ? "bg-amber-500" : "bg-rose-500"}`} />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })}
                 <div className="bg-mint-50 border border-mint-200 rounded-xl p-3">
-                  <p className="text-xs font-bold text-primary mb-1">✅ Что делать</p>
+                  <p className="text-xs font-bold text-primary mb-1">✅ Главное действие</p>
                   <p className="text-sm text-foreground leading-relaxed">{flag.action}</p>
                 </div>
               </div>
