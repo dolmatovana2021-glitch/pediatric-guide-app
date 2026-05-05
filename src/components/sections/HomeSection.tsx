@@ -6,8 +6,11 @@ import {
   dailyTips,
   SectionWrapper,
 } from "@/components/shared/SectionShared";
+import { useChildProfile, calcAge } from "@/components/shared/childProfile";
 
 export function HomeSection({ setSection }: { setSection: (s: Section) => void }) {
+  const profile = useChildProfile();
+  const age = calcAge(profile.birthDate);
   const dayOfYear = Math.floor(
     (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
   );
@@ -27,6 +30,8 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
     { id: "rashes", emoji: "🔬", label: "Сыпи", color: "bg-purple-50 border-purple-200 hover:border-purple-300" },
     { id: "contacts", emoji: "👩‍⚕️", label: "Врачи", color: "bg-teal-50 border-teal-200 hover:border-teal-300" },
   ];
+
+  const profileFilled = profile.name || profile.birthDate || profile.weight;
 
   return (
     <SectionWrapper>
@@ -56,6 +61,42 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
           <Icon name="ChevronRight" size={18} />
         </button>
       </div>
+
+      <button
+        onClick={() => setSection("profile")}
+        className={`w-full mb-5 rounded-2xl p-4 border flex items-center gap-3 active:scale-[0.98] transition-transform ${
+          profileFilled
+            ? "bg-mint-50 border-mint-200"
+            : "bg-white border-dashed border-mint-300"
+        }`}
+      >
+        <div className="w-12 h-12 rounded-full bg-white border border-mint-200 flex items-center justify-center text-2xl flex-shrink-0">
+          {profile.gender === "boy" ? "👦" : profile.gender === "girl" ? "👧" : "🧒"}
+        </div>
+        <div className="flex-1 min-w-0 text-left">
+          {profileFilled ? (
+            <>
+              <p className="font-bold text-foreground text-sm truncate">
+                {profile.name || "Малыш"}
+              </p>
+              <p className="text-[11px] text-muted-foreground truncate">
+                {age ? age.label : ""}
+                {age && profile.weight ? " · " : ""}
+                {profile.weight ? `${profile.weight} кг` : ""}
+                {!age && !profile.weight ? "Профиль" : ""}
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="font-bold text-foreground text-sm">Заполнить профиль</p>
+              <p className="text-[11px] text-muted-foreground">
+                Имя, возраст и вес — для точного расчёта дозы
+              </p>
+            </>
+          )}
+        </div>
+        <Icon name="ChevronRight" size={18} className="text-muted-foreground flex-shrink-0" />
+      </button>
 
       <h3 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground mb-3">Разделы</h3>
       <div className="grid grid-cols-3 gap-3 mb-5">

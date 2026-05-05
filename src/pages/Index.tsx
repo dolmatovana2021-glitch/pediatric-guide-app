@@ -3,6 +3,7 @@ import Icon from "@/components/ui/icon";
 import { Section, navItems } from "@/components/shared/SectionShared";
 import { HomeSection, FirstAidSection, EmergencySection, RedFlagsSection } from "@/components/sections/AidSections";
 import { DiseasesSection, RashesSection, ContactsSection } from "@/components/sections/InfoSections";
+import { ProfileSection } from "@/components/sections/ProfileSection";
 
 export default function Index() {
   const [section, setSection] = useState<Section>("home");
@@ -16,6 +17,7 @@ export default function Index() {
       case "diseases": return <DiseasesSection />;
       case "rashes": return <RashesSection />;
       case "contacts": return <ContactsSection />;
+      case "profile": return <ProfileSection />;
     }
   };
 

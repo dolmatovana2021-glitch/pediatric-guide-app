@@ -1,6 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 import { DoseHistory } from "./DoseHistory";
+import { useChildProfile, calcAge } from "@/components/shared/childProfile";
 
 type Drug = {
   key: "paracetamol" | "ibuprofen";
@@ -39,12 +40,22 @@ const DRUGS: Drug[] = [
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
 export function DoseCalculator() {
+  const profile = useChildProfile();
   const [weight, setWeight] = useState<string>("");
   const [drugKey, setDrugKey] = useState<Drug["key"]>("paracetamol");
+  const [usedProfile, setUsedProfile] = useState(false);
+
+  useEffect(() => {
+    if (profile.weight && !weight) {
+      setWeight(profile.weight);
+      setUsedProfile(true);
+    }
+  }, [profile.weight, weight]);
 
   const drug = DRUGS.find((d) => d.key === drugKey)!;
   const w = parseFloat(weight.replace(",", "."));
   const valid = !isNaN(w) && w > 0 && w <= 80;
+  const age = calcAge(profile.birthDate);
 
   const result = useMemo(() => {
     if (!valid) return null;
@@ -89,6 +100,29 @@ export function DoseCalculator() {
         ))}
       </div>
 
+      {profile.weight && (
+        <button
+          onClick={() => {
+            setWeight(profile.weight);
+            setUsedProfile(true);
+          }}
+          className={`w-full flex items-center gap-2 rounded-xl px-3 py-2 border text-xs transition ${
+            usedProfile && weight === profile.weight
+              ? "bg-primary/10 border-primary/30 text-primary"
+              : "bg-white border-mint-200 text-foreground hover:bg-mint-100"
+          }`}
+        >
+          <span className="text-base">
+            {profile.gender === "boy" ? "👦" : profile.gender === "girl" ? "👧" : "🧒"}
+          </span>
+          <span className="flex-1 text-left truncate">
+            <span className="font-semibold">{profile.name || "Малыш"}</span>
+            {age ? ` · ${age.label}` : ""} · {profile.weight} кг
+          </span>
+          <Icon name={usedProfile && weight === profile.weight ? "Check" : "ArrowDown"} size={12} />
+        </button>
+      )}
+
       <div>
         <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
           Вес ребёнка, кг
@@ -101,7 +135,10 @@ export function DoseCalculator() {
             max="80"
             step="0.1"
             value={weight}
-            onChange={(e) => setWeight(e.target.value)}
+            onChange={(e) => {
+              setWeight(e.target.value);
+              setUsedProfile(false);
+            }}
             placeholder="например, 12"
             className="w-full px-3 py-2.5 bg-white border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
           />
