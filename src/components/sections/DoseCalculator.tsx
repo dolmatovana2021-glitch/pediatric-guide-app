@@ -12,6 +12,9 @@ type Drug = {
   interval: string;
   maxPerDay: string;
   minAge: string;
+  minAgeMonths: number;
+  allergyTriggers: string[];
+  brands: string[];
 };
 
 const DRUGS: Drug[] = [
@@ -24,6 +27,9 @@ const DRUGS: Drug[] = [
     interval: "каждые 4–6 ч",
     maxPerDay: "не более 4 раз в сутки",
     minAge: "с рождения",
+    minAgeMonths: 0,
+    allergyTriggers: ["парацетам", "paracetam", "ацетаминофен", "acetaminophen"],
+    brands: ["панадол", "panadol", "калпол", "calpol", "цефекон", "эффералган", "efferalgan"],
   },
   {
     key: "ibuprofen",
@@ -34,8 +40,57 @@ const DRUGS: Drug[] = [
     interval: "каждые 6–8 ч",
     maxPerDay: "не более 3 раз в сутки",
     minAge: "с 3 месяцев",
+    minAgeMonths: 3,
+    allergyTriggers: ["ибупрофен", "ibuprofen", "нпвс", "nsaid", "аспирин", "aspirin", "нурофен", "nurofen"],
+    brands: ["нурофен", "nurofen", "ибуфен", "максиколд"],
   },
 ];
+
+type AllergyAlert = {
+  level: "block" | "warn";
+  message: string;
+  match?: string;
+};
+
+function checkAllergy(drug: Drug, allergiesText: string): AllergyAlert | null {
+  if (!allergiesText.trim()) return null;
+  const text = allergiesText.toLowerCase();
+
+  for (const trigger of drug.allergyTriggers) {
+    if (text.includes(trigger)) {
+      return {
+        level: "block",
+        message: `В профиле указана аллергия на ${drug.name.toLowerCase()}. Этот препарат давать нельзя.`,
+        match: trigger,
+      };
+    }
+  }
+
+  for (const brand of drug.brands) {
+    if (text.includes(brand)) {
+      return {
+        level: "block",
+        message: `В профиле указана аллергия на «${brand}» — это ${drug.name.toLowerCase()}. Давать нельзя.`,
+        match: brand,
+      };
+    }
+  }
+
+  if (drug.key === "ibuprofen") {
+    const crossNsaid = ["диклофенак", "кеторолак", "найз", "нимесулид", "кетопрофен"];
+    for (const m of crossNsaid) {
+      if (text.includes(m)) {
+        return {
+          level: "warn",
+          message: `Указана аллергия на «${m}» (НПВС). Возможна перекрёстная реакция с ибупрофеном — посоветуйтесь с врачом.`,
+          match: m,
+        };
+      }
+    }
+  }
+
+  return null;
+}
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
@@ -56,6 +111,19 @@ export function DoseCalculator() {
   const w = parseFloat(weight.replace(",", "."));
   const valid = !isNaN(w) && w > 0 && w <= 80;
   const age = calcAge(profile.birthDate);
+
+  const allergyAlert = useMemo(
+    () => checkAllergy(drug, profile.allergies || ""),
+    [drug, profile.allergies],
+  );
+
+  const ageMonths = age ? age.years * 12 + age.months : null;
+  const ageWarning =
+    ageMonths !== null && ageMonths < drug.minAgeMonths
+      ? `${drug.name} разрешён ${drug.minAge}, ребёнку ${age!.label}. Этот препарат давать нельзя.`
+      : null;
+
+  const blocked = allergyAlert?.level === "block" || !!ageWarning;
 
   const result = useMemo(() => {
     if (!valid) return null;
@@ -85,20 +153,84 @@ export function DoseCalculator() {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        {DRUGS.map((d) => (
-          <button
-            key={d.key}
-            onClick={() => setDrugKey(d.key)}
-            className={`text-xs font-semibold py-2 px-2 rounded-lg border transition ${
-              drugKey === d.key
-                ? "bg-primary text-white border-primary"
-                : "bg-white text-foreground border-mint-200 hover:bg-mint-100"
-            }`}
-          >
-            {d.name}
-          </button>
-        ))}
+        {DRUGS.map((d) => {
+          const dAllergy = checkAllergy(d, profile.allergies || "");
+          const dBlocked = dAllergy?.level === "block";
+          const dAgeBad =
+            ageMonths !== null && ageMonths < d.minAgeMonths;
+          const isUnsafe = dBlocked || dAgeBad;
+          return (
+            <button
+              key={d.key}
+              onClick={() => setDrugKey(d.key)}
+              className={`relative text-xs font-semibold py-2 px-2 rounded-lg border transition ${
+                drugKey === d.key
+                  ? isUnsafe
+                    ? "bg-rose-500 text-white border-rose-500"
+                    : "bg-primary text-white border-primary"
+                  : isUnsafe
+                    ? "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
+                    : "bg-white text-foreground border-mint-200 hover:bg-mint-100"
+              }`}
+            >
+              {isUnsafe && <span className="mr-1">⛔</span>}
+              {d.name}
+            </button>
+          );
+        })}
       </div>
+
+      {(allergyAlert || ageWarning) && (
+        <div
+          className={`rounded-xl p-3 border flex items-start gap-2 animate-fade-in ${
+            blocked
+              ? "bg-rose-50 border-rose-200"
+              : "bg-amber-50 border-amber-200"
+          }`}
+        >
+          <span className="text-lg flex-shrink-0">{blocked ? "⛔" : "⚠️"}</span>
+          <div className="flex-1 min-w-0">
+            <p
+              className={`text-xs font-bold mb-0.5 ${
+                blocked ? "text-rose-700" : "text-amber-700"
+              }`}
+            >
+              {blocked ? "Препарат давать нельзя" : "Возможна перекрёстная реакция"}
+            </p>
+            <p className="text-[11px] text-foreground leading-relaxed">
+              {ageWarning || allergyAlert?.message}
+            </p>
+            {allergyAlert?.match && (
+              <p className="text-[10px] text-muted-foreground mt-1">
+                Найдено в профиле: «{allergyAlert.match}»
+              </p>
+            )}
+            {DRUGS.some(
+              (d) =>
+                d.key !== drug.key &&
+                checkAllergy(d, profile.allergies || "")?.level !== "block" &&
+                !(ageMonths !== null && ageMonths < d.minAgeMonths),
+            ) && (
+              <button
+                onClick={() => {
+                  const safe = DRUGS.find(
+                    (d) =>
+                      d.key !== drug.key &&
+                      checkAllergy(d, profile.allergies || "")?.level !== "block" &&
+                      !(ageMonths !== null && ageMonths < d.minAgeMonths),
+                  );
+                  if (safe) setDrugKey(safe.key);
+                }}
+                className={`mt-2 text-[11px] font-semibold underline ${
+                  blocked ? "text-rose-700" : "text-amber-700"
+                }`}
+              >
+                Переключиться на безопасный препарат
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {profile.weight && (
         <button
@@ -160,7 +292,7 @@ export function DoseCalculator() {
         </p>
       )}
 
-      {result && (
+      {result && !blocked && (
         <div className="bg-white border border-mint-200 rounded-xl p-3 space-y-2 animate-fade-in">
           <div className="flex items-baseline justify-between gap-2">
             <p className="text-[11px] text-muted-foreground">Разовая доза для {w} кг</p>
