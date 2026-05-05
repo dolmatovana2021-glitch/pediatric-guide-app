@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import Icon from "@/components/ui/icon";
+import { DoseHistory } from "./DoseHistory";
 
 type Drug = {
   key: "paracetamol" | "ibuprofen";
@@ -151,6 +152,13 @@ export function DoseCalculator() {
           </p>
         </div>
       )}
+
+      <DoseHistory
+        currentDrug={drug.key}
+        currentDrugName={drug.name}
+        currentMl={result?.mlAvg}
+        currentMg={result?.mgAvg}
+      />
     </div>
   );
 }
