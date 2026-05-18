@@ -3,16 +3,23 @@ import Icon from "@/components/ui/icon";
 import { DoseHistory } from "./DoseHistory";
 import { useChildProfile, calcAge } from "@/components/shared/childProfile";
 
+type DrugForm = {
+  key: string;
+  label: string;
+  concentration: number;
+  concentrationLabel: string;
+  minAgeMonths: number;
+  minAge: string;
+};
+
 type Drug = {
   key: "paracetamol" | "ibuprofen";
   name: string;
   mgPerKg: { min: number; max: number };
-  concentration: number;
-  concentrationLabel: string;
+  maxSingleMg: number;
+  forms: DrugForm[];
   interval: string;
   maxPerDay: string;
-  minAge: string;
-  minAgeMonths: number;
   allergyTriggers: string[];
   brands: string[];
 };
@@ -22,25 +29,47 @@ const DRUGS: Drug[] = [
     key: "paracetamol",
     name: "Парацетамол",
     mgPerKg: { min: 10, max: 15 },
-    concentration: 24,
-    concentrationLabel: "120 мг / 5 мл",
+    maxSingleMg: 1000,
+    forms: [
+      {
+        key: "para-syrup",
+        label: "Сироп 120 мг / 5 мл",
+        concentration: 24,
+        concentrationLabel: "120 мг / 5 мл",
+        minAgeMonths: 4,
+        minAge: "с 4 месяцев",
+      },
+    ],
     interval: "каждые 4–6 ч",
     maxPerDay: "не более 4 раз в сутки",
-    minAge: "с рождения",
-    minAgeMonths: 0,
     allergyTriggers: ["парацетам", "paracetam", "ацетаминофен", "acetaminophen"],
     brands: ["панадол", "panadol", "калпол", "calpol", "цефекон", "эффералган", "efferalgan"],
   },
   {
     key: "ibuprofen",
     name: "Ибупрофен",
-    mgPerKg: { min: 5, max: 10 },
-    concentration: 20,
-    concentrationLabel: "100 мг / 5 мл",
+    mgPerKg: { min: 10, max: 10 },
+    maxSingleMg: 600,
+    forms: [
+      {
+        key: "ibu-syrup",
+        label: "Сироп 100 мг / 5 мл",
+        concentration: 20,
+        concentrationLabel: "100 мг / 5 мл",
+        minAgeMonths: 3,
+        minAge: "с 3 месяцев",
+      },
+      {
+        key: "ibu-conc",
+        label: "Концентрат 40 мг / 1 мл",
+        concentration: 40,
+        concentrationLabel: "40 мг / 1 мл",
+        minAgeMonths: 12,
+        minAge: "с 12 месяцев",
+      },
+    ],
     interval: "каждые 6–8 ч",
     maxPerDay: "не более 4 раз в сутки",
-    minAge: "с 3 месяцев",
-    minAgeMonths: 3,
     allergyTriggers: ["ибупрофен", "ibuprofen", "нпвс", "nsaid", "аспирин", "aspirin", "нурофен", "nurofen"],
     brands: ["нурофен", "nurofen", "ибуфен", "максиколд"],
   },
@@ -104,12 +133,12 @@ const SAFE_LIST: { keys: string[]; canonical: string; hint: string }[] = [
   {
     keys: ["парацетам", "paracetam", "ацетаминофен", "acetaminophen", "панадол", "panadol", "калпол", "calpol", "цефекон", "эффералган", "efferalgan"],
     canonical: "Парацетамол",
-    hint: "10–15 мг/кг, каждые 4–6 ч. С рождения.",
+    hint: "10–15 мг/кг (макс. 1000 мг за приём), каждые 4–6 ч. С 4 месяцев.",
   },
   {
     keys: ["ибупрофен", "ibuprofen", "нурофен", "nurofen", "ибуфен", "максиколд"],
     canonical: "Ибупрофен",
-    hint: "5–10 мг/кг, каждые 6–8 ч. С 3 месяцев.",
+    hint: "10 мг/кг (макс. 600 мг за приём), каждые 6–8 ч. Сироп с 3 мес., концентрат — с 12 мес.",
   },
 ];
 
@@ -158,6 +187,7 @@ export function DoseCalculator() {
   const profile = useChildProfile();
   const [weight, setWeight] = useState<string>("");
   const [drugKey, setDrugKey] = useState<Drug["key"]>("paracetamol");
+  const [formKey, setFormKey] = useState<string>("para-syrup");
   const [usedProfile, setUsedProfile] = useState(false);
   const [drugQuery, setDrugQuery] = useState("");
   const drugCheck = useMemo(() => checkDrugByName(drugQuery), [drugQuery]);
@@ -170,9 +200,16 @@ export function DoseCalculator() {
   }, [profile.weight, weight]);
 
   const drug = DRUGS.find((d) => d.key === drugKey)!;
+  const form = drug.forms.find((f) => f.key === formKey) ?? drug.forms[0];
   const w = parseFloat(weight.replace(",", "."));
   const valid = !isNaN(w) && w > 0 && w <= 80;
   const age = calcAge(profile.birthDate);
+
+  useEffect(() => {
+    if (!drug.forms.find((f) => f.key === formKey)) {
+      setFormKey(drug.forms[0].key);
+    }
+  }, [drug, formKey]);
 
   const allergyAlert = useMemo(
     () => checkAllergy(drug, profile.allergies || ""),
@@ -181,20 +218,23 @@ export function DoseCalculator() {
 
   const ageMonths = age ? age.years * 12 + age.months : null;
   const ageWarning =
-    ageMonths !== null && ageMonths < drug.minAgeMonths
-      ? `${drug.name} разрешён ${drug.minAge}, ребёнку ${age!.label}. Этот препарат давать нельзя.`
+    ageMonths !== null && ageMonths < form.minAgeMonths
+      ? `${drug.name} (${form.label}) разрешён ${form.minAge}, ребёнку ${age!.label}. Эту форму давать нельзя.`
       : null;
 
   const blocked = allergyAlert?.level === "block" || !!ageWarning;
 
   const result = useMemo(() => {
     if (!valid) return null;
-    const mgMin = w * drug.mgPerKg.min;
-    const mgMax = w * drug.mgPerKg.max;
+    const capMg = drug.maxSingleMg;
+    const rawMgMin = w * drug.mgPerKg.min;
+    const rawMgMax = w * drug.mgPerKg.max;
+    const mgMin = Math.min(rawMgMin, capMg);
+    const mgMax = Math.min(rawMgMax, capMg);
     const mgAvg = (mgMin + mgMax) / 2;
-    const mlMin = mgMin / drug.concentration;
-    const mlMax = mgMax / drug.concentration;
-    const mlAvg = mgAvg / drug.concentration;
+    const mlMin = mgMin / form.concentration;
+    const mlMax = mgMax / form.concentration;
+    const mlAvg = mgAvg / form.concentration;
     return {
       mgMin: Math.round(mgMin),
       mgMax: Math.round(mgMax),
@@ -202,8 +242,9 @@ export function DoseCalculator() {
       mlMin: round1(mlMin),
       mlMax: round1(mlMax),
       mlAvg: round1(mlAvg),
+      capped: rawMgMax > capMg,
     };
-  }, [w, drug, valid]);
+  }, [w, drug, form, valid]);
 
   return (
     <div className="bg-mint-50 border border-mint-200 rounded-xl p-3 space-y-3">
@@ -218,13 +259,16 @@ export function DoseCalculator() {
         {DRUGS.map((d) => {
           const dAllergy = checkAllergy(d, profile.allergies || "");
           const dBlocked = dAllergy?.level === "block";
-          const dAgeBad =
-            ageMonths !== null && ageMonths < d.minAgeMonths;
+          const dMinAge = Math.min(...d.forms.map((f) => f.minAgeMonths));
+          const dAgeBad = ageMonths !== null && ageMonths < dMinAge;
           const isUnsafe = dBlocked || dAgeBad;
           return (
             <button
               key={d.key}
-              onClick={() => setDrugKey(d.key)}
+              onClick={() => {
+                setDrugKey(d.key);
+                setFormKey(d.forms[0].key);
+              }}
               className={`relative text-xs font-semibold py-2 px-2 rounded-lg border transition ${
                 drugKey === d.key
                   ? isUnsafe
@@ -241,6 +285,41 @@ export function DoseCalculator() {
           );
         })}
       </div>
+
+      {drug.forms.length > 1 && (
+        <div>
+          <p className="text-[11px] font-semibold text-muted-foreground mb-1">
+            Форма выпуска
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {drug.forms.map((f) => {
+              const fAgeBad = ageMonths !== null && ageMonths < f.minAgeMonths;
+              const active = form.key === f.key;
+              return (
+                <button
+                  key={f.key}
+                  onClick={() => setFormKey(f.key)}
+                  className={`text-[11px] font-semibold py-2 px-2 rounded-lg border transition leading-tight ${
+                    active
+                      ? fAgeBad
+                        ? "bg-rose-500 text-white border-rose-500"
+                        : "bg-primary text-white border-primary"
+                      : fAgeBad
+                        ? "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
+                        : "bg-white text-foreground border-mint-200 hover:bg-mint-100"
+                  }`}
+                >
+                  {fAgeBad && <span className="mr-1">⛔</span>}
+                  {f.label}
+                  <div className={`text-[10px] font-normal mt-0.5 ${active ? "opacity-80" : "text-muted-foreground"}`}>
+                    {f.minAge}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {(allergyAlert || ageWarning) && (
         <div
@@ -358,7 +437,7 @@ export function DoseCalculator() {
         <div className="bg-white border border-mint-200 rounded-xl p-3 space-y-2 animate-fade-in">
           <div className="flex items-baseline justify-between gap-2">
             <p className="text-[11px] text-muted-foreground">Разовая доза для {w} кг</p>
-            <p className="text-[10px] text-muted-foreground">{drug.concentrationLabel}</p>
+            <p className="text-[10px] text-muted-foreground">{form.concentrationLabel}</p>
           </div>
           <div className="flex items-baseline gap-2">
             <p className="text-3xl font-bold text-primary">{result.mlAvg}</p>
@@ -368,6 +447,11 @@ export function DoseCalculator() {
           <p className="text-[11px] text-muted-foreground">
             Допустимый диапазон: <strong>{result.mlMin}–{result.mlMax} мл</strong> ({result.mgMin}–{result.mgMax} мг)
           </p>
+          {result.capped && (
+            <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1.5">
+              ⚠️ Доза ограничена максимумом за приём — не более {drug.maxSingleMg} мг.
+            </p>
+          )}
           <div className="pt-1.5 border-t border-mint-100 grid grid-cols-2 gap-2 text-[11px]">
             <div>
               <p className="text-muted-foreground">Интервал</p>
@@ -379,7 +463,7 @@ export function DoseCalculator() {
             </div>
           </div>
           <p className="text-[10px] text-muted-foreground pt-1">
-            {drug.name} — {drug.minAge}. Это ориентир, при сомнениях — врач.
+            {drug.name} — {form.minAge}. Доза: {drug.mgPerKg.min === drug.mgPerKg.max ? `${drug.mgPerKg.min}` : `${drug.mgPerKg.min}–${drug.mgPerKg.max}`} мг/кг, но не более {drug.maxSingleMg} мг за приём. Это ориентир, при сомнениях — врач.
           </p>
         </div>
       )}
