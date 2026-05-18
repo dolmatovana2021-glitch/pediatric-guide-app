@@ -1,187 +1,17 @@
 import { useState, useMemo, useEffect } from "react";
-import Icon from "@/components/ui/icon";
 import { DoseHistory } from "./DoseHistory";
 import { useChildProfile, calcAge } from "@/components/shared/childProfile";
-
-type DrugForm = {
-  key: string;
-  label: string;
-  concentration: number;
-  concentrationLabel: string;
-  minAgeMonths: number;
-  minAge: string;
-};
-
-type Drug = {
-  key: "paracetamol" | "ibuprofen";
-  name: string;
-  mgPerKg: { min: number; max: number };
-  maxSingleMg: number;
-  forms: DrugForm[];
-  interval: string;
-  maxPerDay: string;
-  allergyTriggers: string[];
-  brands: string[];
-};
-
-const DRUGS: Drug[] = [
-  {
-    key: "paracetamol",
-    name: "Парацетамол",
-    mgPerKg: { min: 10, max: 15 },
-    maxSingleMg: 1000,
-    forms: [
-      {
-        key: "para-syrup",
-        label: "Сироп 120 мг / 5 мл",
-        concentration: 24,
-        concentrationLabel: "120 мг / 5 мл",
-        minAgeMonths: 4,
-        minAge: "с 4 месяцев",
-      },
-    ],
-    interval: "каждые 4–6 ч",
-    maxPerDay: "не более 4 раз в сутки",
-    allergyTriggers: ["парацетам", "paracetam", "ацетаминофен", "acetaminophen"],
-    brands: ["панадол", "panadol", "калпол", "calpol", "цефекон", "эффералган", "efferalgan"],
-  },
-  {
-    key: "ibuprofen",
-    name: "Ибупрофен",
-    mgPerKg: { min: 10, max: 10 },
-    maxSingleMg: 600,
-    forms: [
-      {
-        key: "ibu-syrup",
-        label: "Сироп 100 мг / 5 мл",
-        concentration: 20,
-        concentrationLabel: "100 мг / 5 мл",
-        minAgeMonths: 3,
-        minAge: "с 3 месяцев",
-      },
-      {
-        key: "ibu-conc",
-        label: "Концентрат 40 мг / 1 мл",
-        concentration: 40,
-        concentrationLabel: "40 мг / 1 мл",
-        minAgeMonths: 12,
-        minAge: "с 12 месяцев",
-      },
-    ],
-    interval: "каждые 6–8 ч",
-    maxPerDay: "не более 4 раз в сутки",
-    allergyTriggers: ["ибупрофен", "ibuprofen", "нпвс", "nsaid", "аспирин", "aspirin", "нурофен", "nurofen"],
-    brands: ["нурофен", "nurofen", "ибуфен", "максиколд"],
-  },
-];
-
-type AllergyAlert = {
-  level: "block" | "warn";
-  message: string;
-  match?: string;
-};
-
-function checkAllergy(drug: Drug, allergiesText: string): AllergyAlert | null {
-  if (!allergiesText.trim()) return null;
-  const text = allergiesText.toLowerCase();
-
-  for (const trigger of drug.allergyTriggers) {
-    if (text.includes(trigger)) {
-      return {
-        level: "block",
-        message: `В профиле указана аллергия на ${drug.name.toLowerCase()}. Этот препарат давать нельзя.`,
-        match: trigger,
-      };
-    }
-  }
-
-  for (const brand of drug.brands) {
-    if (text.includes(brand)) {
-      return {
-        level: "block",
-        message: `В профиле указана аллергия на «${brand}» — это ${drug.name.toLowerCase()}. Давать нельзя.`,
-        match: brand,
-      };
-    }
-  }
-
-  if (drug.key === "ibuprofen") {
-    const crossNsaid = ["диклофенак", "кеторолак", "найз", "нимесулид", "кетопрофен"];
-    for (const m of crossNsaid) {
-      if (text.includes(m)) {
-        return {
-          level: "warn",
-          message: `Указана аллергия на «${m}» (НПВС). Возможна перекрёстная реакция с ибупрофеном — посоветуйтесь с врачом.`,
-          match: m,
-        };
-      }
-    }
-  }
-
-  return null;
-}
-
-type DrugCheck = {
-  status: "safe" | "forbidden" | "unknown";
-  matched?: string;
-  canonical?: string;
-  reason?: string;
-  hint?: string;
-};
-
-const SAFE_LIST: { keys: string[]; canonical: string; hint: string }[] = [
-  {
-    keys: ["парацетам", "paracetam", "ацетаминофен", "acetaminophen", "панадол", "panadol", "калпол", "calpol", "цефекон", "эффералган", "efferalgan"],
-    canonical: "Парацетамол",
-    hint: "10–15 мг/кг (макс. 1000 мг за приём), каждые 4–6 ч. С 4 месяцев.",
-  },
-  {
-    keys: ["ибупрофен", "ibuprofen", "нурофен", "nurofen", "ибуфен", "максиколд"],
-    canonical: "Ибупрофен",
-    hint: "10 мг/кг (макс. 600 мг за приём), каждые 6–8 ч. Сироп с 3 мес., концентрат — с 12 мес.",
-  },
-];
-
-const FORBIDDEN_LIST: { keys: string[]; canonical: string; reason: string }[] = [
-  {
-    keys: ["аспирин", "aspirin", "ацетилсалицилов", "acetylsalicyl"],
-    canonical: "Ацетилсалициловая кислота (Аспирин)",
-    reason: "Риск синдрома Рея — поражение печени и мозга, возможен летальный исход.",
-  },
-  {
-    keys: ["анальгин", "analgin", "метамизол", "metamizol", "баралгин"],
-    canonical: "Метамизол натрия (Анальгин)",
-    reason: "Угнетает кроветворение.",
-  },
-  {
-    keys: ["нимесулид", "nimesulid", "нимулид", "найз", "nise"],
-    canonical: "Нимесулид (Найз, Нимулид)",
-    reason: "Токсическое действие на печень.",
-  },
-];
-
-function checkDrugByName(input: string): DrugCheck {
-  const text = input.trim().toLowerCase();
-  if (!text) return { status: "unknown" };
-
-  for (const f of FORBIDDEN_LIST) {
-    for (const k of f.keys) {
-      if (text.includes(k)) {
-        return { status: "forbidden", matched: k, canonical: f.canonical, reason: f.reason };
-      }
-    }
-  }
-  for (const s of SAFE_LIST) {
-    for (const k of s.keys) {
-      if (text.includes(k)) {
-        return { status: "safe", matched: k, canonical: s.canonical, hint: s.hint };
-      }
-    }
-  }
-  return { status: "unknown" };
-}
-
-const round1 = (n: number) => Math.round(n * 10) / 10;
+import {
+  DRUGS,
+  Drug,
+  checkAllergy,
+  checkDrugByName,
+  round1,
+} from "./DoseCalculator.data";
+import { DrugPicker } from "./DoseCalculator.DrugPicker";
+import { WeightInput } from "./DoseCalculator.WeightInput";
+import { AllergyAlertBlock, ResultBlock } from "./DoseCalculator.ResultCard";
+import { DrugChecker } from "./DoseCalculator.DrugChecker";
 
 export function DoseCalculator() {
   const profile = useChildProfile();
@@ -255,294 +85,60 @@ export function DoseCalculator() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
-        {DRUGS.map((d) => {
-          const dAllergy = checkAllergy(d, profile.allergies || "");
-          const dBlocked = dAllergy?.level === "block";
-          const dMinAge = Math.min(...d.forms.map((f) => f.minAgeMonths));
-          const dAgeBad = ageMonths !== null && ageMonths < dMinAge;
-          const isUnsafe = dBlocked || dAgeBad;
-          return (
-            <button
-              key={d.key}
-              onClick={() => {
-                setDrugKey(d.key);
-                setFormKey(d.forms[0].key);
-              }}
-              className={`relative text-xs font-semibold py-2 px-2 rounded-lg border transition ${
-                drugKey === d.key
-                  ? isUnsafe
-                    ? "bg-rose-500 text-white border-rose-500"
-                    : "bg-primary text-white border-primary"
-                  : isUnsafe
-                    ? "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
-                    : "bg-white text-foreground border-mint-200 hover:bg-mint-100"
-              }`}
-            >
-              {isUnsafe && <span className="mr-1">⛔</span>}
-              {d.name}
-            </button>
-          );
-        })}
-      </div>
+      <DrugPicker
+        drug={drug}
+        form={form}
+        drugKey={drugKey}
+        ageMonths={ageMonths}
+        allergies={profile.allergies || ""}
+        onDrugChange={(key, firstFormKey) => {
+          setDrugKey(key);
+          setFormKey(firstFormKey);
+        }}
+        onFormChange={setFormKey}
+      />
 
-      {drug.forms.length > 1 && (
-        <div>
-          <p className="text-[11px] font-semibold text-muted-foreground mb-1">
-            Форма выпуска
-          </p>
-          <div className="grid grid-cols-2 gap-2">
-            {drug.forms.map((f) => {
-              const fAgeBad = ageMonths !== null && ageMonths < f.minAgeMonths;
-              const active = form.key === f.key;
-              return (
-                <button
-                  key={f.key}
-                  onClick={() => setFormKey(f.key)}
-                  className={`text-[11px] font-semibold py-2 px-2 rounded-lg border transition leading-tight ${
-                    active
-                      ? fAgeBad
-                        ? "bg-rose-500 text-white border-rose-500"
-                        : "bg-primary text-white border-primary"
-                      : fAgeBad
-                        ? "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
-                        : "bg-white text-foreground border-mint-200 hover:bg-mint-100"
-                  }`}
-                >
-                  {fAgeBad && <span className="mr-1">⛔</span>}
-                  {f.label}
-                  <div className={`text-[10px] font-normal mt-0.5 ${active ? "opacity-80" : "text-muted-foreground"}`}>
-                    {f.minAge}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      <AllergyAlertBlock
+        drug={drug}
+        allergies={profile.allergies || ""}
+        ageMonths={ageMonths}
+        allergyAlert={allergyAlert}
+        ageWarning={ageWarning}
+        blocked={blocked}
+        onSwitchDrug={(key) => setDrugKey(key)}
+      />
 
-      {(allergyAlert || ageWarning) && (
-        <div
-          className={`rounded-xl p-3 border flex items-start gap-2 animate-fade-in ${
-            blocked
-              ? "bg-rose-50 border-rose-200"
-              : "bg-amber-50 border-amber-200"
-          }`}
-        >
-          <span className="text-lg flex-shrink-0">{blocked ? "⛔" : "⚠️"}</span>
-          <div className="flex-1 min-w-0">
-            <p
-              className={`text-xs font-bold mb-0.5 ${
-                blocked ? "text-rose-700" : "text-amber-700"
-              }`}
-            >
-              {blocked ? "Препарат давать нельзя" : "Возможна перекрёстная реакция"}
-            </p>
-            <p className="text-[11px] text-foreground leading-relaxed">
-              {ageWarning || allergyAlert?.message}
-            </p>
-            {allergyAlert?.match && (
-              <p className="text-[10px] text-muted-foreground mt-1">
-                Найдено в профиле: «{allergyAlert.match}»
-              </p>
-            )}
-            {DRUGS.some(
-              (d) =>
-                d.key !== drug.key &&
-                checkAllergy(d, profile.allergies || "")?.level !== "block" &&
-                !(ageMonths !== null && ageMonths < d.minAgeMonths),
-            ) && (
-              <button
-                onClick={() => {
-                  const safe = DRUGS.find(
-                    (d) =>
-                      d.key !== drug.key &&
-                      checkAllergy(d, profile.allergies || "")?.level !== "block" &&
-                      !(ageMonths !== null && ageMonths < d.minAgeMonths),
-                  );
-                  if (safe) setDrugKey(safe.key);
-                }}
-                className={`mt-2 text-[11px] font-semibold underline ${
-                  blocked ? "text-rose-700" : "text-amber-700"
-                }`}
-              >
-                Переключиться на безопасный препарат
-              </button>
-            )}
-          </div>
-        </div>
-      )}
+      <WeightInput
+        profile={profile}
+        age={age}
+        weight={weight}
+        usedProfile={usedProfile}
+        valid={valid}
+        onUseProfile={() => {
+          setWeight(profile.weight);
+          setUsedProfile(true);
+        }}
+        onChange={(value) => {
+          setWeight(value);
+          setUsedProfile(false);
+        }}
+        onClear={() => setWeight("")}
+      />
 
-      {profile.weight && (
-        <button
-          onClick={() => {
-            setWeight(profile.weight);
-            setUsedProfile(true);
-          }}
-          className={`w-full flex items-center gap-2 rounded-xl px-3 py-2 border text-xs transition ${
-            usedProfile && weight === profile.weight
-              ? "bg-primary/10 border-primary/30 text-primary"
-              : "bg-white border-mint-200 text-foreground hover:bg-mint-100"
-          }`}
-        >
-          <span className="text-base">
-            {profile.gender === "boy" ? "👦" : profile.gender === "girl" ? "👧" : "🧒"}
-          </span>
-          <span className="flex-1 text-left truncate">
-            <span className="font-semibold">{profile.name || "Малыш"}</span>
-            {age ? ` · ${age.label}` : ""} · {profile.weight} кг
-          </span>
-          <Icon name={usedProfile && weight === profile.weight ? "Check" : "ArrowDown"} size={12} />
-        </button>
-      )}
+      <ResultBlock
+        drug={drug}
+        form={form}
+        blocked={blocked}
+        result={result}
+        weightNum={w}
+      />
 
-      <div>
-        <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
-          Вес ребёнка, кг
-        </label>
-        <div className="relative">
-          <input
-            type="number"
-            inputMode="decimal"
-            min="1"
-            max="80"
-            step="0.1"
-            value={weight}
-            onChange={(e) => {
-              setWeight(e.target.value);
-              setUsedProfile(false);
-            }}
-            placeholder="например, 12"
-            className="w-full px-3 py-2.5 bg-white border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
-          />
-          {weight && (
-            <button
-              onClick={() => setWeight("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full hover:bg-mint-100 flex items-center justify-center text-muted-foreground"
-              aria-label="Очистить"
-            >
-              <Icon name="X" size={14} />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {!valid && weight && (
-        <p className="text-[11px] text-rose-600">
-          Введите вес от 1 до 80 кг
-        </p>
-      )}
-
-      {result && !blocked && (
-        <div className="bg-white border border-mint-200 rounded-xl p-3 space-y-2 animate-fade-in">
-          <div className="flex items-baseline justify-between gap-2">
-            <p className="text-[11px] text-muted-foreground">Разовая доза для {w} кг</p>
-            <p className="text-[10px] text-muted-foreground">{form.concentrationLabel}</p>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <p className="text-3xl font-bold text-primary">{result.mlAvg}</p>
-            <p className="text-base font-semibold text-foreground">мл</p>
-            <p className="text-xs text-muted-foreground ml-auto">≈ {result.mgAvg} мг</p>
-          </div>
-          <p className="text-[11px] text-muted-foreground">
-            Допустимый диапазон: <strong>{result.mlMin}–{result.mlMax} мл</strong> ({result.mgMin}–{result.mgMax} мг)
-          </p>
-          {result.capped && (
-            <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1.5">
-              ⚠️ Доза ограничена максимумом за приём — не более {drug.maxSingleMg} мг.
-            </p>
-          )}
-          <div className="pt-1.5 border-t border-mint-100 grid grid-cols-2 gap-2 text-[11px]">
-            <div>
-              <p className="text-muted-foreground">Интервал</p>
-              <p className="font-semibold text-foreground">{drug.interval}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Максимум</p>
-              <p className="font-semibold text-foreground">{drug.maxPerDay}</p>
-            </div>
-          </div>
-          <p className="text-[10px] text-muted-foreground pt-1">
-            {drug.name} — {form.minAge}. Доза: {drug.mgPerKg.min === drug.mgPerKg.max ? `${drug.mgPerKg.min}` : `${drug.mgPerKg.min}–${drug.mgPerKg.max}`} мг/кг, но не более {drug.maxSingleMg} мг за приём. Это ориентир, при сомнениях — врач.
-          </p>
-        </div>
-      )}
-
-      <div className="bg-white border border-mint-200 rounded-xl p-3 space-y-2">
-        <div className="flex items-center gap-2">
-          <span className="text-base">🔎</span>
-          <p className="text-xs font-bold text-primary uppercase tracking-wide">
-            Проверить препарат
-          </p>
-        </div>
-        <p className="text-[11px] text-muted-foreground leading-relaxed">
-          Введите название препарата — покажу, можно ли его давать ребёнку.
-        </p>
-        <div className="relative">
-          <input
-            type="text"
-            value={drugQuery}
-            onChange={(e) => setDrugQuery(e.target.value)}
-            placeholder="например, Найз, Нурофен, Анальгин"
-            className="w-full text-sm py-2 px-3 pr-9 rounded-lg border border-mint-200 bg-mint-50 focus:outline-none focus:border-primary focus:bg-white transition"
-          />
-          {drugQuery && (
-            <button
-              onClick={() => setDrugQuery("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full hover:bg-mint-100 flex items-center justify-center text-muted-foreground"
-              aria-label="Очистить"
-            >
-              <Icon name="X" size={14} />
-            </button>
-          )}
-        </div>
-
-        {drugQuery.trim() && drugCheck.status === "safe" && (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-2.5 flex items-start gap-2 animate-fade-in">
-            <span className="text-base flex-shrink-0">✅</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-[12px] font-bold text-emerald-700">
-                Безопасный — {drugCheck.canonical}
-              </p>
-              <p className="text-[11px] text-foreground leading-relaxed mt-0.5">
-                {drugCheck.hint}
-              </p>
-              <button
-                onClick={() => {
-                  if (drugCheck.canonical?.startsWith("Парацетамол")) setDrugKey("paracetamol");
-                  if (drugCheck.canonical?.startsWith("Ибупрофен")) setDrugKey("ibuprofen");
-                }}
-                className="text-[11px] font-semibold text-emerald-700 underline mt-1"
-              >
-                Рассчитать дозу
-              </button>
-            </div>
-          </div>
-        )}
-
-        {drugQuery.trim() && drugCheck.status === "forbidden" && (
-          <div className="bg-rose-50 border border-rose-300 rounded-lg p-2.5 flex items-start gap-2 animate-fade-in">
-            <span className="text-base flex-shrink-0">⛔</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-[12px] font-bold text-rose-700">
-                Запрещено — {drugCheck.canonical}
-              </p>
-              <p className="text-[11px] text-foreground leading-relaxed mt-0.5">
-                {drugCheck.reason}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {drugQuery.trim().length > 1 && drugCheck.status === "unknown" && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-2.5 flex items-start gap-2 animate-fade-in">
-            <span className="text-base flex-shrink-0">❓</span>
-            <p className="text-[11px] text-foreground leading-relaxed">
-              Препарата нет в нашем списке. Не давайте без рекомендации врача.
-            </p>
-          </div>
-        )}
-      </div>
+      <DrugChecker
+        drugQuery={drugQuery}
+        drugCheck={drugCheck}
+        onQueryChange={setDrugQuery}
+        onPickDrug={(key) => setDrugKey(key)}
+      />
 
       <DoseHistory
         currentDrug={drug.key}
@@ -553,3 +149,5 @@ export function DoseCalculator() {
     </div>
   );
 }
+
+export default DoseCalculator;
