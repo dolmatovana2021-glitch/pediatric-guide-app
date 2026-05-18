@@ -93,6 +93,74 @@ export function FirstAidSection() {
 
                 {"timer" in item && item.timer === "seizure" && <SeizureTimer />}
 
+                {"rehydration" in item && item.rehydration && (
+                  <div className="bg-cyan-50 border border-cyan-200 rounded-xl p-3 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base">💧</span>
+                      <p className="text-xs font-bold text-cyan-700 uppercase tracking-wide">
+                        {item.rehydration.title}
+                      </p>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed">
+                      {item.rehydration.note}
+                    </p>
+                    <div className="bg-white border border-cyan-100 rounded-xl overflow-hidden">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-[11px] border-collapse min-w-[480px]">
+                          <thead>
+                            <tr>
+                              <th
+                                className="bg-cyan-50 border border-cyan-100 px-2 py-2 text-left font-bold text-foreground align-middle w-[80px]"
+                                rowSpan={2}
+                              >
+                                Масса тела (кг)
+                              </th>
+                              <th
+                                className="bg-cyan-50 border border-cyan-100 px-2 py-2 text-center font-bold text-foreground"
+                                colSpan={2}
+                              >
+                                Схема выпаивания в первые 4–6 часов обезвоживания
+                              </th>
+                              <th
+                                className="bg-cyan-50 border border-cyan-100 px-2 py-2 text-center font-bold text-foreground align-middle w-[90px]"
+                                rowSpan={2}
+                              >
+                                Объём за один приём (мл)
+                              </th>
+                            </tr>
+                            <tr>
+                              <td className="bg-cyan-50/60 border border-cyan-100 px-2 py-1.5 text-[10px] font-semibold text-foreground text-center">
+                                Лёгкая степень
+                              </td>
+                              <td className="bg-cyan-50/60 border border-cyan-100 px-2 py-1.5 text-[10px] font-semibold text-foreground text-center">
+                                Средняя степень
+                              </td>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {item.rehydration.rows.map((row, r) => (
+                              <tr key={r} className={r % 2 === 0 ? "bg-cyan-50/20" : "bg-white"}>
+                                <td className="border border-cyan-100 px-2 py-1.5 font-semibold text-foreground">
+                                  {row.weight}
+                                </td>
+                                <td className="border border-cyan-100 px-2 py-1.5 text-foreground">
+                                  {row.mild}
+                                </td>
+                                <td className="border border-cyan-100 px-2 py-1.5 text-foreground">
+                                  {row.moderate}
+                                </td>
+                                <td className="border border-cyan-100 px-2 py-1.5 text-center font-semibold text-cyan-700">
+                                  {row.perDose}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {"donts" in item && item.donts && (
                   <div className="bg-rose-50 border border-rose-200 rounded-xl p-3">
                     <p className="text-xs font-bold text-rose-700 uppercase tracking-wide mb-2 flex items-center gap-1.5">
