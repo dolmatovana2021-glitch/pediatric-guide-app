@@ -190,6 +190,18 @@ export function RedFlagsSection() {
                 </button>
                 {isOpen && (
                   <div className="px-4 pb-4 animate-fade-in space-y-3">
+                    {flag.intro && (!q || flag.intro.toLowerCase().includes(q)) && (
+                      <div className="rounded-xl p-3 border bg-mint-50 border-mint-200">
+                        {flag.intro.split("\n\n").map((para, pi) => (
+                          <p
+                            key={pi}
+                            className={`text-xs leading-relaxed text-foreground ${pi > 0 ? "mt-2" : ""}`}
+                          >
+                            {highlight(para, q)}
+                          </p>
+                        ))}
+                      </div>
+                    )}
                     {flag.groups
                       .filter((group) => {
                         if (!q) return true;
