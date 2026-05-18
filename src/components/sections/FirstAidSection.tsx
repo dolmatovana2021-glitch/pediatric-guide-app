@@ -33,6 +33,52 @@ export function FirstAidSection() {
             </button>
             {open === i && (
               <div className="px-4 pb-4 space-y-3 animate-fade-in">
+                {"intro" in item && item.intro && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 space-y-3">
+                    <div className="flex items-start gap-2">
+                      <span className="text-base flex-shrink-0">📖</span>
+                      <p className="text-xs text-foreground leading-relaxed">
+                        {item.intro.definition}
+                      </p>
+                    </div>
+                    {item.intro.whenMeasure && (
+                      <div className="bg-white border border-blue-100 rounded-lg p-2.5">
+                        <p className="text-[11px] font-bold text-blue-700 uppercase tracking-wide mb-1.5">
+                          {item.intro.whenMeasure.title}
+                        </p>
+                        <ul className="space-y-1">
+                          {item.intro.whenMeasure.items.map((it, idx) => (
+                            <li
+                              key={idx}
+                              className="flex items-start gap-1.5 text-[12px] text-foreground leading-relaxed"
+                            >
+                              <span className="mt-1.5 w-1 h-1 rounded-full bg-blue-500 flex-shrink-0" />
+                              {it}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {item.intro.normal && (
+                      <div className="bg-white border border-blue-100 rounded-lg p-2.5">
+                        <p className="text-[11px] font-bold text-blue-700 uppercase tracking-wide mb-1.5">
+                          {item.intro.normal.title}
+                        </p>
+                        <ul className="space-y-1">
+                          {item.intro.normal.items.map((it, idx) => (
+                            <li
+                              key={idx}
+                              className="flex items-start gap-1.5 text-[12px] text-foreground leading-relaxed"
+                            >
+                              <span className="mt-1.5 w-1 h-1 rounded-full bg-blue-500 flex-shrink-0" />
+                              {it}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="space-y-2">
                   {item.steps.map((step, j) => (
                     <div key={j} className="flex items-start gap-3">
