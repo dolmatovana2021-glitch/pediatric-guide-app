@@ -1,10 +1,17 @@
 export type RedFlagGroup = { title: string; items: string[] };
 
+export type RedFlagIntro = {
+  definition: string;
+  whenMeasure?: { title: string; items: string[] };
+  normal?: { title: string; items: string[] };
+};
+
 export const redFlags: {
   icon: string;
   color: string;
   title: string;
   desc: string;
+  intro?: RedFlagIntro;
   groups: RedFlagGroup[];
   action: string;
 }[] = [
@@ -13,6 +20,26 @@ export const redFlags: {
     color: "bg-rose-50 text-rose-600 border-rose-200",
     title: "Лихорадка",
     desc: "Тревожные признаки при повышении температуры",
+    intro: {
+      definition:
+        "Лихорадка — это повышение температуры тела выше 38 °C. Это защитная реакция организма на инфекцию или воспаление.",
+      whenMeasure: {
+        title: "Когда нужно измерять температуру",
+        items: [
+          "Ребёнок вялый",
+          "Капризный",
+          "Отказывается от еды",
+          "Горячий на ощупь",
+        ],
+      },
+      normal: {
+        title: "Нормальные показатели",
+        items: [
+          "Нормальная температура — 36,0–37,5 °C (в зависимости от места измерения)",
+          "Лихорадка — выше 38 °C",
+        ],
+      },
+    },
     groups: [
       {
         title: "Очень высокая температура",

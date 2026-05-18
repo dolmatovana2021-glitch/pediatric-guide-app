@@ -190,6 +190,52 @@ export function RedFlagsSection() {
                 </button>
                 {isOpen && (
                   <div className="px-4 pb-4 animate-fade-in space-y-3">
+                    {flag.intro && !q && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 space-y-3">
+                        <div className="flex items-start gap-2">
+                          <span className="text-base flex-shrink-0">📖</span>
+                          <p className="text-xs text-foreground leading-relaxed">
+                            {flag.intro.definition}
+                          </p>
+                        </div>
+                        {flag.intro.whenMeasure && (
+                          <div className="bg-white border border-blue-100 rounded-lg p-2.5">
+                            <p className="text-[11px] font-bold text-blue-700 uppercase tracking-wide mb-1.5">
+                              {flag.intro.whenMeasure.title}
+                            </p>
+                            <ul className="space-y-1">
+                              {flag.intro.whenMeasure.items.map((it, idx) => (
+                                <li
+                                  key={idx}
+                                  className="flex items-start gap-1.5 text-[12px] text-foreground leading-relaxed"
+                                >
+                                  <span className="mt-1.5 w-1 h-1 rounded-full bg-blue-500 flex-shrink-0" />
+                                  {it}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {flag.intro.normal && (
+                          <div className="bg-white border border-blue-100 rounded-lg p-2.5">
+                            <p className="text-[11px] font-bold text-blue-700 uppercase tracking-wide mb-1.5">
+                              {flag.intro.normal.title}
+                            </p>
+                            <ul className="space-y-1">
+                              {flag.intro.normal.items.map((it, idx) => (
+                                <li
+                                  key={idx}
+                                  className="flex items-start gap-1.5 text-[12px] text-foreground leading-relaxed"
+                                >
+                                  <span className="mt-1.5 w-1 h-1 rounded-full bg-blue-500 flex-shrink-0" />
+                                  {it}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
                     {flag.groups
                       .filter((group) => {
                         if (!q) return true;
