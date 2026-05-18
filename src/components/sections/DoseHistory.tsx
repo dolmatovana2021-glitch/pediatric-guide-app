@@ -81,7 +81,7 @@ const DRUG_INTERVAL_HOURS: Record<DrugKey, number> = {
 
 const DRUG_MAX_PER_DAY: Record<DrugKey, number> = {
   paracetamol: 4,
-  ibuprofen: 3,
+  ibuprofen: 4,
 };
 
 function loadHistory(): DoseRecord[] {
