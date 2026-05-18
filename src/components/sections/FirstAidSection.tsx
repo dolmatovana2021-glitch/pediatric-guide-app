@@ -58,36 +58,67 @@ export function FirstAidSection() {
 
                     <DoseCalculator />
 
-                    {item.dosing.drugs.map((drug, k) => (
-                      <div key={k} className="bg-white border border-rose-100 rounded-xl overflow-hidden">
-                        <div className="px-3 py-2 bg-rose-50 border-b border-rose-100">
-                          <p className="text-sm font-bold text-foreground">{drug.name}</p>
-                          <p className="text-[11px] text-muted-foreground mt-0.5">
-                            {drug.dose} · {drug.interval} · {drug.maxPerDay}
-                          </p>
-                        </div>
+                    {"doseTable" in item.dosing && item.dosing.doseTable && (
+                      <div className="bg-white border border-rose-100 rounded-xl overflow-hidden">
                         <div className="overflow-x-auto">
-                          <table className="w-full text-xs">
+                          <table className="w-full text-[11px] border-collapse min-w-[420px]">
                             <thead>
-                              <tr className="bg-rose-50/40 text-muted-foreground">
-                                <th className="text-left font-semibold px-2.5 py-1.5">Вес</th>
-                                <th className="text-left font-semibold px-2.5 py-1.5">Сироп</th>
-                                <th className="text-left font-semibold px-2.5 py-1.5">Доза</th>
+                              <tr>
+                                <th className="bg-rose-50 border border-rose-100 px-2 py-2 text-left font-bold text-foreground align-top w-[60px]" rowSpan={4}>
+                                  Вес ребёнка
+                                </th>
+                                <th className="bg-rose-50 border border-rose-100 px-2 py-2 text-left font-bold text-foreground" colSpan={2}>
+                                  Ибупрофен
+                                </th>
+                                <th className="bg-rose-50 border border-rose-100 px-2 py-2 text-left font-bold text-foreground">
+                                  Парацетамол
+                                </th>
+                              </tr>
+                              <tr>
+                                <td className="bg-rose-50/60 border border-rose-100 px-2 py-1.5 text-[10px] text-foreground align-top leading-tight" colSpan={2}>
+                                  Разовая доза для детей от 3 мес. 10 мг/кг (но не более 600 мг за раз)
+                                </td>
+                                <td className="bg-rose-50/60 border border-rose-100 px-2 py-1.5 text-[10px] text-foreground align-top leading-tight">
+                                  Разовая доза для детей от 4 мес. 10–15 мг/кг (но не более 1000 мг за раз)
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className="bg-rose-50/40 border border-rose-100 px-2 py-1.5 text-[10px] text-center font-semibold text-muted-foreground" colSpan={3}>
+                                  Дозировка доступных в РФ препаратов
+                                </td>
+                              </tr>
+                              <tr>
+                                {item.dosing.doseTable.columns.map((col, ci) => (
+                                  <td
+                                    key={ci}
+                                    className="bg-rose-50/40 border border-rose-100 px-2 py-1.5 text-[10px] text-muted-foreground align-top leading-tight"
+                                  >
+                                    {col.form}
+                                  </td>
+                                ))}
                               </tr>
                             </thead>
                             <tbody>
-                              {drug.rows.map((row, r) => (
-                                <tr key={r} className="border-t border-rose-50">
-                                  <td className="px-2.5 py-1.5 font-semibold text-foreground">{row.weight}</td>
-                                  <td className="px-2.5 py-1.5 text-foreground">{row.suspension}</td>
-                                  <td className="px-2.5 py-1.5 text-muted-foreground">{row.mg}</td>
+                              <tr>
+                                <td className="bg-rose-50/30 border border-rose-100 px-2 py-1.5 text-[10px] text-center font-semibold text-muted-foreground" colSpan={4}>
+                                  Разовая доза
+                                </td>
+                              </tr>
+                              {item.dosing.doseTable.rows.map((row, r) => (
+                                <tr key={r} className={r % 2 === 0 ? "bg-rose-50/20" : "bg-white"}>
+                                  <td className="border border-rose-100 px-2 py-1.5 font-semibold text-foreground">{row.weight}</td>
+                                  {row.cells.map((cell, ci) => (
+                                    <td key={ci} className="border border-rose-100 px-2 py-1.5 text-foreground whitespace-nowrap">
+                                      {cell}
+                                    </td>
+                                  ))}
                                 </tr>
                               ))}
                             </tbody>
                           </table>
                         </div>
                       </div>
-                    ))}
+                    )}
 
                     <div className="bg-amber-50 border border-amber-200 rounded-xl p-2.5">
                       <p className="text-[11px] font-bold text-amber-700 mb-1">⚠️ Важно</p>
