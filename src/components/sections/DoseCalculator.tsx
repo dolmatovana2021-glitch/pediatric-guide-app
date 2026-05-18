@@ -92,6 +92,66 @@ function checkAllergy(drug: Drug, allergiesText: string): AllergyAlert | null {
   return null;
 }
 
+type DrugCheck = {
+  status: "safe" | "forbidden" | "unknown";
+  matched?: string;
+  canonical?: string;
+  reason?: string;
+  hint?: string;
+};
+
+const SAFE_LIST: { keys: string[]; canonical: string; hint: string }[] = [
+  {
+    keys: ["парацетам", "paracetam", "ацетаминофен", "acetaminophen", "панадол", "panadol", "калпол", "calpol", "цефекон", "эффералган", "efferalgan"],
+    canonical: "Парацетамол",
+    hint: "10–15 мг/кг, каждые 4–6 ч. С рождения.",
+  },
+  {
+    keys: ["ибупрофен", "ibuprofen", "нурофен", "nurofen", "ибуфен", "максиколд"],
+    canonical: "Ибупрофен",
+    hint: "5–10 мг/кг, каждые 6–8 ч. С 3 месяцев.",
+  },
+];
+
+const FORBIDDEN_LIST: { keys: string[]; canonical: string; reason: string }[] = [
+  {
+    keys: ["аспирин", "aspirin", "ацетилсалицилов", "acetylsalicyl"],
+    canonical: "Ацетилсалициловая кислота (Аспирин)",
+    reason: "Риск синдрома Рея — поражение печени и мозга, возможен летальный исход.",
+  },
+  {
+    keys: ["анальгин", "analgin", "метамизол", "metamizol", "баралгин"],
+    canonical: "Метамизол натрия (Анальгин)",
+    reason: "Угнетает кроветворение.",
+  },
+  {
+    keys: ["нимесулид", "nimesulid", "нимулид", "найз", "nise"],
+    canonical: "Нимесулид (Найз, Нимулид)",
+    reason: "Токсическое действие на печень.",
+  },
+];
+
+function checkDrugByName(input: string): DrugCheck {
+  const text = input.trim().toLowerCase();
+  if (!text) return { status: "unknown" };
+
+  for (const f of FORBIDDEN_LIST) {
+    for (const k of f.keys) {
+      if (text.includes(k)) {
+        return { status: "forbidden", matched: k, canonical: f.canonical, reason: f.reason };
+      }
+    }
+  }
+  for (const s of SAFE_LIST) {
+    for (const k of s.keys) {
+      if (text.includes(k)) {
+        return { status: "safe", matched: k, canonical: s.canonical, hint: s.hint };
+      }
+    }
+  }
+  return { status: "unknown" };
+}
+
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
 export function DoseCalculator() {
@@ -99,6 +159,8 @@ export function DoseCalculator() {
   const [weight, setWeight] = useState<string>("");
   const [drugKey, setDrugKey] = useState<Drug["key"]>("paracetamol");
   const [usedProfile, setUsedProfile] = useState(false);
+  const [drugQuery, setDrugQuery] = useState("");
+  const drugCheck = useMemo(() => checkDrugByName(drugQuery), [drugQuery]);
 
   useEffect(() => {
     if (profile.weight && !weight) {
@@ -321,6 +383,82 @@ export function DoseCalculator() {
           </p>
         </div>
       )}
+
+      <div className="bg-white border border-mint-200 rounded-xl p-3 space-y-2">
+        <div className="flex items-center gap-2">
+          <span className="text-base">🔎</span>
+          <p className="text-xs font-bold text-primary uppercase tracking-wide">
+            Проверить препарат
+          </p>
+        </div>
+        <p className="text-[11px] text-muted-foreground leading-relaxed">
+          Введите название препарата — покажу, можно ли его давать ребёнку.
+        </p>
+        <div className="relative">
+          <input
+            type="text"
+            value={drugQuery}
+            onChange={(e) => setDrugQuery(e.target.value)}
+            placeholder="например, Найз, Нурофен, Анальгин"
+            className="w-full text-sm py-2 px-3 pr-9 rounded-lg border border-mint-200 bg-mint-50 focus:outline-none focus:border-primary focus:bg-white transition"
+          />
+          {drugQuery && (
+            <button
+              onClick={() => setDrugQuery("")}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full hover:bg-mint-100 flex items-center justify-center text-muted-foreground"
+              aria-label="Очистить"
+            >
+              <Icon name="X" size={14} />
+            </button>
+          )}
+        </div>
+
+        {drugQuery.trim() && drugCheck.status === "safe" && (
+          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-2.5 flex items-start gap-2 animate-fade-in">
+            <span className="text-base flex-shrink-0">✅</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-[12px] font-bold text-emerald-700">
+                Безопасный — {drugCheck.canonical}
+              </p>
+              <p className="text-[11px] text-foreground leading-relaxed mt-0.5">
+                {drugCheck.hint}
+              </p>
+              <button
+                onClick={() => {
+                  if (drugCheck.canonical?.startsWith("Парацетамол")) setDrugKey("paracetamol");
+                  if (drugCheck.canonical?.startsWith("Ибупрофен")) setDrugKey("ibuprofen");
+                }}
+                className="text-[11px] font-semibold text-emerald-700 underline mt-1"
+              >
+                Рассчитать дозу
+              </button>
+            </div>
+          </div>
+        )}
+
+        {drugQuery.trim() && drugCheck.status === "forbidden" && (
+          <div className="bg-rose-50 border border-rose-300 rounded-lg p-2.5 flex items-start gap-2 animate-fade-in">
+            <span className="text-base flex-shrink-0">⛔</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-[12px] font-bold text-rose-700">
+                Запрещено — {drugCheck.canonical}
+              </p>
+              <p className="text-[11px] text-foreground leading-relaxed mt-0.5">
+                {drugCheck.reason}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {drugQuery.trim().length > 1 && drugCheck.status === "unknown" && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-2.5 flex items-start gap-2 animate-fade-in">
+            <span className="text-base flex-shrink-0">❓</span>
+            <p className="text-[11px] text-foreground leading-relaxed">
+              Препарата нет в нашем списке. Не давайте без рекомендации врача.
+            </p>
+          </div>
+        )}
+      </div>
 
       <DoseHistory
         currentDrug={drug.key}
