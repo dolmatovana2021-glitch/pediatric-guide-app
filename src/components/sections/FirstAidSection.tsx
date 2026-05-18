@@ -100,6 +100,47 @@ export function FirstAidSection() {
                         ))}
                       </ul>
                     </div>
+
+                    {"forbidden" in item.dosing && item.dosing.forbidden && (
+                      <div className="bg-rose-50 border border-rose-300 rounded-xl p-3">
+                        <p className="text-xs font-bold text-rose-700 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                          <span className="text-base">⛔</span> Никогда не давать
+                        </p>
+                        <ul className="space-y-2">
+                          {item.dosing.forbidden.map((f, fi) => (
+                            <li key={fi} className="bg-white border border-rose-200 rounded-lg px-2.5 py-2">
+                              <p className="text-[12px] font-bold text-rose-700">{f.name}</p>
+                              <p className="text-[11px] text-foreground leading-relaxed mt-0.5">{f.reason}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {"cooling" in item.dosing && item.dosing.cooling && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-3">
+                        <p className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-1 flex items-center gap-1.5">
+                          <span className="text-base">❄️</span> {item.dosing.cooling.title}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground leading-relaxed mb-2">
+                          {item.dosing.cooling.note}
+                        </p>
+                        <ul className="space-y-2">
+                          {item.dosing.cooling.items.map((c, ci) => (
+                            <li key={ci} className="bg-white border border-blue-100 rounded-lg px-2.5 py-2">
+                              <p className="text-[12px] font-bold text-blue-700">{c.when}</p>
+                              <p className="text-[11px] text-foreground leading-relaxed mt-0.5">{c.what}</p>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-2 bg-rose-100 border border-rose-300 rounded-lg px-2.5 py-2">
+                          <p className="text-[11px] font-bold text-rose-700 flex items-start gap-1.5">
+                            <span>⛔</span>
+                            <span>{item.dosing.cooling.forbidden}</span>
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
