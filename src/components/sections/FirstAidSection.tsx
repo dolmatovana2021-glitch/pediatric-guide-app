@@ -90,6 +90,25 @@ export function FirstAidSection() {
                   ))}
                 </div>
 
+                {"donts" in item && item.donts && (
+                  <div className="bg-rose-50 border border-rose-200 rounded-xl p-3">
+                    <p className="text-xs font-bold text-rose-700 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                      <span className="text-base">⛔</span> {item.donts.title}
+                    </p>
+                    <ul className="space-y-2">
+                      {item.donts.items.map((d, di) => (
+                        <li
+                          key={di}
+                          className="bg-white border border-rose-200 rounded-lg px-2.5 py-2 text-[12px] text-foreground leading-relaxed"
+                        >
+                          <span className="font-bold text-rose-700">{d.bold}</span>{" "}
+                          {d.rest}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 {"dosing" in item && item.dosing && (
                   <div className="bg-rose-50/60 border border-rose-100 rounded-xl p-3 space-y-3">
                     <div className="flex items-center gap-2">
