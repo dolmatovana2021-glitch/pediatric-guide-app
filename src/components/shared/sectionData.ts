@@ -138,6 +138,7 @@ export const firstAidItems = [
     icon: "Zap",
     color: "bg-yellow-50 text-yellow-500",
     title: "Судороги",
+    timer: "seizure" as const,
     intro: {
       definition:
         "Судороги — внезапные непроизвольные сокращения мышц, часто с потерей сознания. У детей до 5 лет чаще всего связаны с резким подъёмом температуры (фебрильные).",

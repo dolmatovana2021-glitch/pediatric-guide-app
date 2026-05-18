@@ -6,6 +6,7 @@ import {
   SectionTitle,
 } from "@/components/shared/SectionShared";
 import { DoseCalculator } from "./DoseCalculator";
+import { SeizureTimer } from "./SeizureTimer";
 
 export function FirstAidSection() {
   const [open, setOpen] = useState<number | null>(null);
@@ -89,6 +90,8 @@ export function FirstAidSection() {
                     </div>
                   ))}
                 </div>
+
+                {"timer" in item && item.timer === "seizure" && <SeizureTimer />}
 
                 {"donts" in item && item.donts && (
                   <div className="bg-rose-50 border border-rose-200 rounded-xl p-3">
