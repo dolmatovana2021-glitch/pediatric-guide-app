@@ -38,7 +38,7 @@ const DRUGS: Drug[] = [
     concentration: 20,
     concentrationLabel: "100 мг / 5 мл",
     interval: "каждые 6–8 ч",
-    maxPerDay: "не более 3 раз в сутки",
+    maxPerDay: "не более 4 раз в сутки",
     minAge: "с 3 месяцев",
     minAgeMonths: 3,
     allergyTriggers: ["ибупрофен", "ibuprofen", "нпвс", "nsaid", "аспирин", "aspirin", "нурофен", "nurofen"],
