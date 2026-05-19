@@ -73,7 +73,7 @@ export function ProfileSection() {
             value={profile.name}
             onChange={(e) => update("name", e.target.value)}
             placeholder="Например, Маша"
-            className="w-full px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+            className="block w-full max-w-full min-w-0 box-border appearance-none px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
           />
         </div>
 
@@ -108,7 +108,7 @@ export function ProfileSection() {
             value={profile.weight}
             onChange={(e) => update("weight", e.target.value)}
             placeholder="Например, 12"
-            className="w-full px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+            className="block w-full max-w-full min-w-0 box-border appearance-none px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
           />
           <p className="text-[11px] text-muted-foreground mt-1">
             Подставится в калькулятор дозы автоматически
@@ -150,7 +150,7 @@ export function ProfileSection() {
             onChange={(e) => update("allergies", e.target.value)}
             placeholder="Например: аллергия на пенициллин, лактазная недостаточность"
             rows={3}
-            className="w-full px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition resize-none"
+            className="block w-full max-w-full min-w-0 box-border appearance-none px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition resize-none"
           />
         </div>
 
