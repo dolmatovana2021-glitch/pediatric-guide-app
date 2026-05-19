@@ -86,7 +86,8 @@ export function ProfileSection() {
             value={profile.birthDate}
             onChange={(e) => update("birthDate", e.target.value)}
             max={new Date().toISOString().slice(0, 10)}
-            className="block w-full max-w-full min-w-0 box-border appearance-none px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+            style={{ WebkitAppearance: "none", MozAppearance: "none", minHeight: "42px" }}
+            className="block w-full max-w-full min-w-0 box-border appearance-none h-[42px] leading-[1.25rem] px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
           />
           {age && (
             <p className="text-[11px] text-primary font-semibold mt-1">
