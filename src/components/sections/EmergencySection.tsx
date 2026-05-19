@@ -65,6 +65,42 @@ export function EmergencySection() {
                   <p className="text-xs font-bold text-red-700 mb-1">Что делать</p>
                   <p className="text-sm text-foreground leading-relaxed">{item.action}</p>
                 </div>
+                {"cprPlan" in item && Array.isArray(item.cprPlan) && (
+                  <div className="space-y-2">
+                    {item.cprPlan.map((plan, k) => {
+                      const isAmber = plan.tone === "amber";
+                      const wrap = isAmber
+                        ? "bg-amber-50 border-amber-200"
+                        : "bg-emerald-50 border-emerald-200";
+                      const badge = isAmber
+                        ? "bg-amber-500 text-white"
+                        : "bg-emerald-600 text-white";
+                      const dot = isAmber ? "bg-amber-500" : "bg-emerald-600";
+                      const labelColor = isAmber ? "text-amber-800" : "text-emerald-800";
+                      return (
+                        <div key={k} className={`border rounded-xl p-3 ${wrap}`}>
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${badge}`}>
+                              {isAmber ? "Базовый" : "С навыком"}
+                            </span>
+                            <p className={`text-xs font-bold ${labelColor}`}>{plan.label}</p>
+                          </div>
+                          <ol className="space-y-1.5">
+                            {plan.steps.map((s, idx) => (
+                              <li key={idx} className="flex items-start gap-2 text-sm text-foreground leading-snug">
+                                <span className={`mt-1 w-1.5 h-1.5 rounded-full ${dot} flex-shrink-0`} />
+                                <span>
+                                  <span className="font-semibold mr-1">{idx + 1}.</span>
+                                  {s}
+                                </span>
+                              </li>
+                            ))}
+                          </ol>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             )}
           </div>
