@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 import { Section, navItems } from "@/components/shared/SectionShared";
-import { HomeSection, FirstAidSection, EmergencySection, RedFlagsSection } from "@/components/sections/AidSections";
+import { HomeSection, FirstAidSection, EmergencySection, RedFlagsSection, VaccinationSection } from "@/components/sections/AidSections";
 import { ContactsSection } from "@/components/sections/InfoSections";
 import { ProfileSection } from "@/components/sections/ProfileSection";
 
@@ -14,6 +14,7 @@ export default function Index() {
       case "firstaid": return <FirstAidSection />;
       case "emergency": return <EmergencySection />;
       case "redflags": return <RedFlagsSection />;
+      case "vaccination": return <VaccinationSection />;
       case "contacts": return <ContactsSection />;
       case "profile": return <ProfileSection />;
     }
@@ -55,7 +56,7 @@ export default function Index() {
               <button
                 key={item.id}
                 onClick={() => setSection(item.id)}
-                className={`flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-xl transition-all ${
+                className={`flex flex-col items-center gap-0.5 px-1 py-1 rounded-xl transition-all ${
                   section === item.id ? "text-primary" : "text-muted-foreground"
                 }`}
               >
