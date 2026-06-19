@@ -6,7 +6,7 @@ import {
   useVaccineStatuses,
   type DoseStatus,
 } from "@/components/shared/vaccineStatus";
-import { useChildProfile, calcAge } from "@/components/shared/childProfile";
+import { useChildProfile, calcAge, saveChildProfile } from "@/components/shared/childProfile";
 
 const statusStyle: Record<
   DoseStatus,
@@ -36,33 +36,54 @@ export function VaccinationSection() {
   const { statuses, toggle } = useVaccineStatuses();
   const profile = useChildProfile();
   const [openId, setOpenId] = useState<string | null>(null);
+  const [filter, setFilter] = useState<VaccineTier | "all">("all");
 
+  const inRisk = profile.riskGroup === true;
   const age = calcAge(profile.birthDate);
   const ageMonths = age ? age.years * 12 + age.months : null;
 
-  const isDue = (doseAgeMonths: number, status: DoseStatus): boolean => {
+  // Доза учитывается, только если она применима к ребёнку:
+  // по показаниям (risk) — лишь когда ребёнок в группе риска.
+  const isApplicable = (tier: VaccineTier): boolean => {
+    if (tier === "risk" && !inRisk) return false;
+    return true;
+  };
+
+  const passesFilter = (tier: VaccineTier): boolean => {
+    if (filter === "all") return true;
+    return tier === filter;
+  };
+
+  const isDue = (doseAgeMonths: number, status: DoseStatus, tier: VaccineTier): boolean => {
+    if (!isApplicable(tier)) return false;
     if (ageMonths === null) return false;
     if (status === "done") return false;
     return ageMonths >= doseAgeMonths;
   };
 
   const allDoses = useMemo(
-    () => vaccineRows.flatMap((r) => r.doses.map((d) => ({ id: d.id, ageMonths: d.ageMonths }))),
+    () =>
+      vaccineRows.flatMap((r) =>
+        r.doses.map((d) => ({ id: d.id, ageMonths: d.ageMonths, tier: d.tier }))
+      ),
     []
   );
   const counts = useMemo(() => {
     let done = 0;
     let planned = 0;
     let due = 0;
+    let total = 0;
     for (const d of allDoses) {
+      if (!isApplicable(d.tier)) continue;
+      total += 1;
       const s = statuses[d.id];
       if (s === "done") done += 1;
       else if (s === "planned") planned += 1;
-      if (isDue(d.ageMonths, s || "none")) due += 1;
+      if (isDue(d.ageMonths, s || "none", d.tier)) due += 1;
     }
-    return { done, planned, due, total: allDoses.length };
+    return { done, planned, due, total };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statuses, allDoses, ageMonths]);
+  }, [statuses, allDoses, ageMonths, inRisk]);
 
   return (
     <SectionWrapper>
@@ -84,7 +105,7 @@ export function VaccinationSection() {
             </span>
           )}
         </div>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-2 mb-3">
           <div className="bg-white rounded-xl p-2.5 text-center border border-emerald-100">
             <p className="text-xl font-bold text-emerald-600">{counts.done}</p>
             <p className="text-[10px] text-muted-foreground font-medium">Выполнено</p>
@@ -98,6 +119,26 @@ export function VaccinationSection() {
             <p className="text-[10px] text-muted-foreground font-medium">Всего доз</p>
           </div>
         </div>
+        <button
+          onClick={() => saveChildProfile({ ...profile, riskGroup: !inRisk })}
+          className="w-full flex items-center gap-2.5 bg-white rounded-xl p-2.5 border border-teal-100 text-left"
+        >
+          <span
+            className={`w-10 h-5.5 rounded-full flex-shrink-0 relative transition-colors ${
+              inRisk ? "bg-primary" : "bg-muted-foreground/30"
+            }`}
+            style={{ height: "22px" }}
+          >
+            <span
+              className={`absolute top-0.5 w-[18px] h-[18px] rounded-full bg-white shadow transition-transform ${
+                inRisk ? "translate-x-[20px]" : "translate-x-0.5"
+              }`}
+            />
+          </span>
+          <span className="text-[11px] text-foreground leading-snug flex-1">
+            Ребёнок из группы риска <span className="text-muted-foreground">— показывать прививки по показаниям</span>
+          </span>
+        </button>
       </div>
 
       {ageMonths === null ? (
@@ -137,24 +178,60 @@ export function VaccinationSection() {
 
       <div className="bg-white border border-border rounded-2xl p-3 mb-4">
         <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-2">
-          Категория вакцины
+          Показать категорию
         </p>
-        <div className="space-y-1.5">
-          {(Object.keys(tierMeta) as VaccineTier[]).map((t) => (
-            <div key={t} className="flex items-center gap-2">
-              <span className={`w-3 h-3 rounded-sm flex-shrink-0 ${tierMeta[t].dot}`} />
-              <span className="text-xs text-foreground">{tierMeta[t].label}</span>
-            </div>
-          ))}
+        <div className="flex flex-wrap gap-1.5">
+          <button
+            onClick={() => setFilter("all")}
+            className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition ${
+              filter === "all"
+                ? "bg-primary text-white border-primary"
+                : "bg-white text-foreground border-border"
+            }`}
+          >
+            Все
+          </button>
+          {(Object.keys(tierMeta) as VaccineTier[]).map((t) => {
+            const active = filter === t;
+            return (
+              <button
+                key={t}
+                onClick={() => setFilter(active ? "all" : t)}
+                className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition flex items-center gap-1.5 ${
+                  active ? tierMeta[t].chip : "bg-white text-foreground border-border"
+                }`}
+              >
+                <span className={`w-2.5 h-2.5 rounded-sm ${tierMeta[t].dot}`} />
+                {tierMeta[t].short}
+              </button>
+            );
+          })}
         </div>
+        {!inRisk && (
+          <p className="text-[11px] text-muted-foreground leading-snug mt-2.5 flex items-start gap-1.5">
+            <Icon name="Info" size={13} className="text-muted-foreground flex-shrink-0 mt-0.5" />
+            Прививки «по показаниям» скрыты, так как ребёнок не отмечен как из группы риска. Включить можно в профиле.
+          </p>
+        )}
       </div>
 
       <div className="space-y-2.5">
+        {vaccineRows.every(
+          (row) => row.doses.filter((d) => isApplicable(d.tier) && passesFilter(d.tier)).length === 0
+        ) && (
+          <div className="bg-white border border-dashed border-border rounded-2xl p-6 text-center">
+            <p className="text-sm text-muted-foreground">В этой категории прививок нет для вашего ребёнка.</p>
+          </div>
+        )}
         {vaccineRows.map((row) => {
-          const doneInRow = row.doses.filter((d) => statuses[d.id] === "done").length;
-          const dueInRow = row.doses.filter((d) => isDue(d.ageMonths, statuses[d.id] || "none")).length;
+          const visibleDoses = row.doses.filter(
+            (d) => isApplicable(d.tier) && passesFilter(d.tier)
+          );
+          if (visibleDoses.length === 0) return null;
+          const doneInRow = visibleDoses.filter((d) => statuses[d.id] === "done").length;
+          const dueInRow = visibleDoses.filter((d) => isDue(d.ageMonths, statuses[d.id] || "none", d.tier)).length;
           const rowTiers = (Object.keys(tierMeta) as VaccineTier[]).filter((t) =>
-            row.doses.some((d) => d.tier === t)
+            visibleDoses.some((d) => d.tier === t)
           );
           const open = openId === row.id;
           return (
@@ -182,7 +259,7 @@ export function VaccinationSection() {
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     <p className="text-[11px] text-muted-foreground">
-                      {doneInRow > 0 ? `${doneInRow} из ${row.doses.length} выполнено` : `${row.doses.length} прививок в курсе`}
+                      {doneInRow > 0 ? `${doneInRow} из ${visibleDoses.length} выполнено` : `${visibleDoses.length} прививок в курсе`}
                     </p>
                     <span className="flex items-center gap-1">
                       {rowTiers.map((t) => (
@@ -200,10 +277,10 @@ export function VaccinationSection() {
 
               {open && (
                 <div className="px-3.5 pb-3.5 space-y-2 animate-fade-in">
-                  {row.doses.map((dose) => {
+                  {visibleDoses.map((dose) => {
                     const status: DoseStatus = statuses[dose.id] || "none";
                     const st = statusStyle[status];
-                    const due = isDue(dose.ageMonths, status);
+                    const due = isDue(dose.ageMonths, status, dose.tier);
                     const tier = tierMeta[dose.tier];
                     return (
                       <button

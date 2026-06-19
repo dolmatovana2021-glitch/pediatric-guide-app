@@ -257,6 +257,31 @@ export function ProfileSection() {
             />
           </div>
 
+          <div className="bg-mint-50 border border-mint-200 rounded-xl p-3">
+            <button
+              onClick={() => update("riskGroup", !profile.riskGroup)}
+              className="w-full flex items-center gap-3 text-left"
+            >
+              <span
+                className={`w-11 h-6 rounded-full flex-shrink-0 relative transition-colors ${
+                  profile.riskGroup ? "bg-primary" : "bg-muted-foreground/30"
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                    profile.riskGroup ? "translate-x-[22px]" : "translate-x-0.5"
+                  }`}
+                />
+              </span>
+              <span className="flex-1">
+                <span className="block text-sm font-semibold text-foreground">Ребёнок из группы риска</span>
+                <span className="block text-[11px] text-muted-foreground leading-snug">
+                  Включите, если есть показания к дополнительным прививкам (хронические болезни, недоношенность и др.)
+                </span>
+              </span>
+            </button>
+          </div>
+
           <button
             onClick={submit}
             className="w-full bg-primary text-white rounded-xl py-3 px-4 font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"

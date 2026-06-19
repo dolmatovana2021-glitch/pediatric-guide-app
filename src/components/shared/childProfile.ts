@@ -6,6 +6,7 @@ export type ChildProfile = {
   weight: string;
   gender: "boy" | "girl" | "";
   allergies: string;
+  riskGroup: boolean;
 };
 
 export type StoredChild = ChildProfile & { id: string };
@@ -21,6 +22,7 @@ export const EMPTY_PROFILE: ChildProfile = {
   weight: "",
   gender: "",
   allergies: "",
+  riskGroup: false,
 };
 
 function makeId(): string {

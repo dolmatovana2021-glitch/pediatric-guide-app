@@ -96,9 +96,11 @@ export function countDueVaccines(): number {
   if (!age) return 0;
   const ageMonths = age.years * 12 + age.months;
   const statuses = getStatuses();
+  const inRisk = profile.riskGroup === true;
   let due = 0;
   for (const row of vaccineRows) {
     for (const dose of row.doses) {
+      if (dose.tier === "risk" && !inRisk) continue;
       if (statuses[dose.id] === "done") continue;
       if (ageMonths >= dose.ageMonths) due += 1;
     }
