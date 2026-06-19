@@ -7,6 +7,7 @@ import {
   SectionWrapper,
 } from "@/components/shared/SectionShared";
 import { useChildProfile, calcAge } from "@/components/shared/childProfile";
+import { useDueVaccines } from "@/components/shared/vaccineStatus";
 
 export function HomeSection({ setSection }: { setSection: (s: Section) => void }) {
   const profile = useChildProfile();
@@ -31,6 +32,8 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
   ];
 
   const profileFilled = profile.name || profile.birthDate || profile.weight;
+  const dueVaccines = useDueVaccines();
+  const dueWord = dueVaccines === 1 ? "прививку" : dueVaccines >= 2 && dueVaccines <= 4 ? "прививки" : "прививок";
 
   return (
     <SectionWrapper>
@@ -96,6 +99,25 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
         </div>
         <Icon name="ChevronRight" size={18} className="text-muted-foreground flex-shrink-0" />
       </button>
+
+      {dueVaccines > 0 && (
+        <button
+          onClick={() => setSection("vaccination")}
+          className="w-full mb-5 rounded-2xl p-4 border border-red-200 bg-red-50 flex items-center gap-3 active:scale-[0.98] transition-transform"
+        >
+          <div className="w-12 h-12 rounded-full bg-white border border-red-200 flex items-center justify-center flex-shrink-0 relative">
+            <span className="text-2xl">💉</span>
+            <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center">
+              {dueVaccines}
+            </span>
+          </div>
+          <div className="flex-1 min-w-0 text-left">
+            <p className="font-bold text-red-700 text-sm">Пора сделать {dueVaccines} {dueWord}</p>
+            <p className="text-[11px] text-red-600/80">По возрасту ребёнка — обсудите с педиатром</p>
+          </div>
+          <Icon name="ChevronRight" size={18} className="text-red-400 flex-shrink-0" />
+        </button>
+      )}
 
       <h3 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground mb-3">Разделы</h3>
       <div className="grid grid-cols-3 gap-3 mb-5">

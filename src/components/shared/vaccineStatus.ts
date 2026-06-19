@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getActiveChildId } from "./childProfile";
+import { getActiveChildId, loadChildProfile, calcAge } from "./childProfile";
+import { vaccineRows } from "./vaccineData";
 
 export type DoseStatus = "none" | "planned" | "done";
 
@@ -87,4 +88,37 @@ export function useVaccineStatuses(): {
   };
 
   return { statuses, toggle, setStatus };
+}
+
+export function countDueVaccines(): number {
+  const profile = loadChildProfile();
+  const age = calcAge(profile.birthDate);
+  if (!age) return 0;
+  const ageMonths = age.years * 12 + age.months;
+  const statuses = getStatuses();
+  let due = 0;
+  for (const row of vaccineRows) {
+    for (const dose of row.doses) {
+      if (statuses[dose.id] === "done") continue;
+      if (ageMonths >= dose.ageMonths) due += 1;
+    }
+  }
+  return due;
+}
+
+export function useDueVaccines(): number {
+  const [due, setDue] = useState(0);
+  useEffect(() => {
+    const refresh = () => setDue(countDueVaccines());
+    refresh();
+    window.addEventListener(EVENT_NAME, refresh);
+    window.addEventListener("storage", refresh);
+    window.addEventListener("malyshdok:childProfile:update", refresh);
+    return () => {
+      window.removeEventListener(EVENT_NAME, refresh);
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("malyshdok:childProfile:update", refresh);
+    };
+  }, []);
+  return due;
 }
