@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import Icon from "@/components/ui/icon";
 import { SectionWrapper, SectionTitle } from "@/components/shared/SectionLayout";
-import { vaccineRows, VACCINE_SOURCE } from "@/components/shared/vaccineData";
+import { vaccineRows, VACCINE_SOURCE, tierMeta, type VaccineTier } from "@/components/shared/vaccineData";
 import {
   useVaccineStatuses,
   type DoseStatus,
@@ -123,7 +123,7 @@ export function VaccinationSection() {
         </div>
       )}
 
-      <div className="flex items-center justify-center flex-wrap gap-x-3 gap-y-1.5 mb-4 text-[11px] text-muted-foreground">
+      <div className="flex items-center justify-center flex-wrap gap-x-3 gap-y-1.5 mb-3 text-[11px] text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Выполнено
         </span>
@@ -135,10 +135,27 @@ export function VaccinationSection() {
         </span>
       </div>
 
+      <div className="bg-white border border-border rounded-2xl p-3 mb-4">
+        <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-2">
+          Категория вакцины
+        </p>
+        <div className="space-y-1.5">
+          {(Object.keys(tierMeta) as VaccineTier[]).map((t) => (
+            <div key={t} className="flex items-center gap-2">
+              <span className={`w-3 h-3 rounded-sm flex-shrink-0 ${tierMeta[t].dot}`} />
+              <span className="text-xs text-foreground">{tierMeta[t].label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="space-y-2.5">
         {vaccineRows.map((row) => {
           const doneInRow = row.doses.filter((d) => statuses[d.id] === "done").length;
           const dueInRow = row.doses.filter((d) => isDue(d.ageMonths, statuses[d.id] || "none")).length;
+          const rowTiers = (Object.keys(tierMeta) as VaccineTier[]).filter((t) =>
+            row.doses.some((d) => d.tier === t)
+          );
           const open = openId === row.id;
           return (
             <div
@@ -163,9 +180,16 @@ export function VaccinationSection() {
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">
-                    {doneInRow > 0 ? `${doneInRow} из ${row.doses.length} выполнено` : `${row.doses.length} прививок в курсе`}
-                  </p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <p className="text-[11px] text-muted-foreground">
+                      {doneInRow > 0 ? `${doneInRow} из ${row.doses.length} выполнено` : `${row.doses.length} прививок в курсе`}
+                    </p>
+                    <span className="flex items-center gap-1">
+                      {rowTiers.map((t) => (
+                        <span key={t} className={`w-2 h-2 rounded-sm ${tierMeta[t].dot}`} title={tierMeta[t].label} />
+                      ))}
+                    </span>
+                  </div>
                 </div>
                 <Icon
                   name={open ? "ChevronUp" : "ChevronDown"}
@@ -180,14 +204,16 @@ export function VaccinationSection() {
                     const status: DoseStatus = statuses[dose.id] || "none";
                     const st = statusStyle[status];
                     const due = isDue(dose.ageMonths, status);
+                    const tier = tierMeta[dose.tier];
                     return (
                       <button
                         key={dose.id}
                         onClick={() => toggle(dose.id)}
-                        className={`w-full flex items-center gap-3 rounded-xl border p-3 text-left transition-colors active:scale-[0.98] ${
+                        className={`relative w-full flex items-center gap-3 rounded-xl border p-3 pl-4 text-left transition-colors active:scale-[0.98] overflow-hidden ${
                           due ? "bg-red-50 border-red-300 text-red-700" : st.chip
                         }`}
                       >
+                        <span className={`absolute left-0 top-0 bottom-0 w-1.5 ${tier.dot}`} />
                         <Icon name={due ? "BellRing" : st.icon} fallback="Circle" size={20} className="flex-shrink-0" />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
@@ -201,8 +227,13 @@ export function VaccinationSection() {
                               </span>
                             )}
                           </div>
+                          <div className="flex items-center gap-1.5 mt-1">
+                            <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full border ${tier.chip}`}>
+                              {tier.short}
+                            </span>
+                          </div>
                           {dose.note && (
-                            <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{dose.note}</p>
+                            <p className="text-[11px] text-muted-foreground mt-1 leading-snug">{dose.note}</p>
                           )}
                         </div>
                         <span className="text-[10px] font-semibold whitespace-nowrap">{st.label}</span>
