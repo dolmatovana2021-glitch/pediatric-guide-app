@@ -4,6 +4,7 @@ import { Section, navItems } from "@/components/shared/SectionShared";
 import { HomeSection, FirstAidSection, EmergencySection, RedFlagsSection, VaccinationSection } from "@/components/sections/AidSections";
 import { ContactsSection } from "@/components/sections/InfoSections";
 import { ProfileSection } from "@/components/sections/ProfileSection";
+import { CheckupSection } from "@/components/sections/CheckupSection";
 
 export default function Index() {
   const [section, setSection] = useState<Section>("home");
@@ -15,6 +16,7 @@ export default function Index() {
       case "emergency": return <EmergencySection />;
       case "redflags": return <RedFlagsSection />;
       case "vaccination": return <VaccinationSection />;
+      case "checkup": return <CheckupSection />;
       case "contacts": return <ContactsSection />;
       case "profile": return <ProfileSection />;
     }
