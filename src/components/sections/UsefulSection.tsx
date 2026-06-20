@@ -9,9 +9,33 @@ export type UsefulLink = {
   icon: string;
 };
 
-export const usefulLinks: UsefulLink[] = [];
+export type UsefulGroup = {
+  id: string;
+  title: string;
+  emoji: string;
+  links: UsefulLink[];
+};
+
+export const usefulGroups: UsefulGroup[] = [
+  {
+    id: "breastfeeding",
+    title: "Для кормящих мам",
+    emoji: "🤱",
+    links: [
+      {
+        id: "e-lactation",
+        title: "E-Лактация",
+        description: "Совместимость лекарств с грудным вскармливанием",
+        url: "https://e-lactation.ru/",
+        icon: "Pill",
+      },
+    ],
+  },
+];
 
 export function UsefulSection() {
+  const hasLinks = usefulGroups.some((g) => g.links.length > 0);
+
   return (
     <SectionWrapper>
       <SectionTitle
@@ -20,7 +44,7 @@ export function UsefulSection() {
         subtitle="Основные ссылки и материалы для родителей"
       />
 
-      {usefulLinks.length === 0 ? (
+      {!hasLinks ? (
         <div className="bg-white border border-dashed border-border rounded-2xl p-8 text-center">
           <Icon name="Link" size={28} className="text-muted-foreground mx-auto mb-2" />
           <p className="text-[13px] text-muted-foreground">
@@ -28,31 +52,43 @@ export function UsefulSection() {
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {usefulLinks.map((link) => (
-            <a
-              key={link.id}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white border border-border rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98] transition-transform shadow-sm"
-            >
-              <div className="w-10 h-10 rounded-xl bg-mint-50 border border-mint-200 flex items-center justify-center flex-shrink-0">
-                <Icon name={link.icon} fallback="Link" size={18} className="text-primary" />
+        <div className="space-y-6">
+          {usefulGroups
+            .filter((g) => g.links.length > 0)
+            .map((group) => (
+              <div key={group.id}>
+                <h3 className="flex items-center gap-2 text-sm font-bold text-foreground mb-3">
+                  <span className="text-lg">{group.emoji}</span>
+                  {group.title}
+                </h3>
+                <div className="space-y-3">
+                  {group.links.map((link) => (
+                    <a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-white border border-border rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98] transition-transform shadow-sm"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-mint-50 border border-mint-200 flex items-center justify-center flex-shrink-0">
+                        <Icon name={link.icon} fallback="Link" size={18} className="text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-foreground text-sm leading-tight truncate">
+                          {link.title}
+                        </p>
+                        {link.description && (
+                          <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+                            {link.description}
+                          </p>
+                        )}
+                      </div>
+                      <Icon name="ExternalLink" size={16} className="text-muted-foreground flex-shrink-0" />
+                    </a>
+                  ))}
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-foreground text-sm leading-tight truncate">
-                  {link.title}
-                </p>
-                {link.description && (
-                  <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug truncate">
-                    {link.description}
-                  </p>
-                )}
-              </div>
-              <Icon name="ExternalLink" size={16} className="text-muted-foreground flex-shrink-0" />
-            </a>
-          ))}
+            ))}
         </div>
       )}
     </SectionWrapper>
