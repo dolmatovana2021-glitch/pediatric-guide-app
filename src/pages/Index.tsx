@@ -6,10 +6,12 @@ import { ContactsSection } from "@/components/sections/InfoSections";
 import { ProfileSection } from "@/components/sections/ProfileSection";
 import { CheckupSection } from "@/components/sections/CheckupSection";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
+import { useDueVaccines } from "@/components/shared/vaccineStatus";
 
 export default function Index() {
   const [section, setSection] = useState<Section>("home");
   const dueCheckup = useDueCheckup();
+  const dueVaccines = useDueVaccines();
 
   const renderSection = () => {
     switch (section) {
@@ -67,6 +69,9 @@ export default function Index() {
                 <span className={`relative text-lg transition-transform ${section === item.id ? "scale-110" : ""}`}>
                   {item.emoji}
                   {item.id === "checkup" && dueCheckup && (
+                    <span className="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-red-500 border border-white" />
+                  )}
+                  {item.id === "vaccination" && dueVaccines > 0 && (
                     <span className="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-red-500 border border-white" />
                   )}
                 </span>
