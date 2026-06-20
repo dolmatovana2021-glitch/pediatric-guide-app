@@ -5,9 +5,11 @@ import { HomeSection, FirstAidSection, EmergencySection, RedFlagsSection, Vaccin
 import { ContactsSection } from "@/components/sections/InfoSections";
 import { ProfileSection } from "@/components/sections/ProfileSection";
 import { CheckupSection } from "@/components/sections/CheckupSection";
+import { useDueCheckup } from "@/components/shared/checkupStatus";
 
 export default function Index() {
   const [section, setSection] = useState<Section>("home");
+  const dueCheckup = useDueCheckup();
 
   const renderSection = () => {
     switch (section) {
@@ -62,8 +64,11 @@ export default function Index() {
                   section === item.id ? "text-primary" : "text-muted-foreground"
                 }`}
               >
-                <span className={`text-lg transition-transform ${section === item.id ? "scale-110" : ""}`}>
+                <span className={`relative text-lg transition-transform ${section === item.id ? "scale-110" : ""}`}>
                   {item.emoji}
+                  {item.id === "checkup" && dueCheckup && (
+                    <span className="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-red-500 border border-white" />
+                  )}
                 </span>
                 <span className={`text-[9px] font-semibold leading-none ${section === item.id ? "text-primary" : "text-muted-foreground"}`}>
                   {item.label}
