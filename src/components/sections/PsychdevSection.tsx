@@ -157,6 +157,21 @@ function AgeDetails({ item }: { item: PsychdevAge }) {
 
 export function PsychdevSection() {
   const [openId, setOpenId] = useState<string | null>(psychdevAges[0]?.id ?? null);
+  const [query, setQuery] = useState("");
+
+  const q = query.trim().toLowerCase();
+  const filtered = q
+    ? psychdevAges.filter((item) => {
+        const haystack = [
+          item.age,
+          item.summary,
+          ...item.domains.flatMap((d) => [d.label, d.code ?? "", ...d.skills]),
+        ]
+          .join(" ")
+          .toLowerCase();
+        return haystack.includes(q);
+      })
+    : psychdevAges;
 
   return (
     <SectionWrapper>
@@ -168,8 +183,40 @@ export function PsychdevSection() {
 
       <PrinciplesBlock />
 
+      <div className="relative mb-3">
+        <Icon
+          name="Search"
+          size={16}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+        />
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Поиск по возрасту или навыку…"
+          className="w-full bg-white border border-border rounded-xl py-2.5 pl-9 pr-9 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+        />
+        {query && (
+          <button
+            onClick={() => setQuery("")}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+            aria-label="Очистить"
+          >
+            <Icon name="X" size={16} />
+          </button>
+        )}
+      </div>
+
+      {filtered.length === 0 && (
+        <div className="bg-white border border-border rounded-2xl p-6 text-center">
+          <Icon name="SearchX" size={28} className="text-muted-foreground mx-auto mb-2" />
+          <p className="text-[13px] text-muted-foreground">
+            Ничего не найдено по запросу «{query}»
+          </p>
+        </div>
+      )}
+
       <div className="space-y-3">
-        {psychdevAges.map((item) => {
+        {filtered.map((item) => {
           const open = openId === item.id;
           return (
             <div
