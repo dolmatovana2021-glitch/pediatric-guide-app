@@ -8,6 +8,7 @@ import {
 } from "@/components/shared/SectionShared";
 import { useChildProfile, calcAge } from "@/components/shared/childProfile";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
+import { useDueCheckup } from "@/components/shared/checkupStatus";
 
 export function HomeSection({ setSection }: { setSection: (s: Section) => void }) {
   const profile = useChildProfile();
@@ -35,6 +36,7 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
   const profileFilled = profile.name || profile.birthDate || profile.weight;
   const dueVaccines = useDueVaccines();
   const dueWord = dueVaccines === 1 ? "прививку" : dueVaccines >= 2 && dueVaccines <= 4 ? "прививки" : "прививок";
+  const dueCheckup = useDueCheckup();
 
   return (
     <SectionWrapper>
@@ -117,6 +119,22 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
             <p className="text-[11px] text-red-600/80">По возрасту ребёнка — обсудите с педиатром</p>
           </div>
           <Icon name="ChevronRight" size={18} className="text-red-400 flex-shrink-0" />
+        </button>
+      )}
+
+      {dueCheckup && (
+        <button
+          onClick={() => setSection("checkup")}
+          className="w-full mb-5 rounded-2xl p-4 border border-sky-200 bg-sky-50 flex items-center gap-3 active:scale-[0.98] transition-transform"
+        >
+          <div className="w-12 h-12 rounded-full bg-white border border-sky-200 flex items-center justify-center flex-shrink-0">
+            <span className="text-2xl">🩺</span>
+          </div>
+          <div className="flex-1 min-w-0 text-left">
+            <p className="font-bold text-sky-700 text-sm">Пора на осмотр: {dueCheckup.age}</p>
+            <p className="text-[11px] text-sky-600/80">По возрасту ребёнка — отметьте, когда пройдёте</p>
+          </div>
+          <Icon name="ChevronRight" size={18} className="text-sky-400 flex-shrink-0" />
         </button>
       )}
 
