@@ -1,3 +1,8 @@
+export type RashStage = {
+  src: string;
+  label: string;
+};
+
 export type RashItem = {
   id: string;
   title: string;
@@ -7,6 +12,8 @@ export type RashItem = {
   symptoms: string[];
   treatment: string[];
   urgent: string[];
+  image?: string;
+  stages?: RashStage[];
 };
 
 export type RashCategory = {
@@ -52,6 +59,13 @@ export const rashCategories: RashCategory[] = [
           "Одышка, кашель (риск ветряночной пневмонии)",
           "Геморрагические (кровянистые) элементы сыпи",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/bf0e99d2-1dac-4190-9138-f5c5cd8533d0.jpg",
+        stages: [
+          { src: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/286e4388-7493-44b2-b8ae-abb4f1a95c80.jpg", label: "1. Пятно" },
+          { src: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/f712c240-a513-4392-aa6e-f659812964c2.jpg", label: "2. Папула" },
+          { src: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/d8cbb0bf-13fb-4f66-a9f4-523e7caed1af.jpg", label: "3. Везикула" },
+          { src: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/e3a85b0f-973f-4cf9-9dde-1db775bd0fb2.jpg", label: "4. Корочка" },
+        ],
       },
       {
         id: "measles",
@@ -78,6 +92,7 @@ export const rashCategories: RashCategory[] = [
           "Боль в ухе (отит)",
           "Высокая температура дольше 3 дней или повторный подъём",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/80ca7bef-1f80-48ec-a37f-d6d4d89b74d2.jpg",
       },
       {
         id: "rubella",
@@ -103,6 +118,7 @@ export const rashCategories: RashCategory[] = [
           "Геморрагическая сыпь, кровоточивость",
           "Сильная головная боль, рвота, нарушение сознания",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/32c61e18-dba0-4520-a3d4-a357fa801543.jpg",
       },
       {
         id: "scarlet-fever",
@@ -129,6 +145,7 @@ export const rashCategories: RashCategory[] = [
           "Высокая температура, не отвечающая на лечение",
           "Затруднённое глотание, выраженный отёк шеи",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/b4db1782-75c6-4649-886f-e0000f224490.jpg",
       },
       {
         id: "roseola",
@@ -153,6 +170,7 @@ export const rashCategories: RashCategory[] = [
           "Лихорадка дольше 5 дней",
           "Сыпь, не бледнеющая при надавливании",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/67527578-1edc-49f8-9b9e-a6c7bd34ef46.jpg",
       },
       {
         id: "parvovirus",
@@ -177,6 +195,7 @@ export const rashCategories: RashCategory[] = [
           "Длительные боли и припухлость суставов",
           "У детей с болезнями крови — любое ухудшение",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/83c37569-bdac-4c70-8074-15af5aed4854.jpg",
       },
       {
         id: "mononucleosis",
@@ -204,6 +223,7 @@ export const rashCategories: RashCategory[] = [
           "Выраженная желтушность кожи",
           "Длительная высокая лихорадка, нарастающая слабость",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/3394ef56-49c4-4198-8b61-1bedd1ef2bec.jpg",
       },
       {
         id: "ulec",
@@ -227,6 +247,7 @@ export const rashCategories: RashCategory[] = [
           "Нагноение элементов",
           "Быстрое распространение и резкое ухудшение состояния",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/314e93fa-52b4-4b62-8aa2-2c4fcd28b70a.jpg",
       },
       {
         id: "gianotti-crosti",
@@ -250,6 +271,7 @@ export const rashCategories: RashCategory[] = [
           "Высокая температура, выраженная интоксикация",
           "Значительное увеличение печени или селезёнки",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/c561bdb8-2918-422d-8a8d-8a755d95f62e.jpg",
       },
       {
         id: "enterovirus",
@@ -276,6 +298,7 @@ export const rashCategories: RashCategory[] = [
           "Судороги, нарушение сознания",
           "Боли в области сердца, одышка",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/77fc7d71-ded2-4b10-89f7-80da8c46162d.jpg",
       },
       {
         id: "pseudotuberculosis",
@@ -301,6 +324,7 @@ export const rashCategories: RashCategory[] = [
           "Выраженные боли и припухлость суставов",
           "Высокая лихорадка, нарастающая интоксикация",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/2b902fa9-0252-4c7a-8913-6242ce7cd8fa.jpg",
       },
       {
         id: "borreliosis",
@@ -325,6 +349,7 @@ export const rashCategories: RashCategory[] = [
           "Боли и припухлость суставов",
           "Нарушения сердцебиения, обмороки",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/b11ae8e1-6a38-4522-a181-35fac7003af5.jpg",
       },
       {
         id: "neonatal-candidiasis",
@@ -350,6 +375,7 @@ export const rashCategories: RashCategory[] = [
           "Лихорадка у новорождённого (риск системного кандидоза)",
           "Признаки обезвоживания",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/cdaab2eb-220a-4526-bcd9-dfd9e29d60a1.jpg",
       },
     ],
   },
@@ -380,6 +406,7 @@ export const rashCategories: RashCategory[] = [
           "Множественные укусы с распространённым отёком",
           "Признаки нагноения: усиление красноты, боль, гной, лихорадка",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/65b45760-da80-4ef7-a791-55a73b673cc6.jpg",
       },
       {
         id: "bite-mosquitoes",
@@ -402,6 +429,7 @@ export const rashCategories: RashCategory[] = [
           "Признаки общей аллергии: распространённая крапивница, отёк лица, одышка — 103",
           "Нагноение в месте укуса, лихорадка",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/e9c11008-08e6-4c1d-b143-c3d42c3358fa.jpg",
       },
       {
         id: "bite-bees",
@@ -426,6 +454,7 @@ export const rashCategories: RashCategory[] = [
           "Ужаление в рот или горло",
           "Множественные ужаления",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/559d4e3f-0966-46cd-ab0d-ce5e3dbbae16.jpg",
       },
       {
         id: "bite-wasps",
@@ -450,6 +479,7 @@ export const rashCategories: RashCategory[] = [
           "Ужаление в область рта/горла",
           "Множественные ужаления",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/c0e87628-12d3-4e2f-85d9-e1293e43c3a3.jpg",
       },
       {
         id: "bite-hornets",
@@ -474,6 +504,7 @@ export const rashCategories: RashCategory[] = [
           "Ужаление в рот или горло",
           "Множественные ужаления — высокая токсическая нагрузка",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/d41febf9-b415-46d1-8ec7-71b117e14c32.jpg",
       },
       {
         id: "contact-dermatitis",
@@ -497,6 +528,7 @@ export const rashCategories: RashCategory[] = [
           "Выраженный отёк лица, век",
           "Отсутствие улучшения на фоне ухода",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/4171759c-324f-435f-b424-f65bfc372ae9.jpg",
       },
       {
         id: "urticaria",
@@ -521,6 +553,7 @@ export const rashCategories: RashCategory[] = [
           "Головокружение, бледность, падение давления (анафилаксия) — 103",
           "Быстро распространяющаяся сыпь с ухудшением состояния",
         ],
+        image: "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/5062cdc1-e118-4313-9b95-6089ee44a96b.jpg",
       },
     ],
   },

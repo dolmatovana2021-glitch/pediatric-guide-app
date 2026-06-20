@@ -48,6 +48,43 @@ function ListBlock({
 function RashDetails({ item }: { item: RashItem }) {
   return (
     <div className="px-3.5 pb-3.5 space-y-3 animate-fade-in">
+      {item.image && (
+        <div>
+          <img
+            src={item.image}
+            alt={`Пример сыпи: ${item.title}`}
+            loading="lazy"
+            className="w-full h-44 object-cover rounded-xl border border-border bg-muted"
+          />
+          <p className="text-[10px] text-muted-foreground mt-1 text-center italic">
+            Схематичная иллюстрация. Реальный вид сыпи может отличаться.
+          </p>
+        </div>
+      )}
+
+      {item.stages && item.stages.length > 0 && (
+        <div>
+          <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5">
+            Стадии развития элемента
+          </p>
+          <div className="grid grid-cols-4 gap-1.5">
+            {item.stages.map((st) => (
+              <div key={st.label} className="text-center">
+                <img
+                  src={st.src}
+                  alt={st.label}
+                  loading="lazy"
+                  className="w-full aspect-square object-cover rounded-lg border border-border bg-muted"
+                />
+                <p className="text-[9px] text-foreground font-medium mt-0.5 leading-tight">
+                  {st.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="bg-mint-50 border border-mint-200 rounded-xl p-3 space-y-2">
         <InfoRow icon="Bug" label="Причина" text={item.cause} />
         <InfoRow icon="Clock" label="Инкубационный период" text={item.incubation} />
