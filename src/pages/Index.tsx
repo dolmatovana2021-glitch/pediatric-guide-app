@@ -5,6 +5,7 @@ import { HomeSection, FirstAidSection, EmergencySection, RedFlagsSection, Vaccin
 import { ContactsSection } from "@/components/sections/InfoSections";
 import { ProfileSection } from "@/components/sections/ProfileSection";
 import { CheckupSection } from "@/components/sections/CheckupSection";
+import { RashSection } from "@/components/sections/RashSection";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
 
@@ -19,6 +20,7 @@ export default function Index() {
       case "firstaid": return <FirstAidSection />;
       case "emergency": return <EmergencySection />;
       case "redflags": return <RedFlagsSection />;
+      case "rash": return <RashSection />;
       case "vaccination": return <VaccinationSection />;
       case "checkup": return <CheckupSection />;
       case "contacts": return <ContactsSection />;

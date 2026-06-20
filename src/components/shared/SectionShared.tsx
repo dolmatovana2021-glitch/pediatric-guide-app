@@ -6,4 +6,7 @@ export { firstAidItems, emergencyItems, rashPhotos, diseases } from "./sectionDa
 export type { RedFlagGroup } from "./redFlagsData";
 export { redFlags, dailyTips } from "./redFlagsData";
 
+export type { RashCategory, RashItem } from "./rashData";
+export { rashCategories } from "./rashData";
+
 export { SectionWrapper, SectionTitle } from "./SectionLayout";
