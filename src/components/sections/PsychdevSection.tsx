@@ -156,7 +156,7 @@ function AgeDetails({ item }: { item: PsychdevAge }) {
 }
 
 export function PsychdevSection() {
-  const [openId, setOpenId] = useState<string | null>(psychdevAges[0]?.id ?? null);
+  const [openId, setOpenId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
   const q = query.trim().toLowerCase();
