@@ -38,6 +38,7 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
     { id: "vaccination", emoji: "💉", label: "Вакцинация", color: "bg-mint-50 border-mint-200 hover:border-mint-300" },
     { id: "checkup", emoji: "🩺", label: "Осмотры", color: "bg-sky-50 border-sky-200 hover:border-sky-300" },
     { id: "contacts", emoji: "👩‍⚕️", label: "Врачи", color: "bg-teal-50 border-teal-200 hover:border-teal-300" },
+    { id: "useful", emoji: "🔗", label: "Полезное", color: "bg-amber-50 border-amber-200 hover:border-amber-300" },
   ];
 
   const profileFilled = profile.name || profile.birthDate || profile.weight;
