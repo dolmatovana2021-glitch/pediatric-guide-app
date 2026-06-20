@@ -92,10 +92,23 @@ export function RashSection() {
   const [query, setQuery] = useState("");
 
   const q = query.trim().toLowerCase();
+  const matches = (i: RashItem) => {
+    const haystack = [
+      i.title,
+      i.cause,
+      i.rash,
+      ...i.symptoms,
+      ...i.treatment,
+      ...i.urgent,
+    ]
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(q);
+  };
   const filteredCategories = rashCategories
     .map((cat) => ({
       ...cat,
-      items: q ? cat.items.filter((i) => i.title.toLowerCase().includes(q)) : cat.items,
+      items: q ? cat.items.filter(matches) : cat.items,
     }))
     .filter((cat) => cat.items.length > 0);
 
@@ -119,7 +132,7 @@ export function RashSection() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Поиск по названию..."
+          placeholder="Поиск по названию или симптомам..."
           className="block w-full max-w-full min-w-0 box-border appearance-none pl-9 pr-9 py-2.5 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
         />
         {query && (
