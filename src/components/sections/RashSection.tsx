@@ -89,6 +89,17 @@ function RashDetails({ item }: { item: RashItem }) {
 export function RashSection() {
   const [openCat, setOpenCat] = useState<string | null>(rashCategories[0]?.id ?? null);
   const [openItem, setOpenItem] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+
+  const q = query.trim().toLowerCase();
+  const filteredCategories = rashCategories
+    .map((cat) => ({
+      ...cat,
+      items: q ? cat.items.filter((i) => i.title.toLowerCase().includes(q)) : cat.items,
+    }))
+    .filter((cat) => cat.items.length > 0);
+
+  const totalFound = filteredCategories.reduce((n, c) => n + c.items.length, 0);
 
   return (
     <SectionWrapper>
@@ -98,16 +109,46 @@ export function RashSection() {
         subtitle="Основные виды инфекционных и неинфекционных сыпей"
       />
 
+      <div className="relative mb-3">
+        <Icon
+          name="Search"
+          size={16}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+        />
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Поиск по названию..."
+          className="block w-full max-w-full min-w-0 box-border appearance-none pl-9 pr-9 py-2.5 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+        />
+        {query && (
+          <button
+            onClick={() => setQuery("")}
+            aria-label="Очистить"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground active:scale-90 transition"
+          >
+            <Icon name="X" size={16} />
+          </button>
+        )}
+      </div>
+
+      {q && totalFound === 0 && (
+        <div className="bg-white border border-border rounded-2xl p-6 text-center text-sm text-muted-foreground">
+          Ничего не найдено по запросу «{query}»
+        </div>
+      )}
+
       <div className="space-y-3">
-        {rashCategories.map((cat) => {
-          const open = openCat === cat.id;
+        {filteredCategories.map((cat) => {
+          const open = q ? true : openCat === cat.id;
           return (
             <div
               key={cat.id}
               className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm"
             >
               <button
-                onClick={() => setOpenCat(open ? null : cat.id)}
+                onClick={() => !q && setOpenCat(open ? null : cat.id)}
                 className="w-full flex items-center gap-3 p-4 text-left"
               >
                 <span className="text-2xl flex-shrink-0">{cat.emoji}</span>
@@ -116,14 +157,16 @@ export function RashSection() {
                     {cat.title}
                   </p>
                   <p className="text-[11px] text-muted-foreground mt-0.5">
-                    {cat.items.length} видов
+                    {q ? `Найдено: ${cat.items.length}` : `${cat.items.length} видов`}
                   </p>
                 </div>
-                <Icon
-                  name={open ? "ChevronUp" : "ChevronDown"}
-                  size={18}
-                  className="text-muted-foreground flex-shrink-0"
-                />
+                {!q && (
+                  <Icon
+                    name={open ? "ChevronUp" : "ChevronDown"}
+                    size={18}
+                    className="text-muted-foreground flex-shrink-0"
+                  />
+                )}
               </button>
 
               {open && (
