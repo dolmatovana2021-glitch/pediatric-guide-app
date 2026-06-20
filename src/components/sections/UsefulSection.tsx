@@ -31,6 +31,20 @@ export const usefulGroups: UsefulGroup[] = [
       },
     ],
   },
+  {
+    id: "vaccination",
+    title: "Всё о вакцинации и не только",
+    emoji: "💉",
+    links: [
+      {
+        id: "vaccina-info",
+        title: "АНО «Коллективный иммунитет»",
+        description: "Достоверная информация о прививках и инфекциях",
+        url: "https://vaccina.info/",
+        icon: "ShieldCheck",
+      },
+    ],
+  },
 ];
 
 export function UsefulSection() {
