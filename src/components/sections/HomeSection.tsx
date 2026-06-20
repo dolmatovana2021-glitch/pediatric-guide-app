@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 import {
   Section,
@@ -20,9 +20,14 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
   const [tipKey, setTipKey] = useState(0);
   const tipOfDay = dailyTips[tipIndex];
   const nextTip = () => {
-    setTipIndex((tipIndex + 1) % dailyTips.length);
+    setTipIndex((i) => (i + 1) % dailyTips.length);
     setTipKey((k) => k + 1);
   };
+
+  useEffect(() => {
+    const id = setInterval(nextTip, 90000);
+    return () => clearInterval(id);
+  }, []);
 
   const quickCards: { id: Section; emoji: string; label: string; color: string }[] = [
     { id: "firstaid", emoji: "🚑", label: "Первая помощь", color: "bg-red-50 border-red-200 hover:border-red-300" },
