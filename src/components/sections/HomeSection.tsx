@@ -39,6 +39,7 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
     { id: "checkup", emoji: "🩺", label: "Осмотры", color: "bg-sky-50 border-sky-200 hover:border-sky-300" },
     { id: "contacts", emoji: "👩‍⚕️", label: "Врачи", color: "bg-teal-50 border-teal-200 hover:border-teal-300" },
     { id: "useful", emoji: "🔗", label: "Полезное", color: "bg-amber-50 border-amber-200 hover:border-amber-300" },
+    { id: "docs", emoji: "📄", label: "Документы", color: "bg-slate-50 border-slate-200 hover:border-slate-300" },
   ];
 
   const profileFilled = profile.name || profile.birthDate || profile.weight;

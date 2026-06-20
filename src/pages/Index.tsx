@@ -9,6 +9,7 @@ import { ProfileSection } from "@/components/sections/ProfileSection";
 import { CheckupSection } from "@/components/sections/CheckupSection";
 import { RashSection } from "@/components/sections/RashSection";
 import { UsefulSection } from "@/components/sections/UsefulSection";
+import { DocsSection } from "@/components/sections/DocsSection";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
 
@@ -29,6 +30,7 @@ export default function Index() {
       case "checkup": return <CheckupSection />;
       case "contacts": return <ContactsSection />;
       case "useful": return <UsefulSection />;
+      case "docs": return <DocsSection />;
       case "profile": return <ProfileSection />;
     }
   };
