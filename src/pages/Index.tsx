@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 import { Section, navItems } from "@/components/shared/SectionShared";
+import { extraSectionMeta } from "@/components/shared/sectionTypes";
+import { PsychdevSection } from "@/components/sections/PsychdevSection";
 import { HomeSection, FirstAidSection, EmergencySection, RedFlagsSection, VaccinationSection } from "@/components/sections/AidSections";
 import { ContactsSection } from "@/components/sections/InfoSections";
 import { ProfileSection } from "@/components/sections/ProfileSection";
@@ -21,6 +23,7 @@ export default function Index() {
       case "emergency": return <EmergencySection />;
       case "redflags": return <RedFlagsSection />;
       case "rash": return <RashSection />;
+      case "psychdev": return <PsychdevSection />;
       case "vaccination": return <VaccinationSection />;
       case "checkup": return <CheckupSection />;
       case "contacts": return <ContactsSection />;
@@ -42,8 +45,8 @@ export default function Index() {
                 <Icon name="ArrowLeft" size={18} className="text-foreground" />
               </button>
               <span className="font-semibold text-foreground">
-                {navItems.find(n => n.id === section)?.emoji}{" "}
-                {navItems.find(n => n.id === section)?.label}
+                {(navItems.find(n => n.id === section) ?? extraSectionMeta[section])?.emoji}{" "}
+                {(navItems.find(n => n.id === section) ?? extraSectionMeta[section])?.label}
               </span>
             </>
           ) : (
