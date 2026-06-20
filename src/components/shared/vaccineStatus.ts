@@ -92,6 +92,7 @@ export function useVaccineStatuses(): {
 
 export function countDueVaccines(): number {
   const profile = loadChildProfile();
+  if (profile.notifyVaccines === false) return 0;
   const age = calcAge(profile.birthDate);
   if (!age) return 0;
   const ageMonths = age.years * 12 + age.months;

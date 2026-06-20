@@ -78,6 +78,7 @@ export function useCheckupStatuses(): {
 
 export function getDueCheckup(): CheckupPeriod | null {
   const profile = loadChildProfile();
+  if (profile.notifyCheckups === false) return null;
   const age = calcAge(profile.birthDate);
   if (!age) return null;
   const ageMonths = age.years * 12 + age.months;
