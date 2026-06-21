@@ -33,6 +33,7 @@ export function SettingsSection() {
   const age = calcAge(profile.birthDate);
 
   const suggestHideFeeding = Boolean(age && age.years >= 1 && visibility.feeding);
+  const suggestHidePsychdev = Boolean(age && age.years >= 3 && visibility.psychdev);
 
   return (
     <SectionWrapper>
@@ -65,6 +66,29 @@ export function SettingsSection() {
             >
               <Icon name="EyeOff" size={14} />
               Скрыть «Прикорм»
+            </button>
+          </div>
+        </div>
+      )}
+
+      {suggestHidePsychdev && (
+        <div className="bg-violet-50 border border-violet-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl bg-white border border-violet-200 flex items-center justify-center text-lg flex-shrink-0">
+            🧠
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-foreground text-sm leading-tight">
+              {profile.name || "Малышу"} уже больше 3 лет
+            </p>
+            <p className="text-[12px] text-muted-foreground mt-0.5 leading-snug">
+              Раздел «Развитие» содержит нормы раннего возраста. Возможно, он вам больше не нужен.
+            </p>
+            <button
+              onClick={() => setSectionVisible("psychdev", false)}
+              className="mt-2 inline-flex items-center gap-1.5 bg-violet-500 text-white text-xs font-semibold rounded-xl px-3 py-1.5 active:scale-95 transition-transform"
+            >
+              <Icon name="EyeOff" size={14} />
+              Скрыть «Развитие»
             </button>
           </div>
         </div>
