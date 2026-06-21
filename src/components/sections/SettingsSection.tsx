@@ -5,6 +5,7 @@ import {
   setSectionVisible,
   type ToggleableSection,
 } from "@/components/shared/sectionVisibility";
+import { useChildProfile, calcAge } from "@/components/shared/childProfile";
 
 const items: {
   id: ToggleableSection;
@@ -28,6 +29,10 @@ const items: {
 
 export function SettingsSection() {
   const visibility = useSectionVisibility();
+  const profile = useChildProfile();
+  const age = calcAge(profile.birthDate);
+
+  const suggestHideFeeding = Boolean(age && age.years >= 1 && visibility.feeding);
 
   return (
     <SectionWrapper>
@@ -41,6 +46,29 @@ export function SettingsSection() {
         Эти разделы актуальны для детей определённого возраста. Если они вам сейчас
         не нужны — выключите, и они скроются с главного экрана.
       </p>
+
+      {suggestHideFeeding && (
+        <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl bg-white border border-orange-200 flex items-center justify-center text-lg flex-shrink-0">
+            🥣
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-foreground text-sm leading-tight">
+              {profile.name || "Малышу"} уже больше года
+            </p>
+            <p className="text-[12px] text-muted-foreground mt-0.5 leading-snug">
+              Раздел «Прикорм» рассчитан на первый год жизни. Возможно, он вам больше не нужен.
+            </p>
+            <button
+              onClick={() => setSectionVisible("feeding", false)}
+              className="mt-2 inline-flex items-center gap-1.5 bg-orange-500 text-white text-xs font-semibold rounded-xl px-3 py-1.5 active:scale-95 transition-transform"
+            >
+              <Icon name="EyeOff" size={14} />
+              Скрыть «Прикорм»
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-3">
         {items.map((item) => {
