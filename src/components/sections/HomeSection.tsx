@@ -35,6 +35,7 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
     { id: "redflags", emoji: "🚩", label: "Красные флаги", color: "bg-pink-50 border-pink-200 hover:border-pink-300" },
     { id: "rash", emoji: "🔴", label: "Сыпь", color: "bg-rose-50 border-rose-200 hover:border-rose-300" },
     { id: "psychdev", emoji: "🧠", label: "Развитие", color: "bg-violet-50 border-violet-200 hover:border-violet-300" },
+    { id: "feeding", emoji: "🥣", label: "Прикорм", color: "bg-orange-50 border-orange-200 hover:border-orange-300" },
     { id: "vaccination", emoji: "💉", label: "Вакцинация", color: "bg-mint-50 border-mint-200 hover:border-mint-300" },
     { id: "checkup", emoji: "🩺", label: "Осмотры", color: "bg-sky-50 border-sky-200 hover:border-sky-300" },
     { id: "contacts", emoji: "👩‍⚕️", label: "Врачи", color: "bg-teal-50 border-teal-200 hover:border-teal-300" },

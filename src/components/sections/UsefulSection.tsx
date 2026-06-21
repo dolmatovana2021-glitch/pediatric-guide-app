@@ -45,6 +45,20 @@ export const usefulGroups: UsefulGroup[] = [
       },
     ],
   },
+  {
+    id: "feeding",
+    title: "Всё о прикормах",
+    emoji: "🥣",
+    links: [
+      {
+        id: "nczd-feeding",
+        title: "Программа вскармливания детей 1-го года",
+        description: "Методические рекомендации НМИЦ здоровья детей",
+        url: "https://nczd.ru/wp-content/uploads/2019/12/Met_rekom_1_god_.pdf",
+        icon: "FileText",
+      },
+    ],
+  },
 ];
 
 export function UsefulSection() {
