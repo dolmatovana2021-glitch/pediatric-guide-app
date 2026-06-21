@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Section } from "@/components/shared/sectionTypes";
 
-export type ToggleableSection = "psychdev" | "feeding";
+export type ToggleableSection = "development";
 
 export type SectionVisibility = Record<ToggleableSection, boolean>;
 
@@ -9,11 +9,10 @@ const STORAGE_KEY = "malyshdok:sectionVisibility";
 const EVENT_NAME = "malyshdok:sectionVisibility:update";
 
 export const DEFAULT_VISIBILITY: SectionVisibility = {
-  psychdev: true,
-  feeding: true,
+  development: true,
 };
 
-export const TOGGLEABLE_SECTIONS: ToggleableSection[] = ["psychdev", "feeding"];
+export const TOGGLEABLE_SECTIONS: ToggleableSection[] = ["development"];
 
 function read(): SectionVisibility {
   try {
@@ -38,7 +37,7 @@ function write(v: SectionVisibility) {
 }
 
 export function isSectionVisible(section: Section, v: SectionVisibility): boolean {
-  if (section === "psychdev" || section === "feeding") return v[section];
+  if (section === "development") return v.development;
   return true;
 }
 

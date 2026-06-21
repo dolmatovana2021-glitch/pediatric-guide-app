@@ -14,16 +14,10 @@ const items: {
   description: string;
 }[] = [
   {
-    id: "psychdev",
-    emoji: "🧠",
-    title: "Развитие",
-    description: "Нормы нервно-психического развития по возрасту",
-  },
-  {
-    id: "feeding",
-    emoji: "🥣",
-    title: "Организация прикорма",
-    description: "Сроки и объёмы введения продуктов на первом году",
+    id: "development",
+    emoji: "🌱",
+    title: "Развитие ребёнка 0–3 года",
+    description: "Нервно-психическое развитие и организация прикорма",
   },
 ];
 
@@ -32,8 +26,7 @@ export function SettingsSection() {
   const profile = useChildProfile();
   const age = calcAge(profile.birthDate);
 
-  const suggestHideFeeding = Boolean(age && age.years >= 1 && visibility.feeding);
-  const suggestHidePsychdev = Boolean(age && age.years >= 3 && visibility.psychdev);
+  const suggestHideDevelopment = Boolean(age && age.years >= 3 && visibility.development);
 
   return (
     <SectionWrapper>
@@ -48,47 +41,24 @@ export function SettingsSection() {
         не нужны — выключите, и они скроются с главного экрана.
       </p>
 
-      {suggestHideFeeding && (
-        <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
-          <div className="w-9 h-9 rounded-xl bg-white border border-orange-200 flex items-center justify-center text-lg flex-shrink-0">
-            🥣
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-foreground text-sm leading-tight">
-              {profile.name || "Малышу"} уже больше года
-            </p>
-            <p className="text-[12px] text-muted-foreground mt-0.5 leading-snug">
-              Раздел «Прикорм» рассчитан на первый год жизни. Возможно, он вам больше не нужен.
-            </p>
-            <button
-              onClick={() => setSectionVisible("feeding", false)}
-              className="mt-2 inline-flex items-center gap-1.5 bg-orange-500 text-white text-xs font-semibold rounded-xl px-3 py-1.5 active:scale-95 transition-transform"
-            >
-              <Icon name="EyeOff" size={14} />
-              Скрыть «Прикорм»
-            </button>
-          </div>
-        </div>
-      )}
-
-      {suggestHidePsychdev && (
+      {suggestHideDevelopment && (
         <div className="bg-violet-50 border border-violet-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
           <div className="w-9 h-9 rounded-xl bg-white border border-violet-200 flex items-center justify-center text-lg flex-shrink-0">
-            🧠
+            🌱
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-foreground text-sm leading-tight">
               {profile.name || "Малышу"} уже больше 3 лет
             </p>
             <p className="text-[12px] text-muted-foreground mt-0.5 leading-snug">
-              Раздел «Развитие» содержит нормы раннего возраста. Возможно, он вам больше не нужен.
+              Раздел «Развитие ребёнка 0–3 года» рассчитан на ранний возраст. Возможно, он вам больше не нужен.
             </p>
             <button
-              onClick={() => setSectionVisible("psychdev", false)}
+              onClick={() => setSectionVisible("development", false)}
               className="mt-2 inline-flex items-center gap-1.5 bg-violet-500 text-white text-xs font-semibold rounded-xl px-3 py-1.5 active:scale-95 transition-transform"
             >
               <Icon name="EyeOff" size={14} />
-              Скрыть «Развитие»
+              Скрыть раздел
             </button>
           </div>
         </div>
