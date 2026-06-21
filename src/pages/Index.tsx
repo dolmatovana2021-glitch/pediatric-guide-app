@@ -11,16 +11,21 @@ import { RashSection } from "@/components/sections/RashSection";
 import { UsefulSection } from "@/components/sections/UsefulSection";
 import { DocsSection } from "@/components/sections/DocsSection";
 import { FeedingSection } from "@/components/sections/FeedingSection";
+import { SettingsSection } from "@/components/sections/SettingsSection";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
+import { useSectionVisibility, isSectionVisible } from "@/components/shared/sectionVisibility";
 
 export default function Index() {
   const [section, setSection] = useState<Section>("home");
   const dueCheckup = useDueCheckup();
   const dueVaccines = useDueVaccines();
+  const visibility = useSectionVisibility();
+
+  const activeSection: Section = isSectionVisible(section, visibility) ? section : "home";
 
   const renderSection = () => {
-    switch (section) {
+    switch (activeSection) {
       case "home": return <HomeSection setSection={setSection} />;
       case "firstaid": return <FirstAidSection />;
       case "emergency": return <EmergencySection />;
@@ -33,6 +38,7 @@ export default function Index() {
       case "useful": return <UsefulSection />;
       case "docs": return <DocsSection />;
       case "feeding": return <FeedingSection />;
+      case "settings": return <SettingsSection />;
       case "profile": return <ProfileSection />;
     }
   };
@@ -42,7 +48,7 @@ export default function Index() {
       <div className="max-w-[480px] mx-auto flex flex-col min-h-screen relative">
 
         <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center gap-3">
-          {section !== "home" ? (
+          {activeSection !== "home" ? (
             <>
               <button
                 onClick={() => setSection("home")}
@@ -51,8 +57,8 @@ export default function Index() {
                 <Icon name="ArrowLeft" size={18} className="text-foreground" />
               </button>
               <span className="font-semibold text-foreground">
-                {(navItems.find(n => n.id === section) ?? extraSectionMeta[section])?.emoji}{" "}
-                {(navItems.find(n => n.id === section) ?? extraSectionMeta[section])?.label}
+                {(navItems.find(n => n.id === activeSection) ?? extraSectionMeta[activeSection])?.emoji}{" "}
+                {(navItems.find(n => n.id === activeSection) ?? extraSectionMeta[activeSection])?.label}
               </span>
             </>
           ) : (

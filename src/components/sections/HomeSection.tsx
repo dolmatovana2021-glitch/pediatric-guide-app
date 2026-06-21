@@ -9,6 +9,7 @@ import {
 import { useChildProfile, calcAge } from "@/components/shared/childProfile";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
+import { useSectionVisibility, isSectionVisible } from "@/components/shared/sectionVisibility";
 
 export function HomeSection({ setSection }: { setSection: (s: Section) => void }) {
   const profile = useChildProfile();
@@ -41,7 +42,11 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
     { id: "contacts", emoji: "👩‍⚕️", label: "Врачи", color: "bg-teal-50 border-teal-200 hover:border-teal-300" },
     { id: "useful", emoji: "🔗", label: "Полезное", color: "bg-amber-50 border-amber-200 hover:border-amber-300" },
     { id: "docs", emoji: "📄", label: "Документы", color: "bg-slate-50 border-slate-200 hover:border-slate-300" },
+    { id: "settings", emoji: "⚙️", label: "Настройки", color: "bg-gray-50 border-gray-200 hover:border-gray-300" },
   ];
+
+  const visibility = useSectionVisibility();
+  const visibleCards = quickCards.filter((card) => isSectionVisible(card.id, visibility));
 
   const profileFilled = profile.name || profile.birthDate || profile.weight;
   const dueVaccines = useDueVaccines();
@@ -150,7 +155,7 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
 
       <h3 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground mb-3">Разделы</h3>
       <div className="grid grid-cols-3 gap-3 mb-5">
-        {quickCards.map((card) => (
+        {visibleCards.map((card) => (
           <button
             key={card.id}
             onClick={() => setSection(card.id)}
