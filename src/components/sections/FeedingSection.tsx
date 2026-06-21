@@ -84,6 +84,31 @@ const blocks: Block[] = [
   },
 ];
 
+type PortionRow = {
+  product: string;
+  m4_5: string;
+  m6: string;
+  m7: string;
+  m8: string;
+  m9_12: string;
+};
+
+const portions: PortionRow[] = [
+  { product: "Овощное пюре", m4_5: "10–150", m6: "150", m7: "150", m8: "180", m9_12: "200" },
+  { product: "Каша", m4_5: "10–150", m6: "150", m7: "150", m8: "180", m9_12: "200" },
+  { product: "Фруктовое пюре", m4_5: "—", m6: "60", m7: "70", m8: "80", m9_12: "90–100" },
+  { product: "Мясное пюре", m4_5: "—", m6: "5–30", m7: "30", m8: "50", m9_12: "60–70" },
+  { product: "Желток", m4_5: "—", m6: "—", m7: "¼", m8: "½", m9_12: "½" },
+  { product: "Творог", m4_5: "—", m6: "10–40", m7: "40", m8: "40", m9_12: "50" },
+  { product: "Рыбное пюре", m4_5: "—", m6: "—", m7: "—", m8: "5–30", m9_12: "30–60" },
+  { product: "Кисломолочное", m4_5: "—", m6: "—", m7: "—", m8: "200", m9_12: "200" },
+  { product: "Сок", m4_5: "—", m6: "—", m7: "—", m8: "—", m9_12: "80–100" },
+  { product: "Масло растит.", m4_5: "1–3", m6: "5", m7: "5", m8: "6", m9_12: "6" },
+  { product: "Масло сливоч.", m4_5: "1–4", m6: "5", m7: "5", m8: "6", m9_12: "6" },
+  { product: "Сухари, печенье", m4_5: "—", m6: "—", m7: "5", m8: "5", m9_12: "10–15" },
+  { product: "Хлеб пшеничный", m4_5: "—", m6: "—", m7: "—", m8: "5", m9_12: "10" },
+];
+
 export function FeedingSection() {
   const [open, setOpen] = useState<number | null>(0);
 
@@ -148,6 +173,49 @@ export function FeedingSection() {
             </div>
           );
         })}
+      </div>
+
+      <div className="mt-6 bg-white border border-border rounded-2xl shadow-sm overflow-hidden">
+        <div className="p-4 flex items-center gap-3 border-b border-border">
+          <div className="w-10 h-10 rounded-xl border bg-orange-50 text-orange-600 border-orange-200 flex items-center justify-center flex-shrink-0">
+            <Icon name="CalendarDays" size={18} />
+          </div>
+          <div>
+            <p className="font-semibold text-foreground text-sm">Объёмы порций по месяцам</p>
+            <p className="text-[11px] text-muted-foreground">Примерное количество, г (мл) в сутки</p>
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[12px] border-collapse">
+            <thead>
+              <tr className="bg-mint-50 text-muted-foreground">
+                <th className="text-left font-semibold px-3 py-2 sticky left-0 bg-mint-50">Продукт</th>
+                <th className="font-semibold px-2 py-2 whitespace-nowrap">4–5 мес</th>
+                <th className="font-semibold px-2 py-2 whitespace-nowrap">6 мес</th>
+                <th className="font-semibold px-2 py-2 whitespace-nowrap">7 мес</th>
+                <th className="font-semibold px-2 py-2 whitespace-nowrap">8 мес</th>
+                <th className="font-semibold px-2 py-2 whitespace-nowrap">9–12 мес</th>
+              </tr>
+            </thead>
+            <tbody>
+              {portions.map((row, i) => (
+                <tr key={row.product} className={i % 2 ? "bg-muted/40" : "bg-white"}>
+                  <td className={`text-left px-3 py-2 font-medium text-foreground whitespace-nowrap sticky left-0 ${i % 2 ? "bg-muted/40" : "bg-white"}`}>
+                    {row.product}
+                  </td>
+                  <td className="text-center px-2 py-2 text-foreground">{row.m4_5}</td>
+                  <td className="text-center px-2 py-2 text-foreground">{row.m6}</td>
+                  <td className="text-center px-2 py-2 text-foreground">{row.m7}</td>
+                  <td className="text-center px-2 py-2 text-foreground">{row.m8}</td>
+                  <td className="text-center px-2 py-2 text-foreground">{row.m9_12}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-[11px] text-muted-foreground px-3 py-2 border-t border-border leading-snug">
+          «—» продукт в этом возрасте ещё не вводят. Объёмы примерные, уточняйте у педиатра.
+        </p>
       </div>
 
       <a
