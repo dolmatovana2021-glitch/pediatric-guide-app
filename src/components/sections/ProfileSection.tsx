@@ -14,10 +14,39 @@ import {
   getActiveChildId,
 } from "@/components/shared/childProfile";
 
+import { useAuth, logout, formatPhoneInput } from "@/components/shared/auth";
+
 const EVENT_NAME = "malyshdok:childProfile:update";
 
 function emojiFor(g: ChildProfile["gender"]) {
   return g === "boy" ? "👦" : g === "girl" ? "👧" : "🧒";
+}
+
+function AccountBlock() {
+  const { user } = useAuth();
+  if (!user) return null;
+  return (
+    <div className="mt-5 bg-white border border-border rounded-2xl p-4 shadow-sm">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-mint-50 border border-mint-200 flex items-center justify-center flex-shrink-0">
+          <Icon name="Phone" size={18} className="text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[11px] text-muted-foreground">Вход выполнен</p>
+          <p className="font-semibold text-foreground text-sm">
+            {formatPhoneInput(user.phone)}
+          </p>
+        </div>
+      </div>
+      <button
+        onClick={logout}
+        className="mt-3 w-full flex items-center justify-center gap-1.5 bg-muted text-foreground text-sm font-semibold rounded-xl py-2.5 active:scale-95 transition-transform"
+      >
+        <Icon name="LogOut" size={15} />
+        Выйти
+      </button>
+    </div>
+  );
 }
 
 export function ProfileSection() {
@@ -357,6 +386,8 @@ export function ProfileSection() {
       <p className="text-[11px] text-muted-foreground text-center mt-3 px-3 leading-relaxed">
         🔒 Все данные хранятся только в вашем браузере и не отправляются на сервер
       </p>
+
+      <AccountBlock />
     </SectionWrapper>
   );
 }

@@ -11,17 +11,32 @@ import { UsefulSection } from "@/components/sections/UsefulSection";
 import { DocsSection } from "@/components/sections/DocsSection";
 import { DevelopmentSection } from "@/components/sections/DevelopmentSection";
 import { SettingsSection } from "@/components/sections/SettingsSection";
+import { LoginScreen } from "@/components/sections/LoginScreen";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
 import { useSectionVisibility, isSectionVisible } from "@/components/shared/sectionVisibility";
+import { useAuth } from "@/components/shared/auth";
 
 export default function Index() {
   const [section, setSection] = useState<Section>("home");
   const dueCheckup = useDueCheckup();
   const dueVaccines = useDueVaccines();
   const visibility = useSectionVisibility();
+  const { user, loading: authLoading } = useAuth();
 
   const activeSection: Section = isSectionVisible(section, visibility) ? section : "home";
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Icon name="Loader2" size={28} className="text-primary animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <LoginScreen />;
+  }
 
   const renderSection = () => {
     switch (activeSection) {
