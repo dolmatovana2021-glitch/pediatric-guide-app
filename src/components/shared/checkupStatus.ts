@@ -50,6 +50,25 @@ export function setCheckupDone(periodId: string, done: boolean) {
   writeAll(all);
 }
 
+export function exportCheckupStatuses(): AllStatuses {
+  return readAll();
+}
+
+export function importCheckupStatuses(data: AllStatuses) {
+  if (!data || typeof data !== "object") return;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch {
+    /* ignore */
+  }
+  window.dispatchEvent(new CustomEvent(EVENT_NAME));
+}
+
+export function hasCheckupData(): boolean {
+  const all = readAll();
+  return Object.values(all).some((m) => m && Object.keys(m).length > 0);
+}
+
 export function useCheckupStatuses(): {
   statuses: Record<string, boolean>;
   toggle: (periodId: string) => void;

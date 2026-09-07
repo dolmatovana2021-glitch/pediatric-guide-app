@@ -52,6 +52,25 @@ export function setDoseStatus(doseId: string, status: DoseStatus) {
   writeAll(all);
 }
 
+export function exportVaccineStatuses(): AllStatuses {
+  return readAll();
+}
+
+export function importVaccineStatuses(data: AllStatuses) {
+  if (!data || typeof data !== "object") return;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch {
+    /* ignore */
+  }
+  window.dispatchEvent(new CustomEvent(EVENT_NAME));
+}
+
+export function hasVaccineData(): boolean {
+  const all = readAll();
+  return Object.values(all).some((m) => m && Object.keys(m).length > 0);
+}
+
 export function cycleStatus(current: DoseStatus): DoseStatus {
   if (current === "none") return "planned";
   if (current === "planned") return "done";

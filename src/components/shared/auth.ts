@@ -43,10 +43,14 @@ export function logout() {
     localStorage.removeItem("malyshdok:childProfile");
     localStorage.removeItem("malyshdok:childProfiles");
     localStorage.removeItem("malyshdok:childProfiles:active");
+    localStorage.removeItem("malyshdok:vaccineStatus");
+    localStorage.removeItem("malyshdok:checkupStatus");
   } catch {
     /* ignore */
   }
   window.dispatchEvent(new CustomEvent("malyshdok:childProfile:update"));
+  window.dispatchEvent(new CustomEvent("malyshdok:vaccineStatus:update"));
+  window.dispatchEvent(new CustomEvent("malyshdok:checkupStatus:update"));
   window.dispatchEvent(new CustomEvent(EVENT_NAME));
 }
 
