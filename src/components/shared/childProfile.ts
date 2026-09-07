@@ -16,6 +16,12 @@ export type IllnessEntry = {
   note: string;
 };
 
+export type SleepEntry = {
+  id: string;
+  start: string;
+  end: string;
+};
+
 export type ChildProfile = {
   name: string;
   birthDate: string;
@@ -28,6 +34,7 @@ export type ChildProfile = {
   measurements?: Measurement[];
   illness?: IllnessEntry[];
   teeth?: Record<string, string>;
+  sleep?: SleepEntry[];
 };
 
 export type StoredChild = ChildProfile & { id: string };
@@ -49,6 +56,7 @@ export const EMPTY_PROFILE: ChildProfile = {
   measurements: [],
   illness: [],
   teeth: {},
+  sleep: [],
 };
 
 function makeId(): string {
@@ -271,6 +279,36 @@ export function removeIllnessEntry(childId: string, entryId: string) {
   if (idx === -1) return;
   const illness = (list[idx].illness ?? []).filter((e) => e.id !== entryId);
   list[idx] = { ...list[idx], illness };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
+}
+
+export function listSleepEntries(childId: string): SleepEntry[] {
+  const child = readList().find((c) => c.id === childId);
+  const arr = child?.sleep;
+  if (!Array.isArray(arr)) return [];
+  return [...arr].sort((a, b) => a.start.localeCompare(b.start));
+}
+
+export function addSleepEntry(childId: string, entry: Omit<SleepEntry, "id">) {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return;
+  const sleep = Array.isArray(list[idx].sleep) ? [...list[idx].sleep!] : [];
+  sleep.push({ id: makeId(), ...entry });
+  list[idx] = { ...list[idx], sleep };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
+}
+
+export function removeSleepEntry(childId: string, entryId: string) {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return;
+  const sleep = (list[idx].sleep ?? []).filter((e) => e.id !== entryId);
+  list[idx] = { ...list[idx], sleep };
   writeList(list);
   syncLegacy(list[idx]);
   emit();

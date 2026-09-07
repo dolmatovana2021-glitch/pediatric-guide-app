@@ -13,6 +13,7 @@ import { DevelopmentSection } from "@/components/sections/DevelopmentSection";
 import { IllnessDiarySection } from "@/components/sections/IllnessDiarySection";
 import { TeethSection } from "@/components/sections/TeethSection";
 import { MedkitSection } from "@/components/sections/MedkitSection";
+import { SleepSection } from "@/components/sections/SleepSection";
 import { SettingsSection } from "@/components/sections/SettingsSection";
 import { LoginScreen } from "@/components/sections/LoginScreen";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
@@ -53,6 +54,7 @@ export default function Index() {
       case "illness": return <IllnessDiarySection />;
       case "teeth": return <TeethSection />;
       case "medkit": return <MedkitSection />;
+      case "sleep": return <SleepSection />;
       case "development": return <DevelopmentSection />;
       case "vaccination": return <VaccinationSection />;
       case "checkup": return <CheckupSection />;
