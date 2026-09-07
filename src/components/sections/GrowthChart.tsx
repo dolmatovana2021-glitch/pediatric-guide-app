@@ -13,7 +13,6 @@ import Icon from "@/components/ui/icon";
 import {
   addMeasurement,
   removeMeasurement,
-  listMeasurements,
   ageInMonthsAt,
   type ChildProfile,
   type Measurement,
@@ -22,6 +21,8 @@ import {
   buildChartData,
   estimatePercentile,
   percentileVerdict,
+  bmiVerdict,
+  calcBmi,
   MAX_AGE_MONTHS,
   type Metric,
 } from "@/components/shared/whoGrowthData";
@@ -29,6 +30,7 @@ import {
 const metricMeta: Record<Metric, { label: string; unit: string; emoji: string }> = {
   height: { label: "Рост", unit: "см", emoji: "📏" },
   weight: { label: "Вес", unit: "кг", emoji: "⚖️" },
+  bmi: { label: "ИМТ", unit: "", emoji: "⚕️" },
 };
 
 export function GrowthChart({
@@ -54,9 +56,19 @@ export function GrowthChart({
     return measurements
       .map((m) => {
         const months = ageInMonthsAt(profile.birthDate, m.date);
-        const value = metric === "height" ? m.height : m.weight;
+        let value: number | null;
+        if (metric === "height") value = m.height;
+        else if (metric === "weight") value = m.weight;
+        else
+          value =
+            m.height !== null && m.weight !== null ? calcBmi(m.height, m.weight) : null;
         if (months === null || value === null || months > MAX_AGE_MONTHS) return null;
-        return { month: Number(months.toFixed(1)), value, id: m.id, date: m.date };
+        return {
+          month: Number(months.toFixed(1)),
+          value: Number(value.toFixed(1)),
+          id: m.id,
+          date: m.date,
+        };
       })
       .filter(Boolean) as { month: number; value: number; id: string; date: string }[];
   }, [measurements, metric, profile.birthDate, hasBirth]);
@@ -83,7 +95,8 @@ export function GrowthChart({
   const lastPercentile = last
     ? estimatePercentile(metric, gender, last.month, last.value)
     : null;
-  const verdict = percentileVerdict(lastPercentile);
+  const verdict =
+    metric === "bmi" ? bmiVerdict(lastPercentile) : percentileVerdict(lastPercentile);
 
   const save = () => {
     const h = height ? parseFloat(height.replace(",", ".")) : null;
@@ -107,7 +120,7 @@ export function GrowthChart({
         <span className="text-xl">📈</span>
         <div className="flex-1 min-w-0">
           <p className="font-bold text-foreground text-sm leading-tight">
-            Рост и вес
+            Рост, вес и ИМТ
           </p>
           <p className="text-[11px] text-muted-foreground">
             Центильные коридоры ВОЗ, 0–5 лет
@@ -125,11 +138,11 @@ export function GrowthChart({
       ) : (
         <>
           <div className="flex gap-2 mb-3">
-            {(["height", "weight"] as Metric[]).map((m) => (
+            {(["height", "weight", "bmi"] as Metric[]).map((m) => (
               <button
                 key={m}
                 onClick={() => setMetric(m)}
-                className={`flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2 text-[13px] font-semibold border transition-colors ${
+                className={`flex-1 flex items-center justify-center gap-1 rounded-xl py-2 text-[12px] font-semibold border transition-colors ${
                   metric === m
                     ? "bg-primary text-white border-primary"
                     : "bg-mint-50 text-foreground border-mint-200"
@@ -141,11 +154,23 @@ export function GrowthChart({
             ))}
           </div>
 
+          {metric === "bmi" && points.length === 0 && measurements.length > 0 && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-3 flex items-start gap-2">
+              <Icon name="Info" size={14} className="text-amber-600 flex-shrink-0 mt-0.5" />
+              <p className="text-[12px] text-foreground leading-snug">
+                Для расчёта ИМТ нужны рост и вес в одном замере. Добавьте оба значения.
+              </p>
+            </div>
+          )}
+
           {last && (
             <div className="bg-mint-50 border border-mint-200 rounded-xl p-3 mb-3">
-              <p className="text-[11px] text-muted-foreground">Последний замер</p>
+              <p className="text-[11px] text-muted-foreground">
+                {metric === "bmi" ? "Последний расчёт ИМТ" : "Последний замер"}
+              </p>
               <p className="text-sm font-bold text-foreground">
-                {last.value} {meta.unit}
+                {last.value}
+                {meta.unit ? ` ${meta.unit}` : ""}
                 <span className="font-normal text-muted-foreground text-xs">
                   {" "}· {Math.round(last.month)} мес
                 </span>
@@ -171,9 +196,8 @@ export function GrowthChart({
                 />
                 <YAxis
                   tick={{ fontSize: 10 }}
-                  domain={["auto", "auto"]}
+                  domain={metric === "bmi" ? [10, 22] : ["auto", "auto"]}
                   width={38}
-                  unit={meta.unit === "см" ? "" : ""}
                 />
                 <Tooltip
                   formatter={(value: number, name: string) => {
@@ -185,7 +209,8 @@ export function GrowthChart({
                       p97: "97-й",
                       point: "Ваш замер",
                     };
-                    return [`${Number(value).toFixed(1)} ${meta.unit}`, names[name] || name];
+                    const v = `${Number(value).toFixed(1)}${meta.unit ? ` ${meta.unit}` : ""}`;
+                    return [v, names[name] || name];
                   }}
                   labelFormatter={(l) => `${Number(l).toFixed(1)} мес`}
                   contentStyle={{ fontSize: 12, borderRadius: 12 }}

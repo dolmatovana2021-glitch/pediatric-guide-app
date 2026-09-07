@@ -1,5 +1,5 @@
 export type Gender = "boy" | "girl";
-export type Metric = "height" | "weight";
+export type Metric = "height" | "weight" | "bmi";
 
 export const PERCENTILE_LABELS = [3, 15, 50, 85, 97] as const;
 
@@ -65,11 +65,48 @@ const HEIGHT_GIRLS: Row[] = [
   [60, 99.9, 103.2, 109.4, 114.2, 118.9],
 ];
 
+const BMI_BOYS: Row[] = [
+  [0, 11.3, 12.2, 13.4, 14.8, 16.1],
+  [1, 12.8, 13.8, 15.0, 16.4, 17.8],
+  [2, 14.0, 15.0, 16.3, 17.8, 19.2],
+  [3, 14.6, 15.5, 16.9, 18.4, 19.8],
+  [6, 15.0, 15.9, 17.3, 18.8, 20.2],
+  [9, 14.8, 15.7, 17.0, 18.5, 19.9],
+  [12, 14.6, 15.4, 16.8, 18.2, 19.6],
+  [18, 14.3, 15.1, 16.3, 17.8, 19.1],
+  [24, 14.1, 14.9, 16.0, 17.4, 18.7],
+  [36, 13.8, 14.5, 15.6, 17.0, 18.3],
+  [48, 13.5, 14.2, 15.3, 16.7, 18.0],
+  [60, 13.2, 13.9, 15.2, 16.6, 18.0],
+];
+
+const BMI_GIRLS: Row[] = [
+  [0, 11.1, 12.0, 13.3, 14.7, 16.0],
+  [1, 12.4, 13.3, 14.6, 16.1, 17.5],
+  [2, 13.5, 14.5, 15.8, 17.4, 18.9],
+  [3, 14.1, 15.0, 16.4, 18.0, 19.5],
+  [6, 14.5, 15.5, 16.9, 18.5, 20.0],
+  [9, 14.4, 15.3, 16.7, 18.3, 19.8],
+  [12, 14.2, 15.1, 16.4, 18.0, 19.5],
+  [18, 13.9, 14.8, 16.1, 17.6, 19.1],
+  [24, 13.7, 14.5, 15.8, 17.3, 18.8],
+  [36, 13.4, 14.2, 15.5, 17.0, 18.6],
+  [48, 13.1, 13.9, 15.3, 16.8, 18.5],
+  [60, 12.9, 13.7, 15.2, 16.9, 18.8],
+];
+
 export const MAX_AGE_MONTHS = 60;
 
 function table(metric: Metric, gender: Gender): Row[] {
   if (metric === "weight") return gender === "boy" ? WEIGHT_BOYS : WEIGHT_GIRLS;
+  if (metric === "bmi") return gender === "boy" ? BMI_BOYS : BMI_GIRLS;
   return gender === "boy" ? HEIGHT_BOYS : HEIGHT_GIRLS;
+}
+
+export function calcBmi(heightCm: number, weightKg: number): number | null {
+  if (!heightCm || !weightKg || heightCm <= 0) return null;
+  const m = heightCm / 100;
+  return weightKg / (m * m);
 }
 
 export function percentileCurveAt(
@@ -129,6 +166,15 @@ export function percentileVerdict(p: number | null): {
   if (p <= 85) return { label: "норма", tone: "text-emerald-600" };
   if (p <= 97) return { label: "выше среднего", tone: "text-amber-600" };
   return { label: "выше нормы", tone: "text-rose-600" };
+}
+
+export function bmiVerdict(p: number | null): { label: string; tone: string } {
+  if (p === null) return { label: "—", tone: "text-muted-foreground" };
+  if (p < 3) return { label: "дефицит массы тела", tone: "text-rose-600" };
+  if (p < 15) return { label: "масса ниже среднего", tone: "text-amber-600" };
+  if (p <= 85) return { label: "гармоничное развитие", tone: "text-emerald-600" };
+  if (p <= 97) return { label: "избыточная масса", tone: "text-amber-600" };
+  return { label: "ожирение", tone: "text-rose-600" };
 }
 
 export function buildChartData(metric: Metric, gender: Gender, maxMonths: number) {
