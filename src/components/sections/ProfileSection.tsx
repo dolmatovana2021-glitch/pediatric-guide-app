@@ -18,6 +18,33 @@ import {
 import { GrowthChart } from "@/components/sections/GrowthChart";
 
 import { useAuth, logout, formatPhoneInput } from "@/components/shared/auth";
+import { useSyncStatus } from "@/components/shared/childrenSync";
+
+function SyncIndicator() {
+  const status = useSyncStatus();
+
+  const map = {
+    loading: { icon: "RefreshCw", text: "Загружаем данные…", tone: "text-muted-foreground", spin: true },
+    saving: { icon: "RefreshCw", text: "Сохраняем…", tone: "text-muted-foreground", spin: true },
+    saved: { icon: "CheckCircle2", text: "Всё сохранено", tone: "text-emerald-600", spin: false },
+    error: { icon: "CloudOff", text: "Нет соединения с сервером", tone: "text-rose-600", spin: false },
+    idle: { icon: "Cloud", text: "Синхронизировано", tone: "text-muted-foreground", spin: false },
+  } as const;
+
+  const s = map[status];
+
+  return (
+    <div className="flex items-center justify-center gap-1.5 mt-3">
+      <Icon
+        name={s.icon}
+        fallback="Cloud"
+        size={13}
+        className={`${s.tone} ${s.spin ? "animate-spin" : ""}`}
+      />
+      <span className={`text-[11px] ${s.tone}`}>{s.text}</span>
+    </div>
+  );
+}
 
 const EVENT_NAME = "malyshdok:childProfile:update";
 
@@ -396,6 +423,8 @@ export function ProfileSection() {
       <p className="text-[11px] text-muted-foreground text-center mt-3 px-3 leading-relaxed">
         ☁️ Данные привязаны к вашему номеру и доступны на любом устройстве после входа
       </p>
+
+      <SyncIndicator />
 
       <AccountBlock />
     </SectionWrapper>

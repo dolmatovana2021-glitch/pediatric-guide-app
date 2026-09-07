@@ -27,6 +27,26 @@ const CHANGE_EVENTS = [
 
 export type SyncStatus = "idle" | "loading" | "saving" | "saved" | "error";
 
+const STATUS_EVENT = "malyshdok:sync:status";
+
+let currentStatus: SyncStatus = "idle";
+
+function broadcast(status: SyncStatus) {
+  currentStatus = status;
+  window.dispatchEvent(new CustomEvent(STATUS_EVENT));
+}
+
+export function useSyncStatus(): SyncStatus {
+  const [status, setStatus] = useState<SyncStatus>(currentStatus);
+  useEffect(() => {
+    const refresh = () => setStatus(currentStatus);
+    refresh();
+    window.addEventListener(STATUS_EVENT, refresh);
+    return () => window.removeEventListener(STATUS_EVENT, refresh);
+  }, []);
+  return status;
+}
+
 type CloudSnapshot = ChildrenSnapshot & {
   vaccines?: Record<string, Record<string, string>>;
   checkups?: Record<string, Record<string, boolean>>;
@@ -83,7 +103,7 @@ async function pushRemote(token: string, snapshot: CloudSnapshot): Promise<boole
 }
 
 export function useChildrenSync(enabled: boolean): SyncStatus {
-  const [status, setStatus] = useState<SyncStatus>("idle");
+  const status = useSyncStatus();
   const ready = useRef(false);
   const timer = useRef<number | null>(null);
 
@@ -93,7 +113,7 @@ export function useChildrenSync(enabled: boolean): SyncStatus {
     if (!token) return;
 
     let active = true;
-    setStatus("loading");
+    broadcast("loading");
 
     fetchRemote(token)
       .then((remote) => {
@@ -103,10 +123,10 @@ export function useChildrenSync(enabled: boolean): SyncStatus {
         } else if (!localIsEmpty()) {
           void pushRemote(token, collect());
         }
-        setStatus("idle");
+        broadcast("idle");
       })
       .catch(() => {
-        if (active) setStatus("error");
+        if (active) broadcast("error");
       })
       .finally(() => {
         ready.current = true;
@@ -126,13 +146,13 @@ export function useChildrenSync(enabled: boolean): SyncStatus {
       if (!token) return;
       if (timer.current) window.clearTimeout(timer.current);
       timer.current = window.setTimeout(() => {
-        setStatus("saving");
+        broadcast("saving");
         pushRemote(token, collect())
           .then((ok) => {
-            setStatus(ok ? "saved" : "error");
-            if (ok) window.setTimeout(() => setStatus("idle"), 1500);
+            broadcast(ok ? "saved" : "error");
+            if (ok) window.setTimeout(() => broadcast("idle"), 2000);
           })
-          .catch(() => setStatus("error"));
+          .catch(() => broadcast("error"));
       }, 800);
     };
 
