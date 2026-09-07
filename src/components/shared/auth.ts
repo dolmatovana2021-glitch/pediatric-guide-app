@@ -40,9 +40,13 @@ export function logout() {
   try {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    localStorage.removeItem("malyshdok:childProfile");
+    localStorage.removeItem("malyshdok:childProfiles");
+    localStorage.removeItem("malyshdok:childProfiles:active");
   } catch {
     /* ignore */
   }
+  window.dispatchEvent(new CustomEvent("malyshdok:childProfile:update"));
   window.dispatchEvent(new CustomEvent(EVENT_NAME));
 }
 

@@ -16,6 +16,7 @@ import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
 import { useSectionVisibility, isSectionVisible } from "@/components/shared/sectionVisibility";
 import { useAuth } from "@/components/shared/auth";
+import { useChildrenSync } from "@/components/shared/childrenSync";
 
 export default function Index() {
   const [section, setSection] = useState<Section>("home");
@@ -23,6 +24,7 @@ export default function Index() {
   const dueVaccines = useDueVaccines();
   const visibility = useSectionVisibility();
   const { user, loading: authLoading } = useAuth();
+  useChildrenSync(Boolean(user));
 
   const activeSection: Section = isSectionVisible(section, visibility) ? section : "home";
 

@@ -1,0 +1,25 @@
+{
+  "tests": [
+    {
+      "name": "CORS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Get without token unauthorized",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 401,
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Post without token unauthorized",
+      "method": "POST",
+      "path": "/",
+      "body": {"data": {}},
+      "expectedStatus": 401,
+      "bodyMatcher": "partial"
+    }
+  ]
+}

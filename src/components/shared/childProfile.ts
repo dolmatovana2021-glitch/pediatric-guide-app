@@ -188,6 +188,33 @@ export function removeChildProfile(id: string) {
   emit();
 }
 
+export type ChildrenSnapshot = { list: StoredChild[]; activeId: string };
+
+export function exportChildrenState(): ChildrenSnapshot {
+  const list = readList();
+  return { list, activeId: readActiveId(list) };
+}
+
+export function importChildrenState(snapshot: ChildrenSnapshot) {
+  const list = Array.isArray(snapshot?.list)
+    ? snapshot.list
+        .filter((x) => x && typeof x === "object")
+        .map((x) => ({ ...EMPTY_PROFILE, ...x, id: x.id || makeId() }))
+    : [];
+  writeList(list);
+  const activeId = list.some((c) => c.id === snapshot?.activeId)
+    ? snapshot.activeId
+    : list[0]?.id ?? "";
+  try {
+    if (activeId) localStorage.setItem(ACTIVE_KEY, activeId);
+    else localStorage.removeItem(ACTIVE_KEY);
+  } catch {
+    /* ignore */
+  }
+  syncLegacy(list.find((c) => c.id === activeId) ?? null);
+  emit();
+}
+
 export function clearChildProfile() {
   try {
     localStorage.removeItem(STORAGE_KEY);

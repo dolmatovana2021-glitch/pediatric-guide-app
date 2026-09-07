@@ -384,7 +384,7 @@ export function ProfileSection() {
       )}
 
       <p className="text-[11px] text-muted-foreground text-center mt-3 px-3 leading-relaxed">
-        🔒 Все данные хранятся только в вашем браузере и не отправляются на сервер
+        ☁️ Данные привязаны к вашему номеру и доступны на любом устройстве после входа
       </p>
 
       <AccountBlock />
