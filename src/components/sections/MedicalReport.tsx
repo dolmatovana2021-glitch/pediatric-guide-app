@@ -15,6 +15,7 @@ import {
 import { getStatuses } from "@/components/shared/vaccineStatus";
 import { vaccineRows } from "@/components/shared/vaccineData";
 import { allTeeth, toothState, rangeLabel, TOTAL_TEETH } from "@/components/shared/teethData";
+import { sleepNormFor, sleepVerdict, formatHours } from "@/components/shared/sleepData";
 
 type Props = {
   profile: ChildProfile;
@@ -93,6 +94,62 @@ export function MedicalReport({ profile, measurements }: Props) {
       : allTeeth.filter(
           (t) => !teethMap[t.id] && toothState(t, false, ageMonthsNow) === "late",
         );
+
+  const sleepNorm = sleepNormFor(ageMonthsNow);
+  const sleepByDay = (() => {
+    const map = new Map<string, { total: number; night: number; naps: number }>();
+    for (const e of profile.sleep ?? []) {
+      const a = new Date(e.start).getTime();
+      const b = new Date(e.end).getTime();
+      if (isNaN(a) || isNaN(b) || b <= a) continue;
+      const h = (b - a) / 3600000;
+      const key = e.start.slice(0, 10);
+      const cur = map.get(key) || { total: 0, night: 0, naps: 0 };
+      cur.total += h;
+      const hh = new Date(e.start).getHours();
+      if (hh >= 19 || hh < 6) cur.night += h;
+      else {
+        cur.naps += 1;
+      }
+      map.set(key, cur);
+    }
+    return [...map.entries()]
+      .map(([key, v]) => ({ key, ...v }))
+      .sort((a, b) => a.key.localeCompare(b.key));
+  })();
+  const sleepLast7 = sleepByDay.slice(-7);
+  const sleepAvg = sleepLast7.length
+    ? sleepLast7.reduce((s, d) => s + d.total, 0) / sleepLast7.length
+    : null;
+  const sleepNightAvg = sleepLast7.length
+    ? sleepLast7.reduce((s, d) => s + d.night, 0) / sleepLast7.length
+    : null;
+  const sleepNapsAvg = sleepLast7.length
+    ? sleepLast7.reduce((s, d) => s + d.naps, 0) / sleepLast7.length
+    : null;
+  const sleepV = sleepAvg !== null && sleepNorm ? sleepVerdict(sleepAvg, sleepNorm) : null;
+
+  const feedsByDay = (() => {
+    const map = new Map<
+      string,
+      { count: number; volume: number; breast: number; formula: number; solid: number }
+    >();
+    for (const e of profile.feeds ?? []) {
+      const key = e.datetime.slice(0, 10);
+      const cur = map.get(key) || { count: 0, volume: 0, breast: 0, formula: 0, solid: 0 };
+      cur.count += 1;
+      cur.volume += e.amount || 0;
+      cur[e.type] += 1;
+      map.set(key, cur);
+    }
+    return [...map.entries()]
+      .map(([key, v]) => ({ key, ...v }))
+      .sort((a, b) => b.key.localeCompare(a.key));
+  })();
+  const feedsRecent = feedsByDay.slice(0, 14);
+  const feedsAvgCount = feedsRecent.length
+    ? feedsRecent.reduce((s, d) => s + d.count, 0) / feedsRecent.length
+    : null;
 
   const illness = [...(profile.illness ?? [])].sort((a, b) =>
     b.datetime.localeCompare(a.datetime),
@@ -291,6 +348,128 @@ export function MedicalReport({ profile, measurements }: Props) {
                 <>Сроки прорезывания соответствуют возрастным нормам.</>
               )}
             </p>
+          </>
+        )}
+
+        {sleepAvg !== null && (
+          <>
+            <h2 style={{ fontSize: 14, fontWeight: 700, marginBottom: 6 }}>Сон</h2>
+            <table
+              style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 6 }}
+            >
+              <tbody>
+                <tr>
+                  <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>
+                    Средний суточный сон за 7 дней
+                  </td>
+                  <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", fontWeight: 600 }}>
+                    {formatHours(sleepAvg)}
+                  </td>
+                </tr>
+                {sleepNightAvg !== null && (
+                  <tr>
+                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>
+                      Из них ночной сон
+                    </td>
+                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", fontWeight: 600 }}>
+                      {formatHours(sleepNightAvg)}
+                    </td>
+                  </tr>
+                )}
+                {sleepNapsAvg !== null && (
+                  <tr>
+                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>
+                      Дневных снов в сутки (в среднем)
+                    </td>
+                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", fontWeight: 600 }}>
+                      {sleepNapsAvg.toFixed(1)}
+                    </td>
+                  </tr>
+                )}
+                {sleepNorm && (
+                  <>
+                    <tr>
+                      <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>
+                        Возрастная норма ({sleepNorm.label})
+                      </td>
+                      <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", fontWeight: 600 }}>
+                        {sleepNorm.minHours}–{sleepNorm.maxHours} ч, {sleepNorm.naps}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>Оценка</td>
+                      <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", fontWeight: 600 }}>
+                        {sleepV === "ok"
+                          ? "в пределах возрастной нормы"
+                          : sleepV === "low"
+                            ? "меньше возрастной нормы"
+                            : "больше возрастной нормы"}
+                      </td>
+                    </tr>
+                  </>
+                )}
+                <tr>
+                  <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>
+                    Дней с записями
+                  </td>
+                  <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", fontWeight: 600 }}>
+                    {sleepByDay.length}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p style={{ fontSize: 10, color: "#64748b", marginBottom: 16 }}>
+              Нормы по рекомендациям Американской академии медицины сна.
+            </p>
+          </>
+        )}
+
+        {feedsRecent.length > 0 && (
+          <>
+            <h2 style={{ fontSize: 14, fontWeight: 700, marginBottom: 6 }}>
+              Кормления по дням
+              {feedsAvgCount !== null
+                ? ` (в среднем ${feedsAvgCount.toFixed(1)} в сутки)`
+                : ""}
+            </h2>
+            <table
+              style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 16 }}
+            >
+              <thead>
+                <tr style={{ background: "#f1f5f9" }}>
+                  <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "left" }}>Дата</th>
+                  <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>Всего</th>
+                  <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>Грудь</th>
+                  <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>Смесь</th>
+                  <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>Прикорм</th>
+                  <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>Объём, мл</th>
+                </tr>
+              </thead>
+              <tbody>
+                {feedsRecent.map((d) => (
+                  <tr key={d.key}>
+                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>
+                      {fmtDate(d.key)}
+                    </td>
+                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "center", fontWeight: 600 }}>
+                      {d.count}
+                    </td>
+                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "center" }}>
+                      {d.breast || "—"}
+                    </td>
+                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "center" }}>
+                      {d.formula || "—"}
+                    </td>
+                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "center" }}>
+                      {d.solid || "—"}
+                    </td>
+                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "center" }}>
+                      {d.volume || "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </>
         )}
 
