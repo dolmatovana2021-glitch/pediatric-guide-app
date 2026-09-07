@@ -27,6 +27,7 @@ export type ChildProfile = {
   notifyCheckups: boolean;
   measurements?: Measurement[];
   illness?: IllnessEntry[];
+  teeth?: Record<string, string>;
 };
 
 export type StoredChild = ChildProfile & { id: string };
@@ -47,6 +48,7 @@ export const EMPTY_PROFILE: ChildProfile = {
   notifyCheckups: true,
   measurements: [],
   illness: [],
+  teeth: {},
 };
 
 function makeId(): string {
@@ -269,6 +271,28 @@ export function removeIllnessEntry(childId: string, entryId: string) {
   if (idx === -1) return;
   const illness = (list[idx].illness ?? []).filter((e) => e.id !== entryId);
   list[idx] = { ...list[idx], illness };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
+}
+
+export function getTeeth(childId: string): Record<string, string> {
+  const child = readList().find((c) => c.id === childId);
+  const t = child?.teeth;
+  return t && typeof t === "object" ? t : {};
+}
+
+export function setToothDate(childId: string, toothId: string, date: string | null) {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return;
+  const teeth = { ...(list[idx].teeth ?? {}) };
+  if (date) {
+    teeth[toothId] = date;
+  } else {
+    delete teeth[toothId];
+  }
+  list[idx] = { ...list[idx], teeth };
   writeList(list);
   syncLegacy(list[idx]);
   emit();
