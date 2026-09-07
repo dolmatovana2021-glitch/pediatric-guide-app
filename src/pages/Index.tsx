@@ -10,6 +10,7 @@ import { RashSection } from "@/components/sections/RashSection";
 import { UsefulSection } from "@/components/sections/UsefulSection";
 import { DocsSection } from "@/components/sections/DocsSection";
 import { DevelopmentSection } from "@/components/sections/DevelopmentSection";
+import { IllnessDiarySection } from "@/components/sections/IllnessDiarySection";
 import { SettingsSection } from "@/components/sections/SettingsSection";
 import { LoginScreen } from "@/components/sections/LoginScreen";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
@@ -47,6 +48,7 @@ export default function Index() {
       case "emergency": return <EmergencySection />;
       case "redflags": return <RedFlagsSection />;
       case "rash": return <RashSection />;
+      case "illness": return <IllnessDiarySection />;
       case "development": return <DevelopmentSection />;
       case "vaccination": return <VaccinationSection />;
       case "checkup": return <CheckupSection />;

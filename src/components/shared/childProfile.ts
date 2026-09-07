@@ -7,6 +7,15 @@ export type Measurement = {
   weight: number | null;
 };
 
+export type IllnessEntry = {
+  id: string;
+  datetime: string;
+  temperature: number | null;
+  symptoms: string[];
+  medication: string;
+  note: string;
+};
+
 export type ChildProfile = {
   name: string;
   birthDate: string;
@@ -17,6 +26,7 @@ export type ChildProfile = {
   notifyVaccines: boolean;
   notifyCheckups: boolean;
   measurements?: Measurement[];
+  illness?: IllnessEntry[];
 };
 
 export type StoredChild = ChildProfile & { id: string };
@@ -36,6 +46,7 @@ export const EMPTY_PROFILE: ChildProfile = {
   notifyVaccines: true,
   notifyCheckups: true,
   measurements: [],
+  illness: [],
 };
 
 function makeId(): string {
@@ -225,6 +236,39 @@ export function removeMeasurement(childId: string, measurementId: string) {
   if (idx === -1) return;
   const measurements = (list[idx].measurements ?? []).filter((m) => m.id !== measurementId);
   list[idx] = { ...list[idx], measurements };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
+}
+
+export function listIllnessEntries(childId: string): IllnessEntry[] {
+  const child = readList().find((c) => c.id === childId);
+  const arr = child?.illness;
+  if (!Array.isArray(arr)) return [];
+  return [...arr].sort((a, b) => a.datetime.localeCompare(b.datetime));
+}
+
+export function addIllnessEntry(
+  childId: string,
+  entry: Omit<IllnessEntry, "id">,
+) {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return;
+  const illness = Array.isArray(list[idx].illness) ? [...list[idx].illness!] : [];
+  illness.push({ id: makeId(), ...entry });
+  list[idx] = { ...list[idx], illness };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
+}
+
+export function removeIllnessEntry(childId: string, entryId: string) {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return;
+  const illness = (list[idx].illness ?? []).filter((e) => e.id !== entryId);
+  list[idx] = { ...list[idx], illness };
   writeList(list);
   syncLegacy(list[idx]);
   emit();
