@@ -14,6 +14,7 @@ import {
 } from "@/components/shared/whoGrowthData";
 import { getStatuses } from "@/components/shared/vaccineStatus";
 import { vaccineRows } from "@/components/shared/vaccineData";
+import { allTeeth, toothState, rangeLabel, TOTAL_TEETH } from "@/components/shared/teethData";
 
 type Props = {
   profile: ChildProfile;
@@ -66,6 +67,32 @@ export function MedicalReport({ profile, measurements }: Props) {
       }
     }
   }
+
+  const ageMonthsNow = age ? age.years * 12 + age.months : null;
+  const teethMap = profile.teeth ?? {};
+
+  const eruptedTeeth = allTeeth
+    .filter((t) => teethMap[t.id])
+    .map((t) => {
+      const date = teethMap[t.id];
+      const at = profile.birthDate ? ageInMonthsAt(profile.birthDate, date) : null;
+      let verdictText = "—";
+      if (at !== null) {
+        const m = Math.round(at);
+        if (m < t.fromMonth) verdictText = `${m} мес — раньше нормы`;
+        else if (m > t.toMonth) verdictText = `${m} мес — позже нормы`;
+        else verdictText = `${m} мес — в норме`;
+      }
+      return { tooth: t, date, verdictText };
+    })
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const lateTeeth =
+    ageMonthsNow === null
+      ? []
+      : allTeeth.filter(
+          (t) => !teethMap[t.id] && toothState(t, false, ageMonthsNow) === "late",
+        );
 
   const illness = [...(profile.illness ?? [])].sort((a, b) =>
     b.datetime.localeCompare(a.datetime),
@@ -205,6 +232,66 @@ export function MedicalReport({ profile, measurements }: Props) {
               <li key={i}>{v}</li>
             ))}
           </ul>
+        )}
+
+        {(eruptedTeeth.length > 0 || lateTeeth.length > 0) && (
+          <>
+            <h2 style={{ fontSize: 14, fontWeight: 700, marginBottom: 6 }}>
+              Прорезывание зубов ({eruptedTeeth.length} из {TOTAL_TEETH})
+            </h2>
+
+            {eruptedTeeth.length > 0 && (
+              <table
+                style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginBottom: 10 }}
+              >
+                <thead>
+                  <tr style={{ background: "#f1f5f9" }}>
+                    <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "left" }}>Зуб</th>
+                    <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "left" }}>Расположение</th>
+                    <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>Дата</th>
+                    <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>Норма</th>
+                    <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "left" }}>Возраст / оценка</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {eruptedTeeth.map(({ tooth, date, verdictText }) => (
+                    <tr key={tooth.id}>
+                      <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>{tooth.group}</td>
+                      <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>
+                        {tooth.jaw === "upper" ? "верхняя" : "нижняя"},{" "}
+                        {tooth.side === "left" ? "слева" : "справа"}
+                      </td>
+                      <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "center" }}>
+                        {fmtDate(date)}
+                      </td>
+                      <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "center" }}>
+                        {rangeLabel(tooth)}
+                      </td>
+                      <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>{verdictText}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+
+            <p style={{ fontSize: 12, marginBottom: 16, lineHeight: 1.6 }}>
+              {lateTeeth.length > 0 ? (
+                <>
+                  Задерживается прорезывание более чем на 6 месяцев от верхней границы нормы:{" "}
+                  {lateTeeth.length} шт. (
+                  {lateTeeth
+                    .map(
+                      (t) =>
+                        `${t.shortName} ${t.jaw === "upper" ? "верх" : "низ"} ${t.side === "left" ? "слева" : "справа"}`,
+                    )
+                    .join(", ")}
+                  ).
+                </>
+              ) : (
+                <>Сроки прорезывания соответствуют возрастным нормам.</>
+              )}
+            </p>
+          </>
         )}
 
         {illness.length > 0 && (
