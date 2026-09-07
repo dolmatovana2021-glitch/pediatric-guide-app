@@ -22,6 +22,17 @@ export type SleepEntry = {
   end: string;
 };
 
+export type FeedType = "breast" | "formula" | "solid";
+
+export type FeedEntry = {
+  id: string;
+  datetime: string;
+  type: FeedType;
+  amount: number | null;
+  duration: number | null;
+  note: string;
+};
+
 export type ChildProfile = {
   name: string;
   birthDate: string;
@@ -35,6 +46,7 @@ export type ChildProfile = {
   illness?: IllnessEntry[];
   teeth?: Record<string, string>;
   sleep?: SleepEntry[];
+  feeds?: FeedEntry[];
 };
 
 export type StoredChild = ChildProfile & { id: string };
@@ -57,6 +69,7 @@ export const EMPTY_PROFILE: ChildProfile = {
   illness: [],
   teeth: {},
   sleep: [],
+  feeds: [],
 };
 
 function makeId(): string {
@@ -309,6 +322,36 @@ export function removeSleepEntry(childId: string, entryId: string) {
   if (idx === -1) return;
   const sleep = (list[idx].sleep ?? []).filter((e) => e.id !== entryId);
   list[idx] = { ...list[idx], sleep };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
+}
+
+export function listFeedEntries(childId: string): FeedEntry[] {
+  const child = readList().find((c) => c.id === childId);
+  const arr = child?.feeds;
+  if (!Array.isArray(arr)) return [];
+  return [...arr].sort((a, b) => a.datetime.localeCompare(b.datetime));
+}
+
+export function addFeedEntry(childId: string, entry: Omit<FeedEntry, "id">) {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return;
+  const feeds = Array.isArray(list[idx].feeds) ? [...list[idx].feeds!] : [];
+  feeds.push({ id: makeId(), ...entry });
+  list[idx] = { ...list[idx], feeds };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
+}
+
+export function removeFeedEntry(childId: string, entryId: string) {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return;
+  const feeds = (list[idx].feeds ?? []).filter((e) => e.id !== entryId);
+  list[idx] = { ...list[idx], feeds };
   writeList(list);
   syncLegacy(list[idx]);
   emit();
