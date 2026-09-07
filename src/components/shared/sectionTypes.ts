@@ -1,4 +1,4 @@
-export type Section = "home" | "firstaid" | "emergency" | "redflags" | "rash" | "vaccination" | "checkup" | "contacts" | "profile" | "psychdev" | "useful" | "docs" | "feeding" | "settings" | "development" | "illness" | "teeth";
+export type Section = "home" | "firstaid" | "emergency" | "redflags" | "rash" | "vaccination" | "checkup" | "contacts" | "profile" | "psychdev" | "useful" | "docs" | "feeding" | "settings" | "development" | "illness" | "teeth" | "medkit";
 
 export const DOCTOR_BEAR = "https://cdn.poehali.dev/projects/4bdabf76-7052-4eed-87e7-a05ab9d3eeed/files/fbc96f2c-8019-4441-a755-50cf8cf65882.jpg";
 
@@ -23,4 +23,5 @@ export const extraSectionMeta: Record<string, { label: string; emoji: string }> 
   development: { label: "Развитие ребёнка 0–3 года", emoji: "🌱" },
   illness: { label: "Дневник болезни", emoji: "🤒" },
   teeth: { label: "Зубки", emoji: "🦷" },
+  medkit: { label: "Аптечка", emoji: "💊" },
 };

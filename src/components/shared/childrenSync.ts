@@ -16,6 +16,13 @@ import {
   importCheckupStatuses,
   hasCheckupData,
 } from "@/components/shared/checkupStatus";
+import {
+  exportMedkit,
+  importMedkit,
+  hasMedkitData,
+  MEDKIT_EVENT,
+  type MedItem,
+} from "@/components/shared/medkitStore";
 
 const CHILDREN_URL = (func2url as Record<string, string>).children;
 
@@ -23,6 +30,7 @@ const CHANGE_EVENTS = [
   "malyshdok:childProfile:update",
   "malyshdok:vaccineStatus:update",
   "malyshdok:checkupStatus:update",
+  MEDKIT_EVENT,
 ];
 
 export type SyncStatus = "idle" | "loading" | "saving" | "saved" | "error";
@@ -50,6 +58,7 @@ export function useSyncStatus(): SyncStatus {
 type CloudSnapshot = ChildrenSnapshot & {
   vaccines?: Record<string, Record<string, string>>;
   checkups?: Record<string, Record<string, boolean>>;
+  medkit?: MedItem[];
 };
 
 function collect(): CloudSnapshot {
@@ -57,6 +66,7 @@ function collect(): CloudSnapshot {
     ...exportChildrenState(),
     vaccines: exportVaccineStatuses() as Record<string, Record<string, string>>,
     checkups: exportCheckupStatuses(),
+    medkit: exportMedkit(),
   };
 }
 
@@ -68,11 +78,15 @@ function apply(remote: CloudSnapshot) {
     );
   }
   if (remote.checkups) importCheckupStatuses(remote.checkups);
+  if (remote.medkit) importMedkit(remote.medkit);
 }
 
 function localIsEmpty(): boolean {
   return (
-    exportChildrenState().list.length === 0 && !hasVaccineData() && !hasCheckupData()
+    exportChildrenState().list.length === 0 &&
+    !hasVaccineData() &&
+    !hasCheckupData() &&
+    !hasMedkitData()
   );
 }
 
@@ -81,7 +95,8 @@ function remoteHasData(remote: CloudSnapshot | null): boolean {
   const children = Array.isArray(remote.list) && remote.list.length > 0;
   const vac = remote.vaccines && Object.keys(remote.vaccines).length > 0;
   const chk = remote.checkups && Object.keys(remote.checkups).length > 0;
-  return Boolean(children || vac || chk);
+  const med = Array.isArray(remote.medkit) && remote.medkit.length > 0;
+  return Boolean(children || vac || chk || med);
 }
 
 async function fetchRemote(token: string): Promise<CloudSnapshot | null> {
