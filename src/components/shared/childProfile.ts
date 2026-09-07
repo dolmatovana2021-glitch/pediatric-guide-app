@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
 
+export type Measurement = {
+  id: string;
+  date: string;
+  height: number | null;
+  weight: number | null;
+};
+
 export type ChildProfile = {
   name: string;
   birthDate: string;
@@ -9,6 +16,7 @@ export type ChildProfile = {
   riskGroup: boolean;
   notifyVaccines: boolean;
   notifyCheckups: boolean;
+  measurements?: Measurement[];
 };
 
 export type StoredChild = ChildProfile & { id: string };
@@ -27,6 +35,7 @@ export const EMPTY_PROFILE: ChildProfile = {
   riskGroup: false,
   notifyVaccines: true,
   notifyCheckups: true,
+  measurements: [],
 };
 
 function makeId(): string {
@@ -186,6 +195,49 @@ export function removeChildProfile(id: string) {
   }
   syncLegacy(list.find((c) => c.id === activeId) ?? null);
   emit();
+}
+
+export function listMeasurements(childId: string): Measurement[] {
+  const child = readList().find((c) => c.id === childId);
+  const arr = child?.measurements;
+  if (!Array.isArray(arr)) return [];
+  return [...arr].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+export function addMeasurement(
+  childId: string,
+  m: { date: string; height: number | null; weight: number | null },
+) {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return;
+  const measurements = Array.isArray(list[idx].measurements) ? [...list[idx].measurements!] : [];
+  measurements.push({ id: makeId(), ...m });
+  list[idx] = { ...list[idx], measurements };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
+}
+
+export function removeMeasurement(childId: string, measurementId: string) {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return;
+  const measurements = (list[idx].measurements ?? []).filter((m) => m.id !== measurementId);
+  list[idx] = { ...list[idx], measurements };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
+}
+
+export function ageInMonthsAt(birthDate: string, date: string): number | null {
+  if (!birthDate || !date) return null;
+  const b = new Date(birthDate);
+  const d = new Date(date);
+  if (isNaN(b.getTime()) || isNaN(d.getTime())) return null;
+  const days = (d.getTime() - b.getTime()) / 86400000;
+  if (days < 0) return null;
+  return days / 30.4375;
 }
 
 export type ChildrenSnapshot = { list: StoredChild[]; activeId: string };

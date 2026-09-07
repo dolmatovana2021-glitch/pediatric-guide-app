@@ -12,7 +12,10 @@ import {
   saveChildProfile,
   setActiveChildId,
   getActiveChildId,
+  listMeasurements,
+  type Measurement,
 } from "@/components/shared/childProfile";
+import { GrowthChart } from "@/components/sections/GrowthChart";
 
 import { useAuth, logout, formatPhoneInput } from "@/components/shared/auth";
 
@@ -54,6 +57,7 @@ export function ProfileSection() {
   const [activeId, setActiveIdState] = useState<string>("");
   const [profile, setProfile] = useState<ChildProfile>(EMPTY_PROFILE);
   const [saved, setSaved] = useState(false);
+  const [measurements, setMeasurements] = useState<Measurement[]>([]);
 
   const refresh = () => {
     const list = listChildren();
@@ -65,8 +69,10 @@ export function ProfileSection() {
       const { id: _id, ...rest } = active;
       void _id;
       setProfile({ ...EMPTY_PROFILE, ...rest });
+      setMeasurements(listMeasurements(id));
     } else {
       setProfile(EMPTY_PROFILE);
+      setMeasurements([]);
     }
   };
 
@@ -381,6 +387,10 @@ export function ProfileSection() {
             Удалить этот профиль
           </button>
         </div>
+      )}
+
+      {hasChildren && activeId && (
+        <GrowthChart childId={activeId} profile={profile} measurements={measurements} />
       )}
 
       <p className="text-[11px] text-muted-foreground text-center mt-3 px-3 leading-relaxed">
