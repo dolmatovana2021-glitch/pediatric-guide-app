@@ -110,3 +110,43 @@
       hsl(40 30% 98%);
   }
 }
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+  #medical-report,
+  #medical-report * {
+    visibility: visible !important;
+  }
+  #medical-report {
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    background: #fff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  #medical-report table {
+    page-break-inside: auto;
+  }
+  #medical-report tr {
+    page-break-inside: avoid;
+  }
+  #medical-report h2 {
+    page-break-after: avoid;
+  }
+  @page {
+    margin: 14mm;
+  }
+}

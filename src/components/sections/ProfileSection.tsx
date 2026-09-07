@@ -16,6 +16,7 @@ import {
   type Measurement,
 } from "@/components/shared/childProfile";
 import { GrowthChart } from "@/components/sections/GrowthChart";
+import { MedicalReport } from "@/components/sections/MedicalReport";
 
 import { useAuth, logout, formatPhoneInput } from "@/components/shared/auth";
 import { useSyncStatus } from "@/components/shared/childrenSync";
@@ -418,6 +419,10 @@ export function ProfileSection() {
 
       {hasChildren && activeId && (
         <GrowthChart childId={activeId} profile={profile} measurements={measurements} />
+      )}
+
+      {activeId && (
+        <MedicalReport profile={profile} measurements={measurements} />
       )}
 
       <p className="text-[11px] text-muted-foreground text-center mt-3 px-3 leading-relaxed">
