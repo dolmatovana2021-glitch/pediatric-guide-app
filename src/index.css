@@ -52,16 +52,24 @@
 
   body {
     @apply bg-background text-foreground font-golos;
+    font-family: "Golos Text", "Noto Color Emoji", sans-serif;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font-family: inherit;
   }
 }
 
 @layer utilities {
   .font-golos {
-    font-family: "Golos Text", sans-serif;
+    font-family: "Golos Text", "Noto Color Emoji", sans-serif;
   }
 
   .font-caveat {
-    font-family: "Caveat", cursive;
+    font-family: "Caveat", "Noto Color Emoji", cursive;
   }
 
   .section-enter {
