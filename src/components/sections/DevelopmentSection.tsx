@@ -42,7 +42,7 @@ export function DevelopmentSection() {
     <SectionWrapper>
       <SectionTitle
         emoji="🌱"
-        title="Развитие ребёнка 0–3 года"
+        title="Развитие"
         subtitle="Уход, развитие, питание, сон и зубы в одном месте"
       />
 

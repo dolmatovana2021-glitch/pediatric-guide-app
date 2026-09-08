@@ -16,8 +16,8 @@ const items: {
   {
     id: "development",
     emoji: "🌱",
-    title: "Развитие ребёнка 0–3 года",
-    description: "Нервно-психическое развитие и организация прикорма",
+    title: "Развитие",
+    description: "Уход, развитие, питание, сон и зубы в одном месте",
   },
 ];
 
@@ -51,7 +51,7 @@ export function SettingsSection() {
               {profile.name || "Малышу"} уже больше 3 лет
             </p>
             <p className="text-[12px] text-muted-foreground mt-0.5 leading-snug">
-              Раздел «Развитие ребёнка 0–3 года» рассчитан на ранний возраст. Возможно, он вам больше не нужен.
+              Часть материалов раздела «Развитие» рассчитана на ранний возраст. Если он вам больше не нужен, его можно скрыть.
             </p>
             <button
               onClick={() => setSectionVisible("development", false)}

@@ -20,7 +20,7 @@ export const extraSectionMeta: Record<string, { label: string; emoji: string }> 
   docs: { label: "Медицинская документация", emoji: "📄" },
   feeding: { label: "Организация прикорма", emoji: "🥣" },
   settings: { label: "Настройки", emoji: "⚙️" },
-  development: { label: "Развитие ребёнка 0–3 года", emoji: "🌱" },
+  development: { label: "Развитие", emoji: "🌱" },
   illness: { label: "Дневник болезни", emoji: "🤒" },
   teeth: { label: "Зубная формула", emoji: "🦷" },
   medkit: { label: "Аптечка", emoji: "💊" },
