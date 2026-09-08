@@ -3,15 +3,17 @@ import { SectionWrapper, SectionTitle } from "@/components/shared/SectionLayout"
 import { PsychdevSection } from "@/components/sections/PsychdevSection";
 import { FeedingSection } from "@/components/sections/FeedingSection";
 import { NewbornSection } from "@/components/sections/NewbornSection";
+import { PreschoolSection } from "@/components/sections/PreschoolSection";
 import { TeethSection } from "@/components/sections/TeethSection";
 import { SleepSection } from "@/components/sections/SleepSection";
 import { FeedingLogSection } from "@/components/sections/FeedingLogSection";
 
-type Tab = "newborn" | "psychdev" | "feeding" | "teeth" | "sleep" | "feedlog";
+type Tab = "newborn" | "psychdev" | "preschool" | "feeding" | "teeth" | "sleep" | "feedlog";
 
 const tabs: { id: Tab; emoji: string; label: string }[] = [
   { id: "newborn", emoji: "👶", label: "Новорождённый" },
   { id: "psychdev", emoji: "🧠", label: "Нервно-психическое" },
+  { id: "preschool", emoji: "🎒", label: "Дошкольник 3–7" },
   { id: "feeding", emoji: "🥣", label: "Прикорм" },
   { id: "feedlog", emoji: "🍼", label: "Кормление" },
   { id: "sleep", emoji: "😴", label: "Сон" },
@@ -27,6 +29,8 @@ export function DevelopmentSection() {
         return <NewbornSection />;
       case "psychdev":
         return <PsychdevSection />;
+      case "preschool":
+        return <PreschoolSection />;
       case "feeding":
         return <FeedingSection />;
       case "feedlog":
@@ -43,7 +47,7 @@ export function DevelopmentSection() {
       <SectionTitle
         emoji="🌱"
         title="Развитие"
-        subtitle="Уход, развитие, питание, сон и зубы в одном месте"
+        subtitle="От новорождённого до школы: развитие, питание, сон и зубы"
       />
 
       <div className="-mx-4 px-4 mb-5 overflow-x-auto scrollbar-none">
