@@ -10,7 +10,7 @@ import {
 } from "@/components/shared/whoGrowthData";
 import { getStatuses } from "@/components/shared/vaccineStatus";
 import { vaccineRows } from "@/components/shared/vaccineData";
-import { allTeeth, toothState, type Tooth } from "@/components/shared/teethData";
+import { allTeeth, permanentTeeth, toothState, type Tooth } from "@/components/shared/teethData";
 import { sleepNormFor, sleepVerdict, type SleepNorm, type SleepVerdict } from "@/components/shared/sleepData";
 
 export function fmtDate(s: string): string {
@@ -79,7 +79,7 @@ export type EruptedTooth = { tooth: Tooth; date: string; verdictText: string };
 export function buildTeeth(profile: ChildProfile, ageMonthsNow: number | null) {
   const teethMap = profile.teeth ?? {};
 
-  const eruptedTeeth: EruptedTooth[] = allTeeth
+  const eruptedTeeth: EruptedTooth[] = [...allTeeth, ...permanentTeeth]
     .filter((t) => teethMap[t.id])
     .map((t) => {
       const date = teethMap[t.id];

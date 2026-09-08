@@ -1,6 +1,8 @@
 export type Jaw = "upper" | "lower";
 export type Side = "left" | "right";
 
+export type ToothKind = "primary" | "permanent";
+
 export type Tooth = {
   id: string;
   jaw: Jaw;
@@ -10,6 +12,7 @@ export type Tooth = {
   shortName: string;
   fromMonth: number;
   toMonth: number;
+  kind: ToothKind;
 };
 
 const GROUPS: {
@@ -28,6 +31,25 @@ const GROUPS: {
 
 const ORDER = ["i1", "i2", "c", "m1", "m2"];
 
+const PERM_GROUPS: {
+  key: string;
+  group: string;
+  shortName: string;
+  upper: [number, number];
+  lower: [number, number];
+}[] = [
+  { key: "pi1", group: "Центральный резец", shortName: "Центр. резец", upper: [84, 96], lower: [72, 84] },
+  { key: "pi2", group: "Боковой резец", shortName: "Бок. резец", upper: [96, 108], lower: [84, 96] },
+  { key: "pc", group: "Клык", shortName: "Клык", upper: [132, 144], lower: [108, 132] },
+  { key: "pm1", group: "Первый премоляр", shortName: "1-й премоляр", upper: [120, 132], lower: [120, 132] },
+  { key: "pm2", group: "Второй премоляр", shortName: "2-й премоляр", upper: [120, 144], lower: [120, 144] },
+  { key: "pmo1", group: "Первый моляр", shortName: "1-й моляр", upper: [72, 84], lower: [72, 84] },
+  { key: "pmo2", group: "Второй моляр", shortName: "2-й моляр", upper: [144, 156], lower: [144, 156] },
+  { key: "pmo3", group: "Зуб мудрости", shortName: "Зуб мудрости", upper: [204, 300], lower: [204, 300] },
+];
+
+const PERM_ORDER = ["pi1", "pi2", "pc", "pm1", "pm2", "pmo1", "pmo2", "pmo3"];
+
 function build(): Tooth[] {
   const teeth: Tooth[] = [];
   for (const jaw of ["upper", "lower"] as Jaw[]) {
@@ -43,6 +65,30 @@ function build(): Tooth[] {
           shortName: g.shortName,
           fromMonth,
           toMonth,
+          kind: "primary",
+        });
+      });
+    }
+  }
+  return teeth;
+}
+
+function buildPermanent(): Tooth[] {
+  const teeth: Tooth[] = [];
+  for (const jaw of ["upper", "lower"] as Jaw[]) {
+    for (const side of ["right", "left"] as Side[]) {
+      PERM_GROUPS.forEach((g) => {
+        const [fromMonth, toMonth] = jaw === "upper" ? g.upper : g.lower;
+        teeth.push({
+          id: `perm-${jaw}-${side}-${g.key}`,
+          jaw,
+          side,
+          order: PERM_ORDER.indexOf(g.key),
+          group: g.group,
+          shortName: g.shortName,
+          fromMonth,
+          toMonth,
+          kind: "permanent",
         });
       });
     }
@@ -52,10 +98,18 @@ function build(): Tooth[] {
 
 export const allTeeth = build();
 
+export const permanentTeeth = buildPermanent();
+
 export const TOTAL_TEETH = 20;
 
-export function teethOf(jaw: Jaw, side: Side): Tooth[] {
-  return allTeeth
+export const TOTAL_PERMANENT_TEETH = 32;
+
+export function teethByKind(kind: ToothKind): Tooth[] {
+  return kind === "primary" ? allTeeth : permanentTeeth;
+}
+
+export function teethOf(jaw: Jaw, side: Side, kind: ToothKind = "primary"): Tooth[] {
+  return teethByKind(kind)
     .filter((t) => t.jaw === jaw && t.side === side)
     .sort((a, b) => a.order - b.order);
 }
@@ -83,10 +137,17 @@ export const stateMeta: Record<ToothState, { label: string; fill: string; stroke
   late: { label: "задерживается", fill: "#ffe4e6", stroke: "#f43f5e", text: "text-rose-600" },
 };
 
-export function expectedCount(ageMonths: number): number {
-  return allTeeth.filter((t) => ageMonths >= t.fromMonth).length;
+export function expectedCount(ageMonths: number, kind: ToothKind = "primary"): number {
+  return teethByKind(kind).filter((t) => ageMonths >= t.fromMonth).length;
+}
+
+export function rangeLabelYears(t: Tooth): string {
+  const from = Math.round(t.fromMonth / 12);
+  const to = Math.round(t.toMonth / 12);
+  return from === to ? `${from} лет` : `${from}–${to} лет`;
 }
 
 export function rangeLabel(t: Tooth): string {
+  if (t.kind === "permanent") return rangeLabelYears(t);
   return `${t.fromMonth}–${t.toMonth} мес`;
 }

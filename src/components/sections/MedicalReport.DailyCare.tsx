@@ -1,4 +1,9 @@
-import { rangeLabel, TOTAL_TEETH, type Tooth } from "@/components/shared/teethData";
+import {
+  rangeLabel,
+  TOTAL_TEETH,
+  TOTAL_PERMANENT_TEETH,
+  type Tooth,
+} from "@/components/shared/teethData";
 import { formatHours } from "@/components/shared/sleepData";
 import {
   fmtDate,
@@ -29,7 +34,12 @@ export function MedicalReportDailyCare({
       {(eruptedTeeth.length > 0 || lateTeeth.length > 0) && (
         <>
           <h2 style={{ fontSize: 14, fontWeight: 700, marginBottom: 6 }}>
-            Прорезывание зубов ({eruptedTeeth.length} из {TOTAL_TEETH})
+            Зубная формула (молочных{" "}
+            {eruptedTeeth.filter((e) => e.tooth.kind === "primary").length} из {TOTAL_TEETH}
+            {eruptedTeeth.some((e) => e.tooth.kind === "permanent")
+              ? `, постоянных ${eruptedTeeth.filter((e) => e.tooth.kind === "permanent").length} из ${TOTAL_PERMANENT_TEETH}`
+              : ""}
+            )
           </h2>
 
           {eruptedTeeth.length > 0 && (
@@ -48,7 +58,10 @@ export function MedicalReportDailyCare({
               <tbody>
                 {eruptedTeeth.map(({ tooth, date, verdictText }) => (
                   <tr key={tooth.id}>
-                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>{tooth.group}</td>
+                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>
+                      {tooth.group}
+                      {tooth.kind === "permanent" ? " (пост.)" : ""}
+                    </td>
                     <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>
                       {tooth.jaw === "upper" ? "верхняя" : "нижняя"},{" "}
                       {tooth.side === "left" ? "слева" : "справа"}

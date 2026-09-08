@@ -10,15 +10,17 @@ import {
   calcAge,
 } from "@/components/shared/childProfile";
 import {
-  allTeeth,
   teethOf,
+  teethByKind,
   toothState,
   stateMeta,
   expectedCount,
   rangeLabel,
   TOTAL_TEETH,
+  TOTAL_PERMANENT_TEETH,
   type Tooth,
   type Jaw,
+  type ToothKind,
 } from "@/components/shared/teethData";
 
 const EVENT_NAME = "malyshdok:childProfile:update";
@@ -46,7 +48,9 @@ function ToothShape({
 }) {
   const state = toothState(tooth, erupted, ageMonths);
   const meta = stateMeta[state];
-  const isMolar = tooth.order >= 3;
+  const perm = tooth.kind === "permanent";
+  const isMolar = perm ? tooth.order >= 5 : tooth.order >= 3;
+  const scale = perm ? 0.56 : 1;
 
   return (
     <button
@@ -55,7 +59,11 @@ function ToothShape({
       className="relative flex-shrink-0 active:scale-90 transition-transform"
       aria-label={`${tooth.group}, ${meta.label}`}
     >
-      <svg width={isMolar ? 34 : 27} height="34" viewBox="0 0 30 34">
+      <svg
+        width={Math.round((isMolar ? 34 : 27) * scale)}
+        height={Math.round(34 * scale)}
+        viewBox="0 0 30 34"
+      >
         <path
           d={
             isMolar
@@ -92,15 +100,17 @@ function JawRow({
   jaw,
   teeth,
   ageMonths,
+  kind,
   onPick,
 }: {
   jaw: Jaw;
   teeth: Record<string, string>;
   ageMonths: number | null;
+  kind: ToothKind;
   onPick: (t: Tooth) => void;
 }) {
-  const right = teethOf(jaw, "right");
-  const left = teethOf(jaw, "left");
+  const right = teethOf(jaw, "right", kind);
+  const left = teethOf(jaw, "left", kind);
   const ordered = [...right].reverse().concat(left);
 
   return (
@@ -127,6 +137,7 @@ export function TeethSection() {
   const [ageLabel, setAgeLabel] = useState("");
   const [picked, setPicked] = useState<Tooth | null>(null);
   const [dateInput, setDateInput] = useState(today());
+  const [kind, setKind] = useState<ToothKind>("primary");
 
   const refresh = () => {
     const id = getActiveChildId();
@@ -149,30 +160,33 @@ export function TeethSection() {
     };
   }, []);
 
+  const currentTeeth = useMemo(() => teethByKind(kind), [kind]);
+  const total = kind === "primary" ? TOTAL_TEETH : TOTAL_PERMANENT_TEETH;
+
   const eruptedCount = Object.keys(teeth).filter((k) =>
-    allTeeth.some((t) => t.id === k),
+    currentTeeth.some((t) => t.id === k),
   ).length;
 
-  const expected = ageMonths !== null ? expectedCount(ageMonths) : null;
+  const expected = ageMonths !== null ? expectedCount(ageMonths, kind) : null;
 
   const lateTeeth = useMemo(
     () =>
       ageMonths === null
         ? []
-        : allTeeth.filter(
+        : currentTeeth.filter(
             (t) => !teeth[t.id] && toothState(t, false, ageMonths) === "late",
           ),
-    [teeth, ageMonths],
+    [teeth, ageMonths, currentTeeth],
   );
 
   const dueTeeth = useMemo(
     () =>
       ageMonths === null
         ? []
-        : allTeeth.filter(
+        : currentTeeth.filter(
             (t) => !teeth[t.id] && toothState(t, false, ageMonths) === "due",
           ),
-    [teeth, ageMonths],
+    [teeth, ageMonths, currentTeeth],
   );
 
   const verdict = (() => {
@@ -197,8 +211,18 @@ export function TeethSection() {
         icon: "Clock",
         iconTone: "text-amber-600",
       };
+    if (kind === "permanent" && eruptedCount === 0)
+      return {
+        text: "Постоянные зубы обычно начинают прорезаться с 6 лет: первыми выходят моляры и нижние центральные резцы. Отмечайте их по мере смены молочных.",
+        tone: "bg-mint-50 border-mint-200",
+        icon: "Info",
+        iconTone: "text-primary",
+      };
     return {
-      text: "Всё идёт по возрастным нормам. Сроки прорезывания индивидуальны, сдвиг на 2–3 месяца — это нормально.",
+      text:
+        kind === "permanent"
+          ? "Смена зубов идёт по возрастным нормам. Сроки индивидуальны, сдвиг на полгода–год встречается часто."
+          : "Всё идёт по возрастным нормам. Сроки прорезывания индивидуальны, сдвиг на 2–3 месяца — это нормально.",
       tone: "bg-emerald-50 border-emerald-200",
       icon: "CircleCheck",
       iconTone: "text-emerald-600",
@@ -224,19 +248,19 @@ export function TeethSection() {
 
   const history = useMemo(
     () =>
-      allTeeth
+      currentTeeth
         .filter((t) => teeth[t.id])
         .map((t) => ({ tooth: t, date: teeth[t.id] }))
         .sort((a, b) => b.date.localeCompare(a.date)),
-    [teeth],
+    [teeth, currentTeeth],
   );
 
   return (
     <SectionWrapper>
       <SectionTitle
         emoji="🦷"
-        title="Зубки"
-        subtitle="Отмечайте прорезавшиеся зубы на схеме и следите за сроками"
+        title="Зубная формула"
+        subtitle="Отмечайте молочные и коренные зубы на схеме и следите за сроками"
       />
 
       {!hasChild ? (
@@ -248,6 +272,22 @@ export function TeethSection() {
         </div>
       ) : (
         <>
+          <div className="flex gap-2 mb-3">
+            {(["primary", "permanent"] as ToothKind[]).map((k) => (
+              <button
+                key={k}
+                onClick={() => setKind(k)}
+                className={`flex-1 rounded-xl py-2 text-[13px] font-semibold border transition-colors ${
+                  kind === k
+                    ? "bg-primary text-white border-primary"
+                    : "bg-white text-foreground border-border"
+                }`}
+              >
+                {k === "primary" ? "Молочные" : "Коренные"}
+              </button>
+            ))}
+          </div>
+
           <div className="bg-white border border-border rounded-2xl p-4 shadow-sm mb-4">
             <div className="flex items-center gap-3 mb-4">
               <div className="flex-1">
@@ -256,7 +296,7 @@ export function TeethSection() {
                   {eruptedCount}
                   <span className="text-sm font-normal text-muted-foreground">
                     {" "}
-                    из {TOTAL_TEETH}
+                    из {total}
                   </span>
                 </p>
               </div>
@@ -279,18 +319,18 @@ export function TeethSection() {
             <div className="h-1.5 bg-muted rounded-full overflow-hidden mb-4">
               <div
                 className="h-full bg-primary rounded-full transition-all"
-                style={{ width: `${(eruptedCount / TOTAL_TEETH) * 100}%` }}
+                style={{ width: `${(eruptedCount / total) * 100}%` }}
               />
             </div>
 
             <p className="text-[11px] font-semibold text-muted-foreground text-center mb-1">
               Верхняя челюсть
             </p>
-            <JawRow jaw="upper" teeth={teeth} ageMonths={ageMonths} onPick={openPicker} />
+            <JawRow jaw="upper" teeth={teeth} ageMonths={ageMonths} kind={kind} onPick={openPicker} />
 
             <div className="border-t border-dashed border-border my-3" />
 
-            <JawRow jaw="lower" teeth={teeth} ageMonths={ageMonths} onPick={openPicker} />
+            <JawRow jaw="lower" teeth={teeth} ageMonths={ageMonths} kind={kind} onPick={openPicker} />
             <p className="text-[11px] font-semibold text-muted-foreground text-center mt-1">
               Нижняя челюсть
             </p>
