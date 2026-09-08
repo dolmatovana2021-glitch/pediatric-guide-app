@@ -7,6 +7,8 @@ import {
   loadChildProfile,
   getTeeth,
   setToothDate,
+  setToothLostDate,
+  getLostDate,
   calcAge,
 } from "@/components/shared/childProfile";
 import {
@@ -18,6 +20,8 @@ import {
   rangeLabel,
   TOTAL_TEETH,
   TOTAL_PERMANENT_TEETH,
+  successorId,
+  predecessorId,
   type Tooth,
   type Jaw,
   type ToothKind,
@@ -38,15 +42,17 @@ function fmtDate(s: string): string {
 function ToothShape({
   tooth,
   erupted,
+  lost,
   ageMonths,
   onClick,
 }: {
   tooth: Tooth;
   erupted: boolean;
+  lost: boolean;
   ageMonths: number | null;
   onClick: () => void;
 }) {
-  const state = toothState(tooth, erupted, ageMonths);
+  const state = toothState(tooth, erupted, ageMonths, lost);
   const meta = stateMeta[state];
   const perm = tooth.kind === "permanent";
   const isMolar = perm ? tooth.order >= 5 : tooth.order >= 3;
@@ -75,7 +81,7 @@ function ToothShape({
           strokeWidth={erupted ? 2.2 : 1.6}
           strokeLinejoin="round"
         />
-        {erupted && (
+        {erupted && !lost && (
           <path
             d="M10 16l3.5 3.5L20 13"
             fill="none"
@@ -83,6 +89,15 @@ function ToothShape({
             strokeWidth="2.4"
             strokeLinecap="round"
             strokeLinejoin="round"
+          />
+        )}
+        {state === "lost" && (
+          <path
+            d="M10 12l10 10M20 12L10 22"
+            fill="none"
+            stroke="#8b5cf6"
+            strokeWidth="2.4"
+            strokeLinecap="round"
           />
         )}
         {state === "due" && (
@@ -120,6 +135,7 @@ function JawRow({
           <ToothShape
             tooth={t}
             erupted={Boolean(teeth[t.id])}
+            lost={Boolean(getLostDate(teeth, t.id))}
             ageMonths={ageMonths}
             onClick={() => onPick(t)}
           />
@@ -243,8 +259,37 @@ export function TeethSection() {
   const clearTooth = () => {
     if (!picked) return;
     setToothDate(childId, picked.id, null);
+    setToothLostDate(childId, picked.id, null);
     setPicked(null);
   };
+
+  const markLost = () => {
+    if (!picked) return;
+    setToothLostDate(childId, picked.id, dateInput);
+    setPicked(null);
+  };
+
+  const unmarkLost = () => {
+    if (!picked) return;
+    setToothLostDate(childId, picked.id, null);
+    setPicked(null);
+  };
+
+  const waitingPermanent = useMemo(
+    () =>
+      currentTeeth.filter((t) => {
+        if (t.kind !== "permanent") return false;
+        if (teeth[t.id]) return false;
+        const prev = predecessorId(t);
+        return prev ? Boolean(getLostDate(teeth, prev)) : false;
+      }),
+    [teeth, currentTeeth],
+  );
+
+  const lostCount = useMemo(
+    () => teethByKind("primary").filter((t) => getLostDate(teeth, t.id)).length,
+    [teeth],
+  );
 
   const history = useMemo(
     () =>
@@ -352,6 +397,12 @@ export function TeethSection() {
                 <span className="w-2.5 h-2.5 rounded-full bg-slate-200" />
                 ещё рано
               </span>
+              {kind === "primary" && (
+                <span className="flex items-center gap-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-violet-400" />
+                  выпал
+                </span>
+              )}
             </div>
 
             <p className="text-[10px] text-muted-foreground text-center mt-2">
@@ -368,6 +419,37 @@ export function TeethSection() {
             />
             <p className="text-[12px] text-foreground leading-snug">{verdict.text}</p>
           </div>
+
+          {kind === "primary" && lostCount > 0 && (
+            <div className="bg-violet-50 border border-violet-200 rounded-2xl p-3.5 mb-4 flex items-start gap-2.5">
+              <Icon name="Sparkles" fallback="Info" size={16} className="text-violet-600 flex-shrink-0 mt-0.5" />
+              <p className="text-[12px] text-foreground leading-snug">
+                Выпало молочных зубов: {lostCount}. Постоянный зуб обычно появляется в
+                течение 1–6 месяцев после выпадения молочного — отмечайте его на вкладке
+                «Коренные».
+              </p>
+            </div>
+          )}
+
+          {kind === "permanent" && waitingPermanent.length > 0 && (
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 mb-4 flex items-start gap-2.5">
+              <Icon name="Clock" size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
+              <div className="text-[12px] text-foreground leading-snug">
+                <p className="mb-1">
+                  Молочный зуб выпал, а постоянный ещё не отмечен —{" "}
+                  {waitingPermanent.length} шт.:
+                </p>
+                <p className="text-muted-foreground">
+                  {waitingPermanent
+                    .map(
+                      (t) =>
+                        `${t.shortName} (${t.jaw === "upper" ? "верх" : "низ"}, ${t.side === "left" ? "слева" : "справа"})`,
+                    )
+                    .join(", ")}
+                </p>
+              </div>
+            </div>
+          )}
 
           {history.length > 0 && (
             <div className="mb-4">
@@ -392,6 +474,9 @@ export function TeethSection() {
                         </p>
                         <p className="text-[11px] text-muted-foreground">
                           {fmtDate(date)} · норма {rangeLabel(tooth)}
+                          {getLostDate(teeth, tooth.id)
+                            ? ` · выпал ${fmtDate(getLostDate(teeth, tooth.id)!)}`
+                            : ""}
                         </p>
                       </div>
                       <button
@@ -430,8 +515,39 @@ export function TeethSection() {
               {picked.side === "left" ? "слева" : "справа"} · норма {rangeLabel(picked)}
             </p>
 
+            {picked.kind === "primary" && getLostDate(teeth, picked.id) && (
+              <div className="bg-violet-50 border border-violet-200 rounded-xl px-3 py-2 mb-3">
+                <p className="text-[11px] text-foreground leading-snug">
+                  Зуб выпал {fmtDate(getLostDate(teeth, picked.id)!)}.
+                  {(() => {
+                    const succ = successorId(picked);
+                    if (!succ) return null;
+                    return teeth[succ]
+                      ? " Постоянный зуб уже отмечен как прорезавшийся."
+                      : " Постоянный зуб на его месте ещё не отмечен.";
+                  })()}
+                </p>
+              </div>
+            )}
+
+            {picked.kind === "permanent" &&
+              (() => {
+                const prev = predecessorId(picked);
+                if (!prev) return null;
+                const lostAt = getLostDate(teeth, prev);
+                if (!lostAt || teeth[picked.id]) return null;
+                return (
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-3">
+                    <p className="text-[11px] text-foreground leading-snug">
+                      Молочный зуб на этом месте выпал {fmtDate(lostAt)}. Постоянный ещё не
+                      отмечен.
+                    </p>
+                  </div>
+                );
+              })()}
+
             <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
-              Дата прорезывания
+              {picked.kind === "primary" ? "Дата прорезывания или выпадения" : "Дата прорезывания"}
             </label>
             <input
               type="date"
@@ -446,8 +562,24 @@ export function TeethSection() {
                 onClick={confirmTooth}
                 className="flex-1 bg-primary text-white rounded-xl py-2.5 font-semibold text-sm active:scale-95 transition-transform"
               >
-                Отметить
+                Прорезался
               </button>
+              {picked.kind === "primary" &&
+                (getLostDate(teeth, picked.id) ? (
+                  <button
+                    onClick={unmarkLost}
+                    className="px-4 bg-white border border-violet-300 text-violet-700 rounded-xl py-2.5 font-semibold text-sm"
+                  >
+                    Не выпал
+                  </button>
+                ) : (
+                  <button
+                    onClick={markLost}
+                    className="px-4 bg-violet-100 border border-violet-300 text-violet-700 rounded-xl py-2.5 font-semibold text-sm active:scale-95 transition-transform"
+                  >
+                    Выпал
+                  </button>
+                ))}
               {teeth[picked.id] && (
                 <button
                   onClick={clearTooth}
@@ -456,13 +588,13 @@ export function TeethSection() {
                   Убрать
                 </button>
               )}
-              <button
-                onClick={() => setPicked(null)}
-                className="px-4 bg-white border border-border text-muted-foreground rounded-xl py-2.5 font-semibold text-sm"
-              >
-                Отмена
-              </button>
             </div>
+            <button
+              onClick={() => setPicked(null)}
+              className="w-full mt-2 bg-white border border-border text-muted-foreground rounded-xl py-2.5 font-semibold text-sm"
+            >
+              Отмена
+            </button>
           </div>
         </div>
       )}

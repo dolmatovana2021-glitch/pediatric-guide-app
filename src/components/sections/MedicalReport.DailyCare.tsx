@@ -53,10 +53,11 @@ export function MedicalReportDailyCare({
                   <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>Дата</th>
                   <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>Норма</th>
                   <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "left" }}>Возраст / оценка</th>
+                  <th style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>Выпал</th>
                 </tr>
               </thead>
               <tbody>
-                {eruptedTeeth.map(({ tooth, date, verdictText }) => (
+                {eruptedTeeth.map(({ tooth, date, verdictText, lostAt }) => (
                   <tr key={tooth.id}>
                     <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>
                       {tooth.group}
@@ -73,6 +74,9 @@ export function MedicalReportDailyCare({
                       {rangeLabel(tooth)}
                     </td>
                     <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px" }}>{verdictText}</td>
+                    <td style={{ border: "1px solid #cbd5e1", padding: "4px 6px", textAlign: "center" }}>
+                      {lostAt ? fmtDate(lostAt) : "—"}
+                    </td>
                   </tr>
                 ))}
               </tbody>

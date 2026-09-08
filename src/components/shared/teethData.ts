@@ -114,13 +114,39 @@ export function teethOf(jaw: Jaw, side: Side, kind: ToothKind = "primary"): Toot
     .sort((a, b) => a.order - b.order);
 }
 
-export type ToothState = "erupted" | "due" | "soon" | "waiting" | "late";
+const SUCCESSOR: Record<string, string> = {
+  i1: "pi1",
+  i2: "pi2",
+  c: "pc",
+  m1: "pm1",
+  m2: "pm2",
+};
+
+export function successorId(tooth: Tooth): string | null {
+  if (tooth.kind !== "primary") return null;
+  const key = tooth.id.split("-").pop()!;
+  const succ = SUCCESSOR[key];
+  if (!succ) return null;
+  return `perm-${tooth.jaw}-${tooth.side}-${succ}`;
+}
+
+export function predecessorId(tooth: Tooth): string | null {
+  if (tooth.kind !== "permanent") return null;
+  const key = tooth.id.split("-").pop()!;
+  const entry = Object.entries(SUCCESSOR).find(([, v]) => v === key);
+  if (!entry) return null;
+  return `${tooth.jaw}-${tooth.side}-${entry[0]}`;
+}
+
+export type ToothState = "erupted" | "lost" | "due" | "soon" | "waiting" | "late";
 
 export function toothState(
   tooth: Tooth,
   erupted: boolean,
   ageMonths: number | null,
+  lost = false,
 ): ToothState {
+  if (lost && tooth.kind === "primary") return "lost";
   if (erupted) return "erupted";
   if (ageMonths === null) return "waiting";
   if (ageMonths > tooth.toMonth + 6) return "late";
@@ -131,6 +157,7 @@ export function toothState(
 
 export const stateMeta: Record<ToothState, { label: string; fill: string; stroke: string; text: string }> = {
   erupted: { label: "прорезался", fill: "#ffffff", stroke: "#0d9488", text: "text-emerald-600" },
+  lost: { label: "выпал", fill: "#ede9fe", stroke: "#8b5cf6", text: "text-violet-600" },
   due: { label: "пора прорезаться", fill: "#fef3c7", stroke: "#f59e0b", text: "text-amber-600" },
   soon: { label: "скоро", fill: "#f1f5f9", stroke: "#cbd5e1", text: "text-muted-foreground" },
   waiting: { label: "ещё рано", fill: "#f8fafc", stroke: "#e2e8f0", text: "text-muted-foreground" },

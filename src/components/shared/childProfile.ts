@@ -363,6 +363,19 @@ export function getTeeth(childId: string): Record<string, string> {
   return t && typeof t === "object" ? t : {};
 }
 
+export const LOST_PREFIX = "lost:";
+
+export function getLostDate(
+  teeth: Record<string, string>,
+  toothId: string,
+): string | null {
+  return teeth[`${LOST_PREFIX}${toothId}`] ?? null;
+}
+
+export function setToothLostDate(childId: string, toothId: string, date: string | null) {
+  setToothDate(childId, `${LOST_PREFIX}${toothId}`, date);
+}
+
 export function setToothDate(childId: string, toothId: string, date: string | null) {
   const list = readList();
   const idx = list.findIndex((c) => c.id === childId);

@@ -1,5 +1,6 @@
 import {
   ageInMonthsAt,
+  getLostDate,
   type ChildProfile,
   type Measurement,
 } from "@/components/shared/childProfile";
@@ -74,7 +75,12 @@ export function buildDoneVaccines(): string[] {
   return doneVaccines;
 }
 
-export type EruptedTooth = { tooth: Tooth; date: string; verdictText: string };
+export type EruptedTooth = {
+  tooth: Tooth;
+  date: string;
+  verdictText: string;
+  lostAt: string | null;
+};
 
 export function buildTeeth(profile: ChildProfile, ageMonthsNow: number | null) {
   const teethMap = profile.teeth ?? {};
@@ -91,7 +97,7 @@ export function buildTeeth(profile: ChildProfile, ageMonthsNow: number | null) {
         else if (m > t.toMonth) verdictText = `${m} мес — позже нормы`;
         else verdictText = `${m} мес — в норме`;
       }
-      return { tooth: t, date, verdictText };
+      return { tooth: t, date, verdictText, lostAt: getLostDate(teethMap, t.id) };
     })
     .sort((a, b) => a.date.localeCompare(b.date));
 
