@@ -133,6 +133,7 @@ export function IllnessDiarySection() {
   return (
     <SectionWrapper>
       <SectionTitle
+        bear="thermometer"
         emoji="🤒"
         title="Дневник болезни"
         subtitle="Температура, симптомы и лекарства с датой и временем"

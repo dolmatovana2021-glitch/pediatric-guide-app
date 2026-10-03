@@ -37,6 +37,7 @@ export function CheckupSection() {
   return (
     <SectionWrapper>
       <SectionTitle
+        bear="main"
         emoji="🩺"
         title="Профилактические осмотры"
         subtitle="График осмотров и исследований по приказу Минздрава № 211н от 14.04.2025"

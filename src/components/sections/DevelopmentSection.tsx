@@ -96,6 +96,7 @@ export function DevelopmentSection() {
   return (
     <SectionWrapper>
       <SectionTitle
+        bear="main"
         emoji="🌱"
         title="Развитие"
         subtitle="От новорождённого до школы: развитие, питание, сон и зубы"

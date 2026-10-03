@@ -109,6 +109,7 @@ export function MedkitSection() {
   return (
     <SectionWrapper>
       <SectionTitle
+        bear="firstaid"
         emoji="💊"
         title="Аптечка"
         subtitle="Лекарства дома: дозировка и срок годности"

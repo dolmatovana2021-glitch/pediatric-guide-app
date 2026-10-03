@@ -1,5 +1,5 @@
 import Icon from "@/components/ui/icon";
-import { DOCTOR_BEAR } from "@/components/shared/SectionShared";
+import { Bear } from "@/components/shared/Bear";
 
 type HomeHeroProps = {
   name?: string;
@@ -29,11 +29,11 @@ export function HomeHero({
   return (
     <div className="grid grid-cols-2 gap-3 mb-5">
       <div className="col-span-2 relative overflow-hidden rounded-[28px] bg-primary p-5 text-white">
-        <div className="absolute right-0 bottom-0 w-36 h-36 rounded-tl-[60px] bg-white/10" />
-        <img
-          src={DOCTOR_BEAR}
-          alt="Доктор"
-          className="absolute right-3 bottom-3 w-24 h-24 rounded-3xl object-cover shadow-xl"
+        <div className="absolute -right-6 -bottom-10 w-44 h-44 rounded-full bg-white/10" />
+        <Bear
+          pose="main"
+          nightAware
+          className="absolute right-1 -bottom-1 w-[132px] h-[132px]"
         />
         <p className="text-[13px] text-white/80 font-medium">{greeting()}!</p>
         <h1 className="text-[24px] font-bold leading-tight mt-1 max-w-[60%]">

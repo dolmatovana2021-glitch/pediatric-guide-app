@@ -89,6 +89,7 @@ export function SleepSection({ embedded = false }: { embedded?: boolean } = {}) 
     <SectionWrapper>
       <SectionTitle
         compact={embedded}
+        bear="sleep"
         emoji="😴"
         title="Сон"
         subtitle="Засыпание, пробуждение и сравнение с возрастной нормой"

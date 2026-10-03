@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Icon from "@/components/ui/icon";
+import { Bear, type BearPose } from "@/components/shared/Bear";
 
 export function SectionWrapper({ children }: { children: ReactNode }) {
   return <div className="animate-fade-in">{children}</div>;
@@ -61,19 +62,25 @@ export function SectionTitle({
   subtitle,
   tone,
   compact,
+  bear,
 }: {
   emoji: string;
   title: string;
   subtitle?: string;
   tone?: Tone;
   compact?: boolean;
+  bear?: BearPose;
 }) {
   if (compact) {
     return (
       <div className="flex items-center gap-3 mb-4">
-        <span className="w-11 h-11 rounded-2xl bg-muted flex items-center justify-center text-[22px] flex-shrink-0">
-          {emoji}
-        </span>
+        {bear ? (
+          <Bear pose={bear} className="w-14 h-14 -my-1.5 flex-shrink-0" />
+        ) : (
+          <span className="w-11 h-11 rounded-2xl bg-muted flex items-center justify-center text-[22px] flex-shrink-0">
+            {emoji}
+          </span>
+        )}
         <div className="min-w-0">
           <h2 className="text-[17px] font-bold text-foreground leading-tight">{title}</h2>
           {subtitle && (
@@ -91,10 +98,18 @@ export function SectionTitle({
       className={`relative overflow-hidden rounded-[28px] bg-gradient-to-br border p-4 mb-5 ${t.card}`}
     >
       <div className={`absolute -right-8 -top-10 w-32 h-32 rounded-full ${t.blob}`} />
-      <div className="relative flex items-center gap-3.5">
-        <span className="w-14 h-14 rounded-[20px] bg-card flex items-center justify-center text-[28px] flex-shrink-0 shadow-sm">
-          {emoji}
-        </span>
+      {bear && (
+        <Bear
+          pose={bear}
+          className="absolute right-2 -bottom-1.5 w-[104px] h-[104px]"
+        />
+      )}
+      <div className={`relative flex items-center gap-3.5 ${bear ? "pr-[96px] min-h-[64px] pl-1" : ""}`}>
+        {!bear && (
+          <span className="w-14 h-14 rounded-[20px] bg-card flex items-center justify-center text-[28px] flex-shrink-0 shadow-sm">
+            {emoji}
+          </span>
+        )}
         <div className="min-w-0">
           <h2 className="text-[21px] font-bold text-foreground leading-tight">{title}</h2>
           {subtitle && (

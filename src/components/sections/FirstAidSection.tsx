@@ -12,7 +12,8 @@ export function FirstAidSection() {
   const [open, setOpen] = useState<number | null>(null);
   return (
     <SectionWrapper>
-      <SectionTitle emoji="🚑" title="Первая помощь" subtitle="Нажмите на ситуацию, чтобы увидеть шаги" />
+      <SectionTitle bear="firstaid"
+        emoji="🚑" title="Первая помощь" subtitle="Нажмите на ситуацию, чтобы увидеть шаги" />
       <div className="bg-red-50 border border-red-200 rounded-3xl p-3 mb-4 flex gap-2 items-center">
         <span className="text-xl">📞</span>
         <p className="text-xs text-red-700 font-medium">При угрозе жизни звоните <strong className="text-base">103</strong> или <strong className="text-base">112</strong></p>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import Icon from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { DOCTOR_BEAR } from "@/components/shared/sectionTypes";
+import { Bear } from "@/components/shared/Bear";
 import { requestCode, verifyCode, formatPhoneInput } from "@/components/shared/auth";
 
 export function LoginScreen() {
@@ -45,9 +45,7 @@ export function LoginScreen() {
     <div className="min-h-screen bg-background font-golos flex items-center justify-center px-5">
       <div className="w-full max-w-[400px]">
         <div className="blob-bg rounded-3xl p-6 mb-6 text-center relative overflow-hidden">
-          <div className="w-24 h-24 rounded-2xl overflow-hidden mx-auto mb-3 shadow-lg">
-            <img src={DOCTOR_BEAR} alt="Доктор" className="w-full h-full object-cover" />
-          </div>
+          <Bear pose="main" nightAware className="w-36 h-36 mx-auto mb-1" />
           <p className="font-caveat text-primary text-2xl font-bold">МалышДок</p>
           <p className="text-muted-foreground text-sm mt-1">
             Вход по номеру телефона

@@ -66,6 +66,7 @@ export function PreschoolSection({ embedded = false }: { embedded?: boolean } = 
     <SectionWrapper>
       <SectionTitle
         compact={embedded}
+        bear="school"
         emoji="🎒"
         title="Дошкольник 3–7 лет"
         subtitle="Возрастные нормы, речь и подготовка к школе"
