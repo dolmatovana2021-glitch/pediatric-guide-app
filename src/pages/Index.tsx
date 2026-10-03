@@ -17,6 +17,7 @@ import { SleepSection } from "@/components/sections/SleepSection";
 import { FeedingLogSection } from "@/components/sections/FeedingLogSection";
 import { SettingsSection } from "@/components/sections/SettingsSection";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
+import { BottomNav } from "@/components/shared/BottomNav";
 import { LoginScreen } from "@/components/sections/LoginScreen";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
@@ -96,36 +97,15 @@ export default function Index() {
           )}
         </div>
 
-        <main className="flex-1 px-4 py-4 pb-24">
+        <main className="flex-1 px-4 py-4 pb-32">
           {renderSection()}
         </main>
 
-        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/90 backdrop-blur-md border-t border-border px-1 py-2 z-30">
-          <div className="flex justify-around">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setSection(item.id)}
-                className={`flex flex-col items-center gap-0.5 px-1 py-1 rounded-xl transition-all ${
-                  section === item.id ? "text-primary" : "text-muted-foreground"
-                }`}
-              >
-                <span className={`relative text-lg transition-transform ${section === item.id ? "scale-110" : ""}`}>
-                  {item.emoji}
-                  {item.id === "checkup" && dueCheckup && (
-                    <span className="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-red-500 border border-white" />
-                  )}
-                  {item.id === "vaccination" && dueVaccines > 0 && (
-                    <span className="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-red-500 border border-white" />
-                  )}
-                </span>
-                <span className={`text-[9px] font-semibold leading-none ${section === item.id ? "text-primary" : "text-muted-foreground"}`}>
-                  {item.label}
-                </span>
-              </button>
-            ))}
-          </div>
-        </nav>
+        <BottomNav
+          section={activeSection}
+          setSection={setSection}
+          badges={{ checkup: Boolean(dueCheckup), vaccination: dueVaccines > 0 }}
+        />
       </div>
     </div>
   );
