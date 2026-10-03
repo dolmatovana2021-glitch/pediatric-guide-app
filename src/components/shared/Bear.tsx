@@ -3,7 +3,7 @@ import { useTheme } from "next-themes";
 
 export type BearPose = "main" | "thermometer" | "sleep" | "school" | "firstaid" | "night";
 
-export const bearSrc = (pose: BearPose) => `/bear/${pose}.webp?v=2`;
+export const bearSrc = (pose: BearPose) => `/bear/${pose}.webp?v=3`;
 
 const altText: Record<BearPose, string> = {
   main: "Медвежонок-доктор",
