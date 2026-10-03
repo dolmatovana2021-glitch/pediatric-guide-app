@@ -1,4 +1,5 @@
 import Icon from "@/components/ui/icon";
+import { ThemePicker } from "@/components/shared/ThemeToggle";
 import { SectionWrapper, SectionTitle } from "@/components/shared/SectionLayout";
 import {
   useSectionVisibility,
@@ -33,8 +34,18 @@ export function SettingsSection() {
       <SectionTitle
         emoji="⚙️"
         title="Настройки"
-        subtitle="Какие разделы показывать на главном экране"
+        subtitle="Оформление и разделы на главном экране"
       />
+
+      <div className="bg-white border border-border rounded-2xl p-4 mb-5 shadow-sm">
+        <p className="font-semibold text-foreground text-sm mb-1">Тема оформления</p>
+        <p className="text-[11px] text-muted-foreground leading-snug mb-3">
+          Тёмная тема бережёт глаза ночью и не будит малыша ярким экраном
+        </p>
+        <ThemePicker />
+      </div>
+
+      <p className="font-semibold text-foreground text-sm mb-1">Разделы</p>
 
       <p className="text-[13px] text-muted-foreground leading-relaxed mb-4">
         Эти разделы актуальны для детей определённого возраста. Если они вам сейчас

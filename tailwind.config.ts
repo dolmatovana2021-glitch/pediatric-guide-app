@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import palette from "./src/styles/palette.json";
 
 export default {
 	darkMode: ["class"],
@@ -67,30 +68,7 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				mint: {
-					50: '#f0faf6',
-					100: '#d6f2e8',
-					200: '#aee4d2',
-					300: '#7dd0ba',
-					400: '#51b89f',
-					500: '#3a9e87',
-					600: '#2e806d',
-				},
-				peach: {
-					50: '#fff5ee',
-					100: '#ffe8d5',
-					200: '#ffd0ad',
-					300: '#ffb07a',
-					400: '#ff8c47',
-					500: '#f86f20',
-				},
-				rose: {
-					50: '#fff1f3',
-					100: '#ffe0e4',
-					200: '#ffc5cc',
-					300: '#ff9aa6',
-					400: '#ff6477',
-				}
+				...palette,
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

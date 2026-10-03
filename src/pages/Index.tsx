@@ -16,6 +16,7 @@ import { MedkitSection } from "@/components/sections/MedkitSection";
 import { SleepSection } from "@/components/sections/SleepSection";
 import { FeedingLogSection } from "@/components/sections/FeedingLogSection";
 import { SettingsSection } from "@/components/sections/SettingsSection";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { LoginScreen } from "@/components/sections/LoginScreen";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
@@ -90,6 +91,7 @@ export default function Index() {
             <>
               <span className="font-caveat text-primary font-bold text-xl">МалышДок</span>
               <span className="ml-auto text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">v1.0</span>
+              <ThemeToggle />
             </>
           )}
         </div>
