@@ -27,3 +27,23 @@ export const extraSectionMeta: Record<string, { label: string; emoji: string }> 
   sleep: { label: "Сон", emoji: "😴" },
   feedlog: { label: "Кормление", emoji: "🍼" },
 };
+const shortLabels: Partial<Record<Section, string>> = {
+  firstaid: "Первая помощь",
+  emergency: "Неотложка",
+  redflags: "Красные флаги",
+  rash: "Сыпь",
+  illness: "Дневник болезни",
+  medkit: "Аптечка",
+  development: "Развитие",
+  vaccination: "Вакцинация",
+  checkup: "Осмотры",
+  contacts: "Врачи",
+  docs: "Документы",
+  useful: "Полезное",
+  settings: "Настройки",
+  profile: "Профиль",
+};
+
+export function sectionLabel(s: Section): string {
+  return shortLabels[s] ?? extraSectionMeta[s]?.label ?? navItems.find((n) => n.id === s)?.label ?? "Открыть";
+}
