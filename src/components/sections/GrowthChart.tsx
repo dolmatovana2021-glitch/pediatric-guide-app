@@ -115,7 +115,7 @@ export function GrowthChart({
   const meta = metricMeta[metric];
 
   return (
-    <div className="bg-white border border-border rounded-2xl p-4 shadow-sm mt-4">
+    <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mt-4">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-xl">📈</span>
         <div className="flex-1 min-w-0">
@@ -129,7 +129,7 @@ export function GrowthChart({
       </div>
 
       {!hasBirth ? (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start gap-2">
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 flex items-start gap-2">
           <Icon name="Info" size={14} className="text-amber-600 flex-shrink-0 mt-0.5" />
           <p className="text-[12px] text-foreground leading-snug">
             Укажите дату рождения выше — тогда появится график динамики.
@@ -144,7 +144,7 @@ export function GrowthChart({
                 onClick={() => setMetric(m)}
                 className={`flex-1 flex items-center justify-center gap-1 rounded-xl py-2 text-[12px] font-semibold border transition-colors ${
                   metric === m
-                    ? "bg-primary text-white border-primary"
+                    ? "bg-primary text-primary-foreground border-primary"
                     : "bg-mint-50 text-foreground border-mint-200"
                 }`}
               >
@@ -155,7 +155,7 @@ export function GrowthChart({
           </div>
 
           {metric === "bmi" && points.length === 0 && measurements.length > 0 && (
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-3 flex items-start gap-2">
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 mb-3 flex items-start gap-2">
               <Icon name="Info" size={14} className="text-amber-600 flex-shrink-0 mt-0.5" />
               <p className="text-[12px] text-foreground leading-snug">
                 Для расчёта ИМТ нужны рост и вес в одном замере. Добавьте оба значения.
@@ -164,7 +164,7 @@ export function GrowthChart({
           )}
 
           {last && (
-            <div className="bg-mint-50 border border-mint-200 rounded-xl p-3 mb-3">
+            <div className="bg-mint-50 border border-mint-200 rounded-2xl p-3 mb-3">
               <p className="text-[11px] text-muted-foreground">
                 {metric === "bmi" ? "Последний расчёт ИМТ" : "Последний замер"}
               </p>
@@ -248,7 +248,7 @@ export function GrowthChart({
           </div>
 
           {open ? (
-            <div className="bg-mint-50 border border-mint-200 rounded-xl p-3 space-y-2.5 mb-3">
+            <div className="bg-mint-50 border border-mint-200 rounded-2xl p-3 space-y-2.5 mb-3">
               <div>
                 <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
                   Дата замера
@@ -259,7 +259,7 @@ export function GrowthChart({
                   max={new Date().toISOString().slice(0, 10)}
                   min={profile.birthDate || undefined}
                   onChange={(e) => setDate(e.target.value)}
-                  className="block w-full box-border appearance-none h-[40px] px-3 bg-white border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="block w-full box-border appearance-none h-[40px] px-3 bg-card border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -274,7 +274,7 @@ export function GrowthChart({
                     value={height}
                     onChange={(e) => setHeight(e.target.value)}
                     placeholder="75"
-                    className="block w-full box-border appearance-none px-3 py-2.5 bg-white border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="block w-full box-border appearance-none px-3 py-2.5 bg-card border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
                 <div>
@@ -288,7 +288,7 @@ export function GrowthChart({
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
                     placeholder="9.5"
-                    className="block w-full box-border appearance-none px-3 py-2.5 bg-white border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="block w-full box-border appearance-none px-3 py-2.5 bg-card border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
               </div>
@@ -296,13 +296,13 @@ export function GrowthChart({
                 <button
                   onClick={save}
                   disabled={!date || (!height && !weight)}
-                  className="flex-1 bg-primary text-white rounded-xl py-2.5 font-semibold text-sm disabled:opacity-50 active:scale-95 transition-transform"
+                  className="flex-1 bg-primary text-primary-foreground rounded-xl py-2.5 font-semibold text-sm disabled:opacity-50 active:scale-95 transition-transform"
                 >
                   Сохранить замер
                 </button>
                 <button
                   onClick={() => setOpen(false)}
-                  className="px-4 bg-white border border-mint-200 text-foreground rounded-xl py-2.5 font-semibold text-sm"
+                  className="px-4 bg-card border border-mint-200 text-foreground rounded-xl py-2.5 font-semibold text-sm"
                 >
                   Отмена
                 </button>

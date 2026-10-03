@@ -243,11 +243,11 @@ export function DoseHistory({
   const reachedLimit = todayTaken >= dailyMax;
 
   return (
-    <div className="bg-white border border-mint-200 rounded-xl p-3 space-y-3">
+    <div className="bg-card border border-mint-200 rounded-xl p-3 space-y-3">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-base">🕐</span>
-          <p className="text-xs font-bold text-primary uppercase tracking-wide">
+          <p className="text-[12px] font-bold text-primary">
             История приёмов
           </p>
         </div>
@@ -351,7 +351,7 @@ export function DoseHistory({
         className={`w-full rounded-xl py-2.5 px-3 text-sm font-semibold flex items-center justify-center gap-2 active:scale-95 transition-transform ${
           reachedLimit
             ? "bg-muted text-muted-foreground cursor-not-allowed"
-            : "bg-primary text-white"
+            : "bg-primary text-primary-foreground"
         }`}
       >
         <Icon name="Plus" size={16} />

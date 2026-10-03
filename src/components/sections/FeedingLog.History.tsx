@@ -11,7 +11,7 @@ type Props = {
 export function FeedingLogHistory({ isEmpty, days, childId, onRemove }: Props) {
   if (isEmpty) {
     return (
-      <div className="bg-white border border-dashed border-border rounded-2xl p-8 text-center">
+      <div className="bg-card border border-dashed border-border rounded-3xl p-8 text-center">
         <Icon name="Milk" fallback="Baby" size={28} className="text-muted-foreground mx-auto mb-2" />
         <p className="text-[13px] text-muted-foreground leading-snug">
           Записей пока нет. Отмечайте кормления — приложение посчитает их количество и
@@ -45,7 +45,7 @@ export function FeedingLogHistory({ isEmpty, days, childId, onRemove }: Props) {
               return (
                 <div
                   key={e.id}
-                  className="bg-white border border-border rounded-xl px-3 py-2.5 flex items-center gap-2.5 shadow-sm"
+                  className="bg-card border border-border rounded-xl px-3 py-2.5 flex items-center gap-2.5 shadow-sm"
                 >
                   <span className="text-base">{meta.emoji}</span>
                   <div className="flex-1 min-w-0">

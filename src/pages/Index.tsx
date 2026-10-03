@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icon from "@/components/ui/icon";
-import { Section, navItems } from "@/components/shared/SectionShared";
-import { extraSectionMeta } from "@/components/shared/sectionTypes";
+import { Section } from "@/components/shared/SectionShared";
 import { HomeSection, FirstAidSection, EmergencySection, RedFlagsSection, VaccinationSection } from "@/components/sections/AidSections";
 import { ContactsSection } from "@/components/sections/InfoSections";
 import { ProfileSection } from "@/components/sections/ProfileSection";
@@ -34,6 +33,10 @@ export default function Index() {
   useChildrenSync(Boolean(user));
 
   const activeSection: Section = isSectionVisible(section, visibility) ? section : "home";
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [activeSection]);
 
   if (authLoading) {
     return (
@@ -74,30 +77,32 @@ export default function Index() {
     <div className="min-h-screen bg-background font-golos">
       <div className="max-w-[480px] mx-auto flex flex-col min-h-screen relative">
 
-        <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center gap-3">
+        <div className="sticky top-0 z-20 bg-background/85 backdrop-blur-md px-4 py-2.5 flex items-center gap-3">
           {activeSection !== "home" ? (
             <>
               <button
                 onClick={() => setSection("home")}
-                className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center"
+                aria-label="На главную"
+                className="h-10 pl-2.5 pr-3.5 rounded-2xl bg-card border border-border shadow-sm flex items-center gap-1.5 text-[13px] font-semibold text-foreground active:scale-95 transition-transform"
               >
-                <Icon name="ArrowLeft" size={18} className="text-foreground" />
+                <Icon name="ChevronLeft" size={18} />
+                Главная
               </button>
-              <span className="font-semibold text-foreground">
-                {(navItems.find(n => n.id === activeSection) ?? extraSectionMeta[activeSection])?.emoji}{" "}
-                {(navItems.find(n => n.id === activeSection) ?? extraSectionMeta[activeSection])?.label}
+              <span className="ml-auto">
+                <ThemeToggle />
               </span>
             </>
           ) : (
             <>
-              <span className="font-caveat text-primary font-bold text-xl">МалышДок</span>
-              <span className="ml-auto text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">v1.0</span>
-              <ThemeToggle />
+              <span className="font-caveat text-primary font-bold text-2xl leading-none">МалышДок</span>
+              <span className="ml-auto">
+                <ThemeToggle />
+              </span>
             </>
           )}
         </div>
 
-        <main className="flex-1 px-4 py-4 pb-32">
+        <main className="flex-1 px-4 pt-2 pb-32">
           {renderSection()}
         </main>
 

@@ -31,7 +31,7 @@ export function SleepLogForm({
           setEnd(localNow());
           setOpen(true);
         }}
-        className="w-full bg-primary text-white rounded-2xl py-3 text-sm font-semibold flex items-center justify-center gap-2 mb-4 shadow-sm active:scale-95 transition-transform"
+        className="w-full bg-primary text-primary-foreground rounded-2xl py-3 text-sm font-semibold flex items-center justify-center gap-2 mb-4 shadow-sm active:scale-95 transition-transform"
       >
         <Icon name="Plus" size={16} />
         Добавить сон
@@ -40,7 +40,7 @@ export function SleepLogForm({
   }
 
   return (
-    <div className="bg-white border border-border rounded-2xl p-4 shadow-sm mb-4 space-y-3">
+    <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mb-4 space-y-3">
       <div>
         <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
           Уснул
@@ -49,7 +49,7 @@ export function SleepLogForm({
           type="datetime-local"
           value={start}
           onChange={(e) => setStart(e.target.value)}
-          className="block w-full box-border appearance-none h-[42px] px-3 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="block w-full box-border appearance-none h-[42px] px-3 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
       <div>
@@ -60,12 +60,12 @@ export function SleepLogForm({
           type="datetime-local"
           value={end}
           onChange={(e) => setEnd(e.target.value)}
-          className="block w-full box-border appearance-none h-[42px] px-3 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="block w-full box-border appearance-none h-[42px] px-3 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
 
       {duration > 0 && (
-        <p className="text-[12px] text-foreground bg-mint-50 border border-mint-200 rounded-xl px-3 py-2">
+        <p className="text-[12px] text-foreground bg-mint-50 border border-mint-200 rounded-2xl px-3 py-2">
           Продолжительность: <span className="font-semibold">{formatHours(duration)}</span>
           {" · "}
           {isNightSleep(start) ? "ночной сон" : "дневной сон"}
@@ -76,13 +76,13 @@ export function SleepLogForm({
         <button
           onClick={save}
           disabled={duration <= 0}
-          className="flex-1 bg-primary text-white rounded-xl py-2.5 font-semibold text-sm disabled:opacity-50 active:scale-95 transition-transform"
+          className="flex-1 bg-primary text-primary-foreground rounded-xl py-2.5 font-semibold text-sm disabled:opacity-50 active:scale-95 transition-transform"
         >
           Сохранить
         </button>
         <button
           onClick={() => setOpen(false)}
-          className="px-4 bg-white border border-border text-foreground rounded-xl py-2.5 font-semibold text-sm"
+          className="px-4 bg-card border border-border text-foreground rounded-xl py-2.5 font-semibold text-sm"
         >
           Отмена
         </button>

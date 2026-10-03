@@ -37,7 +37,7 @@ export function SettingsSection() {
         subtitle="Оформление и разделы на главном экране"
       />
 
-      <div className="bg-white border border-border rounded-2xl p-4 mb-5 shadow-sm">
+      <div className="bg-card border border-border rounded-3xl p-4 mb-5 shadow-sm">
         <p className="font-semibold text-foreground text-sm mb-1">Тема оформления</p>
         <p className="text-[11px] text-muted-foreground leading-snug mb-3">
           Тёмная тема бережёт глаза ночью и не будит малыша ярким экраном
@@ -53,8 +53,8 @@ export function SettingsSection() {
       </p>
 
       {suggestHideDevelopment && (
-        <div className="bg-violet-50 border border-violet-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
-          <div className="w-9 h-9 rounded-xl bg-white border border-violet-200 flex items-center justify-center text-lg flex-shrink-0">
+        <div className="bg-violet-50 border border-violet-200 rounded-3xl p-4 mb-4 flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl bg-card border border-violet-200 flex items-center justify-center text-lg flex-shrink-0">
             🌱
           </div>
           <div className="flex-1 min-w-0">
@@ -81,7 +81,7 @@ export function SettingsSection() {
           return (
             <div
               key={item.id}
-              className="bg-white border border-border rounded-2xl p-4 flex items-center gap-3 shadow-sm"
+              className="bg-card border border-border rounded-3xl p-4 flex items-center gap-3 shadow-sm"
             >
               <div className="w-10 h-10 rounded-xl bg-mint-50 border border-mint-200 flex items-center justify-center text-xl flex-shrink-0">
                 {item.emoji}

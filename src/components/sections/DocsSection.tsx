@@ -20,7 +20,7 @@ export function DocsSection() {
           return (
             <div
               key={form.id}
-              className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm"
+              className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm"
             >
               <button
                 onClick={() => setOpenId(isOpen ? null : form.id)}
@@ -56,7 +56,7 @@ export function DocsSection() {
                     {form.purpose}
                   </p>
 
-                  <div className="bg-mint-50 border border-mint-200 rounded-xl p-3 space-y-2">
+                  <div className="bg-mint-50 border border-mint-200 rounded-2xl p-3 space-y-2">
                     <div className="flex items-start gap-2">
                       <Icon
                         name="MapPin"
@@ -88,7 +88,7 @@ export function DocsSection() {
                   {form.sections.map((section) => (
                     <div
                       key={section.title}
-                      className="bg-sky-50 border border-sky-100 rounded-xl p-3"
+                      className="bg-sky-50 border border-sky-100 rounded-2xl p-3"
                     >
                       <div className="flex items-center gap-2 mb-1.5">
                         <Icon name="ListChecks" size={15} className="text-sky-600" />
@@ -113,7 +113,7 @@ export function DocsSection() {
                     </div>
                   ))}
 
-                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
+                  <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3">
                     <div className="flex items-center gap-2 mb-1.5">
                       <Icon name="Lightbulb" size={15} className="text-amber-600" />
                       <span className="text-[13px] font-bold text-amber-800">
@@ -136,7 +136,7 @@ export function DocsSection() {
         })}
       </div>
 
-      <div className="flex items-start gap-2 bg-white border border-border rounded-xl px-3 py-2.5 mt-4 shadow-sm">
+      <div className="flex items-start gap-2 bg-card border border-border rounded-xl px-3 py-2.5 mt-4 shadow-sm">
         <Icon name="Info" size={15} className="text-muted-foreground flex-shrink-0 mt-0.5" />
         <span className="text-[11px] text-muted-foreground leading-snug">
           {DOCS_DISCLAIMER}

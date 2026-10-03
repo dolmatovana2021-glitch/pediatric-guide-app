@@ -20,7 +20,7 @@ const groupTone: Record<string, string> = {
 function PrinciplesBlock() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm mb-3">
+    <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm mb-3">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-3 p-4 text-left"
@@ -45,7 +45,7 @@ function PrinciplesBlock() {
         <div className="px-3.5 pb-3.5 space-y-3 animate-fade-in">
           <div className="space-y-2">
             {psychdevPrinciples.map((p) => (
-              <div key={p.title} className="bg-mint-50 border border-mint-200 rounded-xl p-3">
+              <div key={p.title} className="bg-mint-50 border border-mint-200 rounded-2xl p-3">
                 <div className="flex items-center gap-2 mb-1">
                   <Icon name={p.icon} fallback="Info" size={15} className="text-primary" />
                   <span className="text-[13px] font-bold text-foreground">{p.title}</span>
@@ -55,7 +55,7 @@ function PrinciplesBlock() {
             ))}
           </div>
 
-          <div className="bg-sky-50 border border-sky-100 rounded-xl p-3">
+          <div className="bg-sky-50 border border-sky-100 rounded-2xl p-3">
             <div className="flex items-center gap-2 mb-1.5">
               <Icon name="ListChecks" size={15} className="text-sky-600" />
               <span className="text-[13px] font-bold text-sky-800">
@@ -77,7 +77,7 @@ function PrinciplesBlock() {
           </div>
 
           <div>
-            <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5">
+            <p className="text-[12px] font-bold text-muted-foreground mb-1.5">
               Группы развития
             </p>
             <div className="space-y-1.5">
@@ -90,7 +90,7 @@ function PrinciplesBlock() {
             </div>
           </div>
 
-          <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+          <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-2xl px-3 py-2">
             <Icon name="Info" size={15} className="text-amber-600 flex-shrink-0 mt-0.5" />
             <span className="text-[11px] text-amber-800 leading-snug">{PSYCHDEV_DISCLAIMER}</span>
           </div>
@@ -107,7 +107,7 @@ function AgeDetails({ item }: { item: PsychdevAge }) {
         {item.domains.map((d) => (
           <div
             key={d.label}
-            className="bg-mint-50 border border-mint-200 rounded-xl p-3"
+            className="bg-mint-50 border border-mint-200 rounded-2xl p-3"
           >
             <div className="flex items-center gap-2 mb-1.5">
               <Icon name={d.icon} fallback="Sparkles" size={15} className="text-primary" />
@@ -130,7 +130,7 @@ function AgeDetails({ item }: { item: PsychdevAge }) {
         ))}
       </div>
 
-      <div className="bg-rose-50 border border-rose-100 rounded-xl p-3">
+      <div className="bg-rose-50 border border-rose-100 rounded-2xl p-3">
         <div className="flex items-center gap-2 mb-1.5">
           <Icon name="TriangleAlert" size={15} className="text-rose-600" />
           <span className="text-[13px] font-bold text-rose-700">
@@ -147,7 +147,7 @@ function AgeDetails({ item }: { item: PsychdevAge }) {
         </ul>
       </div>
 
-      <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+      <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-2xl px-3 py-2">
         <Icon name="Info" size={15} className="text-amber-600 flex-shrink-0 mt-0.5" />
         <span className="text-[11px] text-amber-800 leading-snug">{PSYCHDEV_DISCLAIMER}</span>
       </div>
@@ -155,7 +155,7 @@ function AgeDetails({ item }: { item: PsychdevAge }) {
   );
 }
 
-export function PsychdevSection() {
+export function PsychdevSection({ embedded = false }: { embedded?: boolean } = {}) {
   const [openId, setOpenId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
@@ -176,6 +176,7 @@ export function PsychdevSection() {
   return (
     <SectionWrapper>
       <SectionTitle
+        compact={embedded}
         emoji="🧠"
         title="Нервно-психическое развитие"
         subtitle="Что умеет ребёнок в каждом возрасте и когда стоит обратиться к врачу"
@@ -193,7 +194,7 @@ export function PsychdevSection() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Поиск по возрасту или навыку…"
-          className="w-full bg-white border border-border rounded-xl py-2.5 pl-9 pr-9 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="w-full bg-card border border-border rounded-xl py-2.5 pl-9 pr-9 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
         {query && (
           <button
@@ -207,7 +208,7 @@ export function PsychdevSection() {
       </div>
 
       {filtered.length === 0 && (
-        <div className="bg-white border border-border rounded-2xl p-6 text-center">
+        <div className="bg-card border border-border rounded-3xl p-6 text-center">
           <Icon name="SearchX" size={28} className="text-muted-foreground mx-auto mb-2" />
           <p className="text-[13px] text-muted-foreground">
             Ничего не найдено по запросу «{query}»
@@ -221,7 +222,7 @@ export function PsychdevSection() {
           return (
             <div
               key={item.id}
-              className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm"
+              className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm"
             >
               <button
                 onClick={() => setOpenId(open ? null : item.id)}

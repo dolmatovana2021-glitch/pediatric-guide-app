@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { SectionWrapper, SectionTitle } from "@/components/shared/SectionLayout";
+import { SectionWrapper, SectionTitle, ChipTabs } from "@/components/shared/SectionLayout";
 import {
   getActiveChildId,
   loadChildProfile,
@@ -77,19 +77,19 @@ export function DevelopmentSection() {
   const render = () => {
     switch (tab) {
       case "newborn":
-        return <NewbornSection />;
+        return <NewbornSection embedded />;
       case "psychdev":
-        return <PsychdevSection />;
+        return <PsychdevSection embedded />;
       case "preschool":
-        return <PreschoolSection />;
+        return <PreschoolSection embedded />;
       case "feeding":
-        return <FeedingSection />;
+        return <FeedingSection embedded />;
       case "feedlog":
-        return <FeedingLogSection />;
+        return <FeedingLogSection embedded />;
       case "sleep":
-        return <SleepSection />;
+        return <SleepSection embedded />;
       case "teeth":
-        return <TeethSection />;
+        return <TeethSection embedded />;
     }
   };
 
@@ -101,27 +101,8 @@ export function DevelopmentSection() {
         subtitle="От новорождённого до школы: развитие, питание, сон и зубы"
       />
 
-      <div ref={tabsRef} className="-mx-4 px-4 mb-5 overflow-x-auto scrollbar-none">
-        <div className="flex gap-2 w-max">
-          {tabs.map((t) => {
-            const active = tab === t.id;
-            return (
-              <button
-                key={t.id}
-                data-tab={t.id}
-                onClick={() => selectTab(t.id)}
-                className={`flex items-center gap-1.5 rounded-2xl py-2.5 px-3.5 text-[13px] font-semibold border whitespace-nowrap transition-colors ${
-                  active
-                    ? "bg-primary text-white border-primary"
-                    : "bg-white text-foreground border-border"
-                }`}
-              >
-                <span className="text-base">{t.emoji}</span>
-                {t.label}
-              </button>
-            );
-          })}
-        </div>
+      <div ref={tabsRef}>
+        <ChipTabs value={tab} onChange={selectTab} options={tabs} />
       </div>
 
       {render()}

@@ -23,7 +23,7 @@ export function FeedingLogSummary({
 }: Props) {
   return (
     <>
-      <div className="bg-white border border-border rounded-2xl p-4 shadow-sm mb-3">
+      <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mb-3">
         <div className="flex items-center gap-3">
           <div className="flex-1">
             <p className="text-[11px] text-muted-foreground">Сегодня кормлений</p>
@@ -67,7 +67,7 @@ export function FeedingLogSummary({
       </div>
 
       {norm && (
-        <div className="bg-mint-50 border border-mint-200 rounded-2xl p-3.5 mb-4 flex items-start gap-2.5">
+        <div className="bg-mint-50 border border-mint-200 rounded-3xl p-3.5 mb-4 flex items-start gap-2.5">
           <Icon name="Info" size={16} className="text-primary flex-shrink-0 mt-0.5" />
           <p className="text-[12px] text-foreground leading-snug">
             Ориентир для возраста {norm.label}: {norm.min}–{norm.max} кормлений в сутки,{" "}

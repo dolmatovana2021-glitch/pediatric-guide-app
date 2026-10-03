@@ -109,12 +109,13 @@ const portions: PortionRow[] = [
   { product: "Хлеб пшеничный", m4_5: "—", m6: "—", m7: "—", m8: "5", m9_12: "10" },
 ];
 
-export function FeedingSection() {
+export function FeedingSection({ embedded = false }: { embedded?: boolean } = {}) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
     <SectionWrapper>
       <SectionTitle
+        compact={embedded}
         emoji="🥣"
         title="Организация прикорма"
         subtitle="По методическим рекомендациям НМИЦ здоровья детей"
@@ -126,7 +127,7 @@ export function FeedingSection() {
           return (
             <div
               key={block.title}
-              className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm"
+              className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm"
             >
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
@@ -175,7 +176,7 @@ export function FeedingSection() {
         })}
       </div>
 
-      <div className="mt-6 bg-white border border-border rounded-2xl shadow-sm overflow-hidden">
+      <div className="mt-6 bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
         <div className="p-4 flex items-center gap-3 border-b border-border">
           <div className="w-10 h-10 rounded-xl border bg-orange-50 text-orange-600 border-orange-200 flex items-center justify-center flex-shrink-0">
             <Icon name="CalendarDays" size={18} />
@@ -199,8 +200,8 @@ export function FeedingSection() {
             </thead>
             <tbody>
               {portions.map((row, i) => (
-                <tr key={row.product} className={i % 2 ? "bg-muted/40" : "bg-white"}>
-                  <td className={`text-left px-3 py-2 font-medium text-foreground whitespace-nowrap sticky left-0 ${i % 2 ? "bg-muted/40" : "bg-white"}`}>
+                <tr key={row.product} className={i % 2 ? "bg-muted/40" : "bg-card"}>
+                  <td className={`text-left px-3 py-2 font-medium text-foreground whitespace-nowrap sticky left-0 ${i % 2 ? "bg-muted/40" : "bg-card"}`}>
                     {row.product}
                   </td>
                   <td className="text-center px-2 py-2 text-foreground">{row.m4_5}</td>
@@ -222,9 +223,9 @@ export function FeedingSection() {
         href="https://nczd.ru/wp-content/uploads/2019/12/Met_rekom_1_god_.pdf"
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-4 bg-mint-50 border border-mint-200 rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98] transition-transform"
+        className="mt-4 bg-mint-50 border border-mint-200 rounded-3xl p-4 flex items-center gap-3 active:scale-[0.98] transition-transform"
       >
-        <div className="w-10 h-10 rounded-xl bg-white border border-mint-200 flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-10 rounded-xl bg-card border border-mint-200 flex items-center justify-center flex-shrink-0">
           <Icon name="FileText" size={18} className="text-primary" />
         </div>
         <div className="flex-1 min-w-0">

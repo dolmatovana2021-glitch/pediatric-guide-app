@@ -38,7 +38,7 @@ export function TeethPickerModal({
       onClick={() => setPicked(null)}
     >
       <div
-        className="bg-white rounded-2xl p-4 w-full max-w-sm shadow-xl"
+        className="bg-card rounded-2xl p-4 w-full max-w-sm shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <p className="font-bold text-foreground text-sm">{picked.group}</p>
@@ -48,7 +48,7 @@ export function TeethPickerModal({
         </p>
 
         {picked.kind === "primary" && getLostDate(teeth, picked.id) && (
-          <div className="bg-violet-50 border border-violet-200 rounded-xl px-3 py-2 mb-3">
+          <div className="bg-violet-50 border border-violet-200 rounded-2xl px-3 py-2 mb-3">
             <p className="text-[11px] text-foreground leading-snug">
               Зуб выпал {fmtDate(getLostDate(teeth, picked.id)!)}.
               {(() => {
@@ -69,7 +69,7 @@ export function TeethPickerModal({
             const lostAt = getLostDate(teeth, prev);
             if (!lostAt || teeth[picked.id]) return null;
             return (
-              <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-3">
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl px-3 py-2 mb-3">
                 <p className="text-[11px] text-foreground leading-snug">
                   Молочный зуб на этом месте выпал {fmtDate(lostAt)}. Постоянный ещё не
                   отмечен.
@@ -86,13 +86,13 @@ export function TeethPickerModal({
           value={dateInput}
           max={today()}
           onChange={(e) => setDateInput(e.target.value)}
-          className="block w-full box-border appearance-none h-[42px] px-3 bg-white border border-border rounded-xl text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="block w-full box-border appearance-none h-[42px] px-3 bg-card border border-border rounded-xl text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
 
         <div className="flex gap-2">
           <button
             onClick={confirmTooth}
-            className="flex-1 bg-primary text-white rounded-xl py-2.5 font-semibold text-sm active:scale-95 transition-transform"
+            className="flex-1 bg-primary text-primary-foreground rounded-xl py-2.5 font-semibold text-sm active:scale-95 transition-transform"
           >
             Прорезался
           </button>
@@ -100,7 +100,7 @@ export function TeethPickerModal({
             (getLostDate(teeth, picked.id) ? (
               <button
                 onClick={unmarkLost}
-                className="px-4 bg-white border border-violet-300 text-violet-700 rounded-xl py-2.5 font-semibold text-sm"
+                className="px-4 bg-card border border-violet-300 text-violet-700 rounded-xl py-2.5 font-semibold text-sm"
               >
                 Не выпал
               </button>
@@ -115,7 +115,7 @@ export function TeethPickerModal({
           {teeth[picked.id] && (
             <button
               onClick={clearTooth}
-              className="px-4 bg-white border border-border text-foreground rounded-xl py-2.5 font-semibold text-sm"
+              className="px-4 bg-card border border-border text-foreground rounded-xl py-2.5 font-semibold text-sm"
             >
               Убрать
             </button>
@@ -123,7 +123,7 @@ export function TeethPickerModal({
         </div>
         <button
           onClick={() => setPicked(null)}
-          className="w-full mt-2 bg-white border border-border text-muted-foreground rounded-xl py-2.5 font-semibold text-sm"
+          className="w-full mt-2 bg-card border border-border text-muted-foreground rounded-xl py-2.5 font-semibold text-sm"
         >
           Отмена
         </button>

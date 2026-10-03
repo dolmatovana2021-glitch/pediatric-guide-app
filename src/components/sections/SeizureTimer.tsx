@@ -139,7 +139,7 @@ export function SeizureTimer() {
         </p>
       </div>
 
-      <div className="bg-white rounded-xl p-4 text-center border border-yellow-100">
+      <div className="bg-card rounded-xl p-4 text-center border border-yellow-100">
         <p
           className={`text-5xl font-bold tabular-nums tracking-tight ${
             danger ? "text-rose-600" : warn ? "text-amber-600" : "text-foreground"
@@ -201,20 +201,20 @@ export function SeizureTimer() {
         )}
         {!running && state.endedAt !== null && (
           <>
-            <div className="col-span-2 bg-white border border-yellow-200 rounded-lg p-2 text-center">
+            <div className="col-span-2 bg-card border border-yellow-200 rounded-lg p-2 text-center">
               <p className="text-[11px] text-muted-foreground">Длительность приступа</p>
               <p className="text-base font-bold text-foreground">{formatTime(state.elapsedMs)}</p>
             </div>
             <button
               onClick={start}
-              className="bg-white border border-yellow-300 text-yellow-700 font-semibold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5"
+              className="bg-card border border-yellow-300 text-yellow-700 font-semibold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5"
             >
               <Icon name="RotateCcw" size={14} />
               Новый приступ
             </button>
             <button
               onClick={reset}
-              className="bg-white border border-border text-muted-foreground font-semibold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5"
+              className="bg-card border border-border text-muted-foreground font-semibold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5"
             >
               <Icon name="X" size={14} />
               Сбросить

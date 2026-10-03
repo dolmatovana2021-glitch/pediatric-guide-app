@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
-import { SectionWrapper, SectionTitle } from "@/components/shared/SectionLayout";
+import { SectionWrapper, SectionTitle, Segmented } from "@/components/shared/SectionLayout";
 import {
   preschoolAges,
   schoolReadiness,
@@ -15,7 +15,7 @@ function AgeDetails({ item }: { item: PsychdevAge }) {
     <div className="px-3.5 pb-3.5 space-y-3 animate-fade-in">
       <div className="space-y-2.5">
         {item.domains.map((d) => (
-          <div key={d.label} className="bg-mint-50 border border-mint-200 rounded-xl p-3">
+          <div key={d.label} className="bg-mint-50 border border-mint-200 rounded-2xl p-3">
             <div className="flex items-center gap-2 mb-1.5">
               <Icon name={d.icon} fallback="Sparkles" size={15} className="text-primary" />
               <span className="text-[13px] font-bold text-foreground">{d.label}</span>
@@ -37,7 +37,7 @@ function AgeDetails({ item }: { item: PsychdevAge }) {
         ))}
       </div>
 
-      <div className="bg-rose-50 border border-rose-100 rounded-xl p-3">
+      <div className="bg-rose-50 border border-rose-100 rounded-2xl p-3">
         <div className="flex items-center gap-2 mb-1.5">
           <Icon name="TriangleAlert" size={15} className="text-rose-600" />
           <span className="text-[13px] font-bold text-rose-700">
@@ -57,7 +57,7 @@ function AgeDetails({ item }: { item: PsychdevAge }) {
   );
 }
 
-export function PreschoolSection() {
+export function PreschoolSection({ embedded = false }: { embedded?: boolean } = {}) {
   const [tab, setTab] = useState<Tab>("ages");
   const [openId, setOpenId] = useState<string | null>(null);
   const [openBlock, setOpenBlock] = useState<number | null>(0);
@@ -65,33 +65,20 @@ export function PreschoolSection() {
   return (
     <SectionWrapper>
       <SectionTitle
+        compact={embedded}
         emoji="🎒"
         title="Дошкольник 3–7 лет"
         subtitle="Возрастные нормы, речь и подготовка к школе"
       />
 
-      <div className="flex gap-2 mb-4">
-        <button
-          onClick={() => setTab("ages")}
-          className={`flex-1 rounded-xl py-2 text-[13px] font-semibold border transition-colors ${
-            tab === "ages"
-              ? "bg-primary text-white border-primary"
-              : "bg-white text-foreground border-border"
-          }`}
-        >
-          Нормы по возрасту
-        </button>
-        <button
-          onClick={() => setTab("school")}
-          className={`flex-1 rounded-xl py-2 text-[13px] font-semibold border transition-colors ${
-            tab === "school"
-              ? "bg-primary text-white border-primary"
-              : "bg-white text-foreground border-border"
-          }`}
-        >
-          Готовность к школе
-        </button>
-      </div>
+      <Segmented
+        value={tab}
+        onChange={setTab}
+        options={[
+          { id: "ages", label: "Нормы по возрасту", icon: "ListChecks" },
+          { id: "school", label: "Готовность к школе", icon: "GraduationCap" },
+        ]}
+      />
 
       {tab === "ages" ? (
         <div className="space-y-2.5">
@@ -100,7 +87,7 @@ export function PreschoolSection() {
             return (
               <div
                 key={item.id}
-                className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm"
+                className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm"
               >
                 <button
                   onClick={() => setOpenId(isOpen ? null : item.id)}
@@ -133,7 +120,7 @@ export function PreschoolSection() {
             return (
               <div
                 key={block.title}
-                className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm"
+                className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm"
               >
                 <button
                   onClick={() => setOpenBlock(isOpen ? null : i)}
@@ -182,7 +169,7 @@ export function PreschoolSection() {
         </div>
       )}
 
-      <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mt-4">
+      <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-2xl px-3 py-2 mt-4">
         <Icon name="Info" size={15} className="text-amber-600 flex-shrink-0 mt-0.5" />
         <span className="text-[11px] text-amber-800 leading-snug">{PRESCHOOL_DISCLAIMER}</span>
       </div>

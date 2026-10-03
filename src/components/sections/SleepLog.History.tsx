@@ -13,7 +13,7 @@ type Props = {
 export function SleepLogHistory({ totalCount, recent, childId, onRemove }: Props) {
   if (totalCount === 0) {
     return (
-      <div className="bg-white border border-dashed border-border rounded-2xl p-8 text-center">
+      <div className="bg-card border border-dashed border-border rounded-3xl p-8 text-center">
         <Icon name="Moon" size={28} className="text-muted-foreground mx-auto mb-2" />
         <p className="text-[13px] text-muted-foreground leading-snug">
           Записей пока нет. Отмечайте засыпание и пробуждение — приложение посчитает
@@ -34,7 +34,7 @@ export function SleepLogHistory({ totalCount, recent, childId, onRemove }: Props
         return (
           <div
             key={e.id}
-            className="bg-white border border-border rounded-2xl px-3.5 py-3 flex items-center gap-2.5 shadow-sm"
+            className="bg-card border border-border rounded-3xl px-3.5 py-3 flex items-center gap-2.5 shadow-sm"
           >
             <span className="text-base">{night ? "🌙" : "☀️"}</span>
             <div className="flex-1 min-w-0">

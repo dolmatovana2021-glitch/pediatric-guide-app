@@ -3,12 +3,13 @@ import Icon from "@/components/ui/icon";
 import { SectionWrapper, SectionTitle } from "@/components/shared/SectionLayout";
 import { newbornBlocks, NEWBORN_DISCLAIMER } from "@/components/shared/newbornData";
 
-export function NewbornSection() {
+export function NewbornSection({ embedded = false }: { embedded?: boolean } = {}) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
     <SectionWrapper>
       <SectionTitle
+        compact={embedded}
         emoji="👶"
         title="Новорождённый"
         subtitle="Первый месяц: уход, нормы и тревожные признаки"
@@ -20,7 +21,7 @@ export function NewbornSection() {
           return (
             <div
               key={block.title}
-              className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm"
+              className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm"
             >
               <button
                 onClick={() => setOpen(isOpen ? null : i)}

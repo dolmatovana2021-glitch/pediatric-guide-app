@@ -94,7 +94,7 @@ type ResultProps = {
 export function ResultBlock({ drug, form, blocked, result, weightNum }: ResultProps) {
   if (!result || blocked) return null;
   return (
-    <div className="bg-white border border-mint-200 rounded-xl p-3 space-y-2 animate-fade-in">
+    <div className="bg-card border border-mint-200 rounded-xl p-3 space-y-2 animate-fade-in">
       <div className="flex items-baseline justify-between gap-2">
         <p className="text-[11px] text-muted-foreground">Разовая доза для {weightNum} кг</p>
         <p className="text-[10px] text-muted-foreground">{form.concentrationLabel}</p>

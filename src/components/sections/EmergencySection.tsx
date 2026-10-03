@@ -32,7 +32,7 @@ export function EmergencySection() {
 
       <div className="space-y-3">
         {emergencyItems.map((item, i) => (
-          <div key={i} className={`bg-white border ${item.color.includes("red") ? "border-red-200" : item.color.includes("orange") ? "border-orange-200" : "border-amber-200"} rounded-2xl overflow-hidden shadow-sm`}>
+          <div key={i} className={`bg-card border ${item.color.includes("red") ? "border-red-200" : item.color.includes("orange") ? "border-orange-200" : "border-amber-200"} rounded-2xl overflow-hidden shadow-sm`}>
             <button
               onClick={() => setOpen(open === i ? null : i)}
               className="w-full flex items-start gap-3 p-4 text-left"
@@ -51,7 +51,7 @@ export function EmergencySection() {
             {open === i && (
               <div className="px-4 pb-4 animate-fade-in space-y-3">
                 <div>
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5">Признаки</p>
+                  <p className="text-[12px] font-bold text-muted-foreground mb-1.5">Признаки</p>
                   <ul className="space-y-1">
                     {item.signs.map((sign, j) => (
                       <li key={j} className="flex items-center gap-2 text-sm text-foreground">
@@ -61,7 +61,7 @@ export function EmergencySection() {
                     ))}
                   </ul>
                 </div>
-                <div className="bg-red-50 border border-red-100 rounded-xl p-3">
+                <div className="bg-red-50 border border-red-100 rounded-2xl p-3">
                   <p className="text-xs font-bold text-red-700 mb-1">Что делать</p>
                   <p className="text-sm text-foreground leading-relaxed">{item.action}</p>
                 </div>

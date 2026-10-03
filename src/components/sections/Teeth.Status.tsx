@@ -42,7 +42,7 @@ export function TeethStatus({
       </div>
 
       {kind === "primary" && lostCount > 0 && (
-        <div className="bg-violet-50 border border-violet-200 rounded-2xl p-3.5 mb-4 flex items-start gap-2.5">
+        <div className="bg-violet-50 border border-violet-200 rounded-3xl p-3.5 mb-4 flex items-start gap-2.5">
           <Icon name="Sparkles" fallback="Info" size={16} className="text-violet-600 flex-shrink-0 mt-0.5" />
           <p className="text-[12px] text-foreground leading-snug">
             Выпало молочных зубов: {lostCount}. Постоянный зуб обычно появляется в
@@ -53,7 +53,7 @@ export function TeethStatus({
       )}
 
       {kind === "permanent" && waitingPermanent.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 mb-4 flex items-start gap-2.5">
+        <div className="bg-amber-50 border border-amber-200 rounded-3xl p-3.5 mb-4 flex items-start gap-2.5">
           <Icon name="Clock" size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
           <div className="text-[12px] text-foreground leading-snug">
             <p className="mb-1">
@@ -81,7 +81,7 @@ export function TeethStatus({
             {history.map(({ tooth, date }) => (
                 <div
                   key={tooth.id}
-                  className="bg-white border border-border rounded-xl px-3 py-2.5 flex items-center gap-2.5 shadow-sm"
+                  className="bg-card border border-border rounded-xl px-3 py-2.5 flex items-center gap-2.5 shadow-sm"
                 >
                   <span className="text-base">🦷</span>
                   <div className="flex-1 min-w-0">

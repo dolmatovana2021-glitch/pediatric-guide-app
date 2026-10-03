@@ -37,7 +37,7 @@ export function WeightInput({
           className={`w-full flex items-center gap-2 rounded-xl px-3 py-2 border text-xs transition ${
             usedProfile && weight === profile.weight
               ? "bg-primary/10 border-primary/30 text-primary"
-              : "bg-white border-mint-200 text-foreground hover:bg-mint-100"
+              : "bg-card border-mint-200 text-foreground hover:bg-mint-100"
           }`}
         >
           <span className="text-base">
@@ -65,7 +65,7 @@ export function WeightInput({
             value={weight}
             onChange={(e) => onChange(e.target.value)}
             placeholder="например, 12"
-            className="w-full px-3 py-2.5 bg-white border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+            className="w-full px-3 py-2.5 bg-card border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
           />
           {weight && (
             <button

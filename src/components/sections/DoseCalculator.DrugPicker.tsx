@@ -36,10 +36,10 @@ export function DrugPicker({
                 drugKey === d.key
                   ? isUnsafe
                     ? "bg-rose-500 text-white border-rose-500"
-                    : "bg-primary text-white border-primary"
+                    : "bg-primary text-primary-foreground border-primary"
                   : isUnsafe
                     ? "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
-                    : "bg-white text-foreground border-mint-200 hover:bg-mint-100"
+                    : "bg-card text-foreground border-mint-200 hover:bg-mint-100"
               }`}
             >
               {isUnsafe && <span className="mr-1">⛔</span>}
@@ -66,10 +66,10 @@ export function DrugPicker({
                     active
                       ? fAgeBad
                         ? "bg-rose-500 text-white border-rose-500"
-                        : "bg-primary text-white border-primary"
+                        : "bg-primary text-primary-foreground border-primary"
                       : fAgeBad
                         ? "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
-                        : "bg-white text-foreground border-mint-200 hover:bg-mint-100"
+                        : "bg-card text-foreground border-mint-200 hover:bg-mint-100"
                   }`}
                 >
                   {fAgeBad && <span className="mr-1">⛔</span>}

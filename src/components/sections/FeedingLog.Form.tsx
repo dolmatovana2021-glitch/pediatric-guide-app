@@ -1,3 +1,4 @@
+import { Segmented } from "@/components/shared/SectionLayout";
 import Icon from "@/components/ui/icon";
 import { type FeedType } from "@/components/shared/childProfile";
 import { typeMeta, localNow } from "./FeedingLog.data";
@@ -40,7 +41,7 @@ export function FeedingLogForm({
           setDatetime(localNow());
           setOpen(true);
         }}
-        className="w-full bg-primary text-white rounded-2xl py-3 text-sm font-semibold flex items-center justify-center gap-2 mb-4 shadow-sm active:scale-95 transition-transform"
+        className="w-full bg-primary text-primary-foreground rounded-2xl py-3 text-sm font-semibold flex items-center justify-center gap-2 mb-4 shadow-sm active:scale-95 transition-transform"
       >
         <Icon name="Plus" size={16} />
         Добавить кормление
@@ -49,27 +50,20 @@ export function FeedingLogForm({
   }
 
   return (
-    <div className="bg-white border border-border rounded-2xl p-4 shadow-sm mb-4 space-y-3">
+    <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mb-4 space-y-3">
       <div>
         <label className="text-[11px] font-semibold text-muted-foreground block mb-1.5">
           Чем кормили
         </label>
-        <div className="flex gap-2">
-          {(Object.keys(typeMeta) as FeedType[]).map((t) => (
-            <button
-              key={t}
-              onClick={() => setType(t)}
-              className={`flex-1 rounded-xl py-2 text-[13px] font-semibold border transition-colors flex items-center justify-center gap-1.5 ${
-                type === t
-                  ? "bg-primary text-white border-primary"
-                  : "bg-mint-50 text-foreground border-mint-200"
-              }`}
-            >
-              <span>{typeMeta[t].emoji}</span>
-              {typeMeta[t].label}
-            </button>
-          ))}
-        </div>
+        <Segmented
+          value={type}
+          onChange={setType}
+          options={(Object.keys(typeMeta) as FeedType[]).map((t) => ({
+            id: t,
+            label: typeMeta[t].label,
+            emoji: typeMeta[t].emoji,
+          }))}
+        />
       </div>
 
       <div>
@@ -80,7 +74,7 @@ export function FeedingLogForm({
           type="datetime-local"
           value={datetime}
           onChange={(e) => setDatetime(e.target.value)}
-          className="block w-full box-border appearance-none h-[42px] px-3 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="block w-full box-border appearance-none h-[42px] px-3 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
 
@@ -97,7 +91,7 @@ export function FeedingLogForm({
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
             placeholder="20"
-            className="block w-full box-border appearance-none px-3 py-2.5 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+            className="block w-full box-border appearance-none px-3 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
       ) : (
@@ -113,7 +107,7 @@ export function FeedingLogForm({
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="120"
-            className="block w-full box-border appearance-none px-3 py-2.5 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+            className="block w-full box-border appearance-none px-3 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
       )}
@@ -127,20 +121,20 @@ export function FeedingLogForm({
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="Например: срыгнул, ел с аппетитом"
-          className="block w-full box-border appearance-none px-3 py-2.5 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="block w-full box-border appearance-none px-3 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
 
       <div className="flex gap-2">
         <button
           onClick={save}
-          className="flex-1 bg-primary text-white rounded-xl py-2.5 font-semibold text-sm active:scale-95 transition-transform"
+          className="flex-1 bg-primary text-primary-foreground rounded-xl py-2.5 font-semibold text-sm active:scale-95 transition-transform"
         >
           Сохранить
         </button>
         <button
           onClick={() => setOpen(false)}
-          className="px-4 bg-white border border-border text-foreground rounded-xl py-2.5 font-semibold text-sm"
+          className="px-4 bg-card border border-border text-foreground rounded-xl py-2.5 font-semibold text-sm"
         >
           Отмена
         </button>

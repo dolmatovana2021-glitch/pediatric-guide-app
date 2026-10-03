@@ -51,7 +51,7 @@ export function CheckupSection() {
             {profile.name ? `Осмотры: ${profile.name}` : "График осмотров"}
           </p>
           {age && (
-            <span className="ml-auto text-[11px] font-semibold bg-white text-sky-700 px-2 py-0.5 rounded-full border border-sky-200">
+            <span className="ml-auto text-[11px] font-semibold bg-card text-sky-700 px-2 py-0.5 rounded-full border border-sky-200">
               {age.label}
             </span>
           )}
@@ -74,7 +74,7 @@ export function CheckupSection() {
               {Math.round((doneCount / checkupPeriods.length) * 100)}%
             </span>
           </div>
-          <div className="h-2 rounded-full bg-white border border-sky-100 overflow-hidden">
+          <div className="h-2 rounded-full bg-card border border-sky-100 overflow-hidden">
             <div
               className="h-full bg-sky-500 rounded-full transition-all"
               style={{ width: `${(doneCount / checkupPeriods.length) * 100}%` }}
@@ -93,7 +93,7 @@ export function CheckupSection() {
           return (
             <div
               key={p.id}
-              className={`bg-white border rounded-2xl overflow-hidden shadow-sm ${
+              className={`bg-card border rounded-2xl overflow-hidden shadow-sm ${
                 isDone
                   ? "border-emerald-300 ring-1 ring-emerald-100"
                   : isCurrent
@@ -161,14 +161,14 @@ export function CheckupSection() {
               {open && (
                 <div className="px-3.5 pb-3.5 space-y-3 animate-fade-in">
                   <div>
-                    <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5">
+                    <p className="text-[12px] font-bold text-muted-foreground mb-1.5">
                       Врачи-специалисты
                     </p>
                     <div className="space-y-1.5">
                       {doctors.map((d, i) => (
                         <div
                           key={i}
-                          className="flex items-start gap-2 bg-mint-50 border border-mint-200 rounded-xl px-3 py-2"
+                          className="flex items-start gap-2 bg-mint-50 border border-mint-200 rounded-2xl px-3 py-2"
                         >
                           <Icon name="Stethoscope" size={15} className="text-primary flex-shrink-0 mt-0.5" />
                           <span className="text-xs text-foreground leading-snug">{d}</span>
@@ -179,14 +179,14 @@ export function CheckupSection() {
 
                   {p.studies.length > 0 ? (
                     <div>
-                      <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5">
+                      <p className="text-[12px] font-bold text-muted-foreground mb-1.5">
                         Лабораторные и инструментальные исследования
                       </p>
                       <div className="space-y-1.5">
                         {p.studies.map((s, i) => (
                           <div
                             key={i}
-                            className="flex items-start gap-2 bg-sky-50 border border-sky-100 rounded-xl px-3 py-2"
+                            className="flex items-start gap-2 bg-sky-50 border border-sky-100 rounded-2xl px-3 py-2"
                           >
                             <Icon name="FlaskConical" size={15} className="text-sky-600 flex-shrink-0 mt-0.5" />
                             <span className="text-xs text-foreground leading-snug">{s}</span>
@@ -204,7 +204,7 @@ export function CheckupSection() {
                     onClick={() => toggle(p.id)}
                     className={`w-full rounded-xl py-2.5 px-4 font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform border ${
                       isDone
-                        ? "bg-white text-emerald-700 border-emerald-300"
+                        ? "bg-card text-emerald-700 border-emerald-300"
                         : "bg-emerald-500 text-white border-emerald-500"
                     }`}
                   >

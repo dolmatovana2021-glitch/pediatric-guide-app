@@ -26,7 +26,7 @@ import { TeethChart } from "./Teeth.Chart";
 import { TeethStatus } from "./Teeth.Status";
 import { TeethPickerModal } from "./Teeth.PickerModal";
 
-export function TeethSection() {
+export function TeethSection({ embedded = false }: { embedded?: boolean } = {}) {
   const [childId, setChildId] = useState("");
   const [hasChild, setHasChild] = useState(false);
   const [teeth, setTeeth] = useState<Record<string, string>>({});
@@ -184,13 +184,14 @@ export function TeethSection() {
   return (
     <SectionWrapper>
       <SectionTitle
+        compact={embedded}
         emoji="🦷"
         title="Зубная формула"
         subtitle="Отмечайте молочные и коренные зубы на схеме и следите за сроками"
       />
 
       {!hasChild ? (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+        <div className="bg-amber-50 border border-amber-200 rounded-3xl p-4 flex items-start gap-3">
           <Icon name="Info" size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
           <p className="text-[13px] text-foreground leading-snug">
             Сначала добавьте ребёнка в разделе «Профиль» — отметки привязываются к ребёнку.

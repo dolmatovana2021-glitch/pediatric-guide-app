@@ -17,7 +17,7 @@ import { FeedingLogSummary } from "./FeedingLog.Summary";
 import { FeedingLogForm } from "./FeedingLog.Form";
 import { FeedingLogHistory } from "./FeedingLog.History";
 
-export function FeedingLogSection() {
+export function FeedingLogSection({ embedded = false }: { embedded?: boolean } = {}) {
   const [childId, setChildId] = useState("");
   const [hasChild, setHasChild] = useState(false);
   const [entries, setEntries] = useState<FeedEntry[]>([]);
@@ -93,13 +93,14 @@ export function FeedingLogSection() {
   return (
     <SectionWrapper>
       <SectionTitle
+        compact={embedded}
         emoji="🍼"
         title="Кормление"
         subtitle="Время, объём смеси и грудное вскармливание"
       />
 
       {!hasChild ? (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+        <div className="bg-amber-50 border border-amber-200 rounded-3xl p-4 flex items-start gap-3">
           <Icon name="Info" size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
           <p className="text-[13px] text-foreground leading-snug">
             Сначала добавьте ребёнка в разделе «Профиль» — записи привязываются к ребёнку.

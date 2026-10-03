@@ -75,14 +75,14 @@ export function RedFlagsSection() {
     <SectionWrapper>
       <SectionTitle emoji="🚩" title="Красные флаги" subtitle="Симптомы, при которых нужно срочно к врачу" />
 
-      <div className="bg-rose-50 border border-rose-200 rounded-2xl p-3 mb-4 flex gap-2 items-start">
+      <div className="bg-rose-50 border border-rose-200 rounded-3xl p-3 mb-4 flex gap-2 items-start">
         <span className="text-base flex-shrink-0">⚠️</span>
         <p className="text-xs text-rose-700 leading-relaxed">
           Это сигналы организма, которые нельзя игнорировать. Если видите хотя бы один — немедленно к врачу или 103.
         </p>
       </div>
 
-      <div className="bg-white border border-mint-200 rounded-2xl p-3 mb-3 shadow-sm">
+      <div className="bg-card border border-mint-200 rounded-3xl p-3 mb-3 shadow-sm">
         <div className="relative">
           <Icon name="Search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -93,7 +93,7 @@ export function RedFlagsSection() {
               setOpen(null);
             }}
             placeholder="Найти симптом: рвота, сыпь, температура..."
-            className="w-full pl-10 pr-10 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+            className="w-full pl-10 pr-10 py-2.5 bg-mint-50 border border-mint-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
           />
           {query && (
             <button
@@ -116,7 +116,7 @@ export function RedFlagsSection() {
               }}
               className={`text-[11px] px-2.5 py-1 rounded-full border font-medium transition ${
                 q === tag
-                  ? "bg-primary text-white border-primary"
+                  ? "bg-primary text-primary-foreground border-primary"
                   : "bg-mint-50 text-primary border-mint-200 hover:bg-mint-100"
               }`}
             >
@@ -137,7 +137,7 @@ export function RedFlagsSection() {
       </div>
 
       {filteredFlags.length === 0 && q ? (
-        <div className="bg-white border border-mint-200 rounded-2xl p-6 text-center">
+        <div className="bg-card border border-mint-200 rounded-3xl p-6 text-center">
           <div className="text-4xl mb-2">🔍</div>
           <p className="text-sm font-semibold text-foreground mb-1">Ничего не нашли</p>
           <p className="text-xs text-muted-foreground mb-3">
@@ -158,7 +158,7 @@ export function RedFlagsSection() {
             return (
               <div
                 key={i}
-                className={`bg-white border rounded-2xl overflow-hidden shadow-sm ${flag.color.split(" ")[2]}`}
+                className={`bg-card border rounded-2xl overflow-hidden shadow-sm ${flag.color.split(" ")[2]}`}
               >
                 <button
                   onClick={() => setOpen(open === i ? null : i)}
@@ -250,7 +250,7 @@ export function RedFlagsSection() {
                           </div>
                         );
                       })}
-                    <div className="bg-mint-50 border border-mint-200 rounded-xl p-3">
+                    <div className="bg-mint-50 border border-mint-200 rounded-2xl p-3">
                       <p className="text-xs font-bold text-primary mb-1">✅ Главное действие</p>
                       <p className="text-sm text-foreground leading-relaxed">{flag.action}</p>
                     </div>

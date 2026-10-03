@@ -1,3 +1,4 @@
+import { Segmented } from "@/components/shared/SectionLayout";
 import { getLostDate } from "@/components/shared/childProfile";
 import {
   teethOf,
@@ -140,23 +141,16 @@ export function TeethChart({
 }: Props) {
   return (
     <>
-      <div className="flex gap-2 mb-3">
-        {(["primary", "permanent"] as ToothKind[]).map((k) => (
-          <button
-            key={k}
-            onClick={() => setKind(k)}
-            className={`flex-1 rounded-xl py-2 text-[13px] font-semibold border transition-colors ${
-              kind === k
-                ? "bg-primary text-white border-primary"
-                : "bg-white text-foreground border-border"
-            }`}
-          >
-            {k === "primary" ? "Молочные" : "Коренные"}
-          </button>
-        ))}
-      </div>
+      <Segmented
+        value={kind}
+        onChange={setKind}
+        options={[
+          { id: "primary" as ToothKind, label: "Молочные" },
+          { id: "permanent" as ToothKind, label: "Коренные" },
+        ]}
+      />
 
-      <div className="bg-white border border-border rounded-2xl p-4 shadow-sm mb-4">
+      <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mb-4">
         <div className="flex items-center gap-3 mb-4">
           <div className="flex-1">
             <p className="text-[11px] text-muted-foreground">Прорезалось</p>

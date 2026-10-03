@@ -14,7 +14,7 @@ export function ThemeToggle() {
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={isDark ? "Включить светлую тему" : "Включить тёмную тему"}
-      className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center active:scale-95 transition-transform"
+      className="w-10 h-10 rounded-2xl bg-card border border-border shadow-sm flex items-center justify-center active:scale-95 transition-transform"
     >
       <Icon name={isDark ? "Sun" : "Moon"} size={17} className="text-foreground" />
     </button>

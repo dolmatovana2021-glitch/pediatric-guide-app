@@ -139,7 +139,7 @@ export function IllnessDiarySection() {
       />
 
       {!hasChild ? (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+        <div className="bg-amber-50 border border-amber-200 rounded-3xl p-4 flex items-start gap-3">
           <Icon name="Info" size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
           <p className="text-[13px] text-foreground leading-snug">
             Сначала добавьте ребёнка в разделе «Профиль» — записи привязываются к ребёнку.
@@ -148,7 +148,7 @@ export function IllnessDiarySection() {
       ) : (
         <>
           {chartData.length > 0 && (
-            <div className="bg-white border border-border rounded-2xl p-4 shadow-sm mb-4">
+            <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mb-4">
               <div className="flex items-center gap-3 mb-3">
                 <div className="flex-1">
                   <p className="text-[11px] text-muted-foreground">Последняя</p>
@@ -223,7 +223,7 @@ export function IllnessDiarySection() {
           )}
 
           {open ? (
-            <div className="bg-white border border-border rounded-2xl p-4 shadow-sm mb-4 space-y-3">
+            <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mb-4 space-y-3">
               <div>
                 <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
                   Дата и время
@@ -232,7 +232,7 @@ export function IllnessDiarySection() {
                   type="datetime-local"
                   value={datetime}
                   onChange={(e) => setDatetime(e.target.value)}
-                  className="block w-full box-border appearance-none h-[42px] px-3 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="block w-full box-border appearance-none h-[42px] px-3 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
 
@@ -249,7 +249,7 @@ export function IllnessDiarySection() {
                   value={temperature}
                   onChange={(e) => setTemperature(e.target.value)}
                   placeholder="37.5"
-                  className="block w-full box-border appearance-none px-3 py-2.5 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="block w-full box-border appearance-none px-3 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
 
@@ -266,7 +266,7 @@ export function IllnessDiarySection() {
                         onClick={() => toggleSymptom(s)}
                         className={`text-[12px] rounded-full px-3 py-1.5 border font-medium transition-colors ${
                           active
-                            ? "bg-primary text-white border-primary"
+                            ? "bg-primary text-primary-foreground border-primary"
                             : "bg-mint-50 text-foreground border-mint-200"
                         }`}
                       >
@@ -286,7 +286,7 @@ export function IllnessDiarySection() {
                   value={medication}
                   onChange={(e) => setMedication(e.target.value)}
                   placeholder="Например: Парацетамол 120 мг"
-                  className="block w-full box-border appearance-none px-3 py-2.5 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="block w-full box-border appearance-none px-3 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
 
@@ -299,7 +299,7 @@ export function IllnessDiarySection() {
                   onChange={(e) => setNote(e.target.value)}
                   rows={2}
                   placeholder="Как ребёнок себя чувствует"
-                  className="block w-full box-border appearance-none px-3 py-2.5 bg-white border border-border rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="block w-full box-border appearance-none px-3 py-2.5 bg-card border border-border rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
 
@@ -307,13 +307,13 @@ export function IllnessDiarySection() {
                 <button
                   onClick={save}
                   disabled={!canSave}
-                  className="flex-1 bg-primary text-white rounded-xl py-2.5 font-semibold text-sm disabled:opacity-50 active:scale-95 transition-transform"
+                  className="flex-1 bg-primary text-primary-foreground rounded-xl py-2.5 font-semibold text-sm disabled:opacity-50 active:scale-95 transition-transform"
                 >
                   Сохранить запись
                 </button>
                 <button
                   onClick={() => setOpen(false)}
-                  className="px-4 bg-white border border-border text-foreground rounded-xl py-2.5 font-semibold text-sm"
+                  className="px-4 bg-card border border-border text-foreground rounded-xl py-2.5 font-semibold text-sm"
                 >
                   Отмена
                 </button>
@@ -325,7 +325,7 @@ export function IllnessDiarySection() {
                 setDatetime(localNow());
                 setOpen(true);
               }}
-              className="w-full bg-primary text-white rounded-2xl py-3 text-sm font-semibold flex items-center justify-center gap-2 mb-4 shadow-sm active:scale-95 transition-transform"
+              className="w-full bg-primary text-primary-foreground rounded-2xl py-3 text-sm font-semibold flex items-center justify-center gap-2 mb-4 shadow-sm active:scale-95 transition-transform"
             >
               <Icon name="Plus" size={16} />
               Добавить запись
@@ -333,7 +333,7 @@ export function IllnessDiarySection() {
           )}
 
           {entries.length === 0 ? (
-            <div className="bg-white border border-dashed border-border rounded-2xl p-8 text-center">
+            <div className="bg-card border border-dashed border-border rounded-3xl p-8 text-center">
               <Icon name="NotebookPen" fallback="FileText" size={28} className="text-muted-foreground mx-auto mb-2" />
               <p className="text-[13px] text-muted-foreground leading-snug">
                 Записей пока нет. Добавьте первую, когда малыш заболеет — потом будет
@@ -348,7 +348,7 @@ export function IllnessDiarySection() {
               {[...entries].reverse().map((e) => (
                 <div
                   key={e.id}
-                  className="bg-white border border-border rounded-2xl p-3.5 shadow-sm"
+                  className="bg-card border border-border rounded-3xl p-3.5 shadow-sm"
                 >
                   <div className="flex items-start gap-2">
                     <div className="flex-1 min-w-0">

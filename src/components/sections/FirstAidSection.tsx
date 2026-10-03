@@ -13,13 +13,13 @@ export function FirstAidSection() {
   return (
     <SectionWrapper>
       <SectionTitle emoji="🚑" title="Первая помощь" subtitle="Нажмите на ситуацию, чтобы увидеть шаги" />
-      <div className="bg-red-50 border border-red-200 rounded-2xl p-3 mb-4 flex gap-2 items-center">
+      <div className="bg-red-50 border border-red-200 rounded-3xl p-3 mb-4 flex gap-2 items-center">
         <span className="text-xl">📞</span>
         <p className="text-xs text-red-700 font-medium">При угрозе жизни звоните <strong className="text-base">103</strong> или <strong className="text-base">112</strong></p>
       </div>
       <div className="space-y-3">
         {firstAidItems.map((item, i) => (
-          <div key={i} className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm">
+          <div key={i} className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
             <button
               onClick={() => setOpen(open === i ? null : i)}
               className="w-full flex items-center justify-between p-4"
@@ -35,7 +35,7 @@ export function FirstAidSection() {
             {open === i && (
               <div className="px-4 pb-4 space-y-3 animate-fade-in">
                 {"intro" in item && item.intro && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 space-y-3">
+                  <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3 space-y-3">
                     <div className="flex items-start gap-2">
                       <span className="text-base flex-shrink-0">📖</span>
                       <p className="text-xs text-foreground leading-relaxed">
@@ -43,8 +43,8 @@ export function FirstAidSection() {
                       </p>
                     </div>
                     {item.intro.whenMeasure && (
-                      <div className="bg-white border border-blue-100 rounded-lg p-2.5">
-                        <p className="text-[11px] font-bold text-blue-700 uppercase tracking-wide mb-1.5">
+                      <div className="bg-card border border-blue-100 rounded-lg p-2.5">
+                        <p className="text-[12px] font-bold text-blue-700 mb-1.5">
                           {item.intro.whenMeasure.title}
                         </p>
                         <ul className="space-y-1">
@@ -61,8 +61,8 @@ export function FirstAidSection() {
                       </div>
                     )}
                     {item.intro.normal && (
-                      <div className="bg-white border border-blue-100 rounded-lg p-2.5">
-                        <p className="text-[11px] font-bold text-blue-700 uppercase tracking-wide mb-1.5">
+                      <div className="bg-card border border-blue-100 rounded-lg p-2.5">
+                        <p className="text-[12px] font-bold text-blue-700 mb-1.5">
                           {item.intro.normal.title}
                         </p>
                         <ul className="space-y-1">
@@ -83,7 +83,7 @@ export function FirstAidSection() {
                 <div className="space-y-2">
                   {item.steps.map((step, j) => (
                     <div key={j} className="flex items-start gap-3">
-                      <span className="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold flex-shrink-0 mt-0.5">
+                      <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-bold flex-shrink-0 mt-0.5">
                         {j + 1}
                       </span>
                       <p className="text-sm text-foreground leading-relaxed">{step}</p>
@@ -94,17 +94,17 @@ export function FirstAidSection() {
                 {"timer" in item && item.timer === "seizure" && <SeizureTimer />}
 
                 {"rehydration" in item && item.rehydration && (
-                  <div className="bg-cyan-50 border border-cyan-200 rounded-xl p-3 space-y-2">
+                  <div className="bg-cyan-50 border border-cyan-200 rounded-2xl p-3 space-y-2">
                     <div className="flex items-center gap-2">
                       <span className="text-base">💧</span>
-                      <p className="text-xs font-bold text-cyan-700 uppercase tracking-wide">
+                      <p className="text-[12px] font-bold text-cyan-700">
                         {item.rehydration.title}
                       </p>
                     </div>
                     <p className="text-[11px] text-muted-foreground leading-relaxed">
                       {item.rehydration.note}
                     </p>
-                    <div className="bg-white border border-cyan-100 rounded-xl overflow-hidden">
+                    <div className="bg-card border border-cyan-100 rounded-xl overflow-hidden">
                       <div className="overflow-x-auto">
                         <table className="w-full text-[11px] border-collapse min-w-[480px]">
                           <thead>
@@ -139,7 +139,7 @@ export function FirstAidSection() {
                           </thead>
                           <tbody>
                             {item.rehydration.rows.map((row, r) => (
-                              <tr key={r} className={r % 2 === 0 ? "bg-cyan-50/20" : "bg-white"}>
+                              <tr key={r} className={r % 2 === 0 ? "bg-cyan-50/20" : "bg-card"}>
                                 <td className="border border-cyan-100 px-2 py-1.5 font-semibold text-foreground">
                                   {row.weight}
                                 </td>
@@ -162,15 +162,15 @@ export function FirstAidSection() {
                 )}
 
                 {"donts" in item && item.donts && (
-                  <div className="bg-rose-50 border border-rose-200 rounded-xl p-3">
-                    <p className="text-xs font-bold text-rose-700 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                  <div className="bg-rose-50 border border-rose-200 rounded-2xl p-3">
+                    <p className="text-[12px] font-bold text-rose-700 mb-2 flex items-center gap-1.5">
                       <span className="text-base">⛔</span> {item.donts.title}
                     </p>
                     <ul className="space-y-2">
                       {item.donts.items.map((d, di) => (
                         <li
                           key={di}
-                          className="bg-white border border-rose-200 rounded-lg px-2.5 py-2 text-[12px] text-foreground leading-relaxed"
+                          className="bg-card border border-rose-200 rounded-lg px-2.5 py-2 text-[12px] text-foreground leading-relaxed"
                         >
                           <span className="font-bold text-rose-700">{d.bold}</span>{" "}
                           {d.rest}
@@ -184,7 +184,7 @@ export function FirstAidSection() {
                   <div className="bg-rose-50/60 border border-rose-100 rounded-xl p-3 space-y-3">
                     <div className="flex items-center gap-2">
                       <span className="text-base">💊</span>
-                      <p className="text-xs font-bold text-rose-700 uppercase tracking-wide">
+                      <p className="text-[12px] font-bold text-rose-700">
                         {item.dosing.title}
                       </p>
                     </div>
@@ -195,7 +195,7 @@ export function FirstAidSection() {
                     <DoseCalculator />
 
                     {"doseTable" in item.dosing && item.dosing.doseTable && (
-                      <div className="bg-white border border-rose-100 rounded-xl overflow-hidden">
+                      <div className="bg-card border border-rose-100 rounded-xl overflow-hidden">
                         <div className="overflow-x-auto">
                           <table className="w-full text-[11px] border-collapse min-w-[420px]">
                             <thead>
@@ -241,7 +241,7 @@ export function FirstAidSection() {
                                 </td>
                               </tr>
                               {item.dosing.doseTable.rows.map((row, r) => (
-                                <tr key={r} className={r % 2 === 0 ? "bg-rose-50/20" : "bg-white"}>
+                                <tr key={r} className={r % 2 === 0 ? "bg-rose-50/20" : "bg-card"}>
                                   <td className="border border-rose-100 px-2 py-1.5 font-semibold text-foreground">{row.weight}</td>
                                   {row.cells.map((cell, ci) => (
                                     <td key={ci} className="border border-rose-100 px-2 py-1.5 text-foreground whitespace-nowrap">
@@ -256,7 +256,7 @@ export function FirstAidSection() {
                       </div>
                     )}
 
-                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-2.5">
+                    <div className="bg-amber-50 border border-amber-200 rounded-2xl p-2.5">
                       <p className="text-[11px] font-bold text-amber-700 mb-1">⚠️ Важно</p>
                       <ul className="space-y-1">
                         {item.dosing.warnings.map((w, wi) => (
@@ -270,12 +270,12 @@ export function FirstAidSection() {
 
                     {"forbidden" in item.dosing && item.dosing.forbidden && (
                       <div className="bg-rose-50 border border-rose-300 rounded-xl p-3">
-                        <p className="text-xs font-bold text-rose-700 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                        <p className="text-[12px] font-bold text-rose-700 mb-2 flex items-center gap-1.5">
                           <span className="text-base">⛔</span> Никогда не давать
                         </p>
                         <ul className="space-y-2">
                           {item.dosing.forbidden.map((f, fi) => (
-                            <li key={fi} className="bg-white border border-rose-200 rounded-lg px-2.5 py-2">
+                            <li key={fi} className="bg-card border border-rose-200 rounded-lg px-2.5 py-2">
                               <p className="text-[12px] font-bold text-rose-700">{f.name}</p>
                               <p className="text-[11px] text-foreground leading-relaxed mt-0.5">{f.reason}</p>
                             </li>
@@ -285,8 +285,8 @@ export function FirstAidSection() {
                     )}
 
                     {"cooling" in item.dosing && item.dosing.cooling && (
-                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-3">
-                        <p className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-1 flex items-center gap-1.5">
+                      <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3">
+                        <p className="text-[12px] font-bold text-blue-700 mb-1 flex items-center gap-1.5">
                           <span className="text-base">❄️</span> {item.dosing.cooling.title}
                         </p>
                         <p className="text-[11px] text-muted-foreground leading-relaxed mb-2">
@@ -294,7 +294,7 @@ export function FirstAidSection() {
                         </p>
                         <ul className="space-y-2">
                           {item.dosing.cooling.items.map((c, ci) => (
-                            <li key={ci} className="bg-white border border-blue-100 rounded-lg px-2.5 py-2">
+                            <li key={ci} className="bg-card border border-blue-100 rounded-lg px-2.5 py-2">
                               <p className="text-[12px] font-bold text-blue-700">{c.when}</p>
                               <p className="text-[11px] text-foreground leading-relaxed mt-0.5">{c.what}</p>
                             </li>

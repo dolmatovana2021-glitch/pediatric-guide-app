@@ -24,7 +24,7 @@ import { SleepLogChart } from "./SleepLog.Chart";
 import { SleepLogForm } from "./SleepLog.Form";
 import { SleepLogHistory } from "./SleepLog.History";
 
-export function SleepSection() {
+export function SleepSection({ embedded = false }: { embedded?: boolean } = {}) {
   const [childId, setChildId] = useState("");
   const [hasChild, setHasChild] = useState(false);
   const [entries, setEntries] = useState<SleepEntry[]>([]);
@@ -88,13 +88,14 @@ export function SleepSection() {
   return (
     <SectionWrapper>
       <SectionTitle
+        compact={embedded}
         emoji="😴"
         title="Сон"
         subtitle="Засыпание, пробуждение и сравнение с возрастной нормой"
       />
 
       {!hasChild ? (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+        <div className="bg-amber-50 border border-amber-200 rounded-3xl p-4 flex items-start gap-3">
           <Icon name="Info" size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
           <p className="text-[13px] text-foreground leading-snug">
             Сначала добавьте ребёнка в разделе «Профиль» — записи сна привязываются к ребёнку.

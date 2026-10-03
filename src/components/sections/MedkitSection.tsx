@@ -39,10 +39,10 @@ const stateMeta = {
     card: "bg-amber-50 border-amber-200",
     chip: "bg-amber-500 text-white",
   },
-  ok: { label: "годно", card: "bg-white border-border", chip: "bg-mint-100 text-emerald-700" },
+  ok: { label: "годно", card: "bg-card border-border", chip: "bg-mint-100 text-emerald-700" },
   unknown: {
     label: "срок не указан",
-    card: "bg-white border-border",
+    card: "bg-card border-border",
     chip: "bg-muted text-muted-foreground",
   },
 } as const;
@@ -115,7 +115,7 @@ export function MedkitSection() {
       />
 
       {expired.length > 0 && (
-        <div className="bg-rose-50 border border-rose-200 rounded-2xl p-3.5 mb-3 flex items-start gap-2.5">
+        <div className="bg-rose-50 border border-rose-200 rounded-3xl p-3.5 mb-3 flex items-start gap-2.5">
           <Icon name="TriangleAlert" size={16} className="text-rose-600 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-[13px] font-semibold text-foreground leading-snug">
@@ -130,7 +130,7 @@ export function MedkitSection() {
       )}
 
       {soon.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 mb-3 flex items-start gap-2.5">
+        <div className="bg-amber-50 border border-amber-200 rounded-3xl p-3.5 mb-3 flex items-start gap-2.5">
           <Icon name="Clock" size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
           <p className="text-[12px] text-foreground leading-snug">
             Срок заканчивается в ближайший месяц:{" "}
@@ -140,7 +140,7 @@ export function MedkitSection() {
       )}
 
       {open ? (
-        <div className="bg-white border border-border rounded-2xl p-4 shadow-sm mb-4 space-y-3">
+        <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mb-4 space-y-3">
           <div>
             <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
               Название лекарства
@@ -150,7 +150,7 @@ export function MedkitSection() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Например: Нурофен для детей"
-              className="block w-full box-border appearance-none px-3 py-2.5 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="block w-full box-border appearance-none px-3 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
 
@@ -165,7 +165,7 @@ export function MedkitSection() {
                   onClick={() => setForm(form === f ? "" : f)}
                   className={`text-[12px] rounded-full px-3 py-1.5 border font-medium transition-colors ${
                     form === f
-                      ? "bg-primary text-white border-primary"
+                      ? "bg-primary text-primary-foreground border-primary"
                       : "bg-mint-50 text-foreground border-mint-200"
                   }`}
                 >
@@ -184,7 +184,7 @@ export function MedkitSection() {
               value={dosage}
               onChange={(e) => setDosage(e.target.value)}
               placeholder="Например: 100 мг / 5 мл, по 5 мл 3 раза в день"
-              className="block w-full box-border appearance-none px-3 py-2.5 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="block w-full box-border appearance-none px-3 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
 
@@ -196,7 +196,7 @@ export function MedkitSection() {
               type="date"
               value={expiry}
               onChange={(e) => setExpiry(e.target.value)}
-              className="block w-full box-border appearance-none h-[42px] px-3 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="block w-full box-border appearance-none h-[42px] px-3 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
 
@@ -209,7 +209,7 @@ export function MedkitSection() {
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Например: в холодильнике, от температуры"
-              className="block w-full box-border appearance-none px-3 py-2.5 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="block w-full box-border appearance-none px-3 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
 
@@ -217,13 +217,13 @@ export function MedkitSection() {
             <button
               onClick={save}
               disabled={!name.trim()}
-              className="flex-1 bg-primary text-white rounded-xl py-2.5 font-semibold text-sm disabled:opacity-50 active:scale-95 transition-transform"
+              className="flex-1 bg-primary text-primary-foreground rounded-xl py-2.5 font-semibold text-sm disabled:opacity-50 active:scale-95 transition-transform"
             >
               {editId ? "Сохранить" : "Добавить в аптечку"}
             </button>
             <button
               onClick={reset}
-              className="px-4 bg-white border border-border text-foreground rounded-xl py-2.5 font-semibold text-sm"
+              className="px-4 bg-card border border-border text-foreground rounded-xl py-2.5 font-semibold text-sm"
             >
               Отмена
             </button>
@@ -232,7 +232,7 @@ export function MedkitSection() {
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="w-full bg-primary text-white rounded-2xl py-3 text-sm font-semibold flex items-center justify-center gap-2 mb-4 shadow-sm active:scale-95 transition-transform"
+          className="w-full bg-primary text-primary-foreground rounded-2xl py-3 text-sm font-semibold flex items-center justify-center gap-2 mb-4 shadow-sm active:scale-95 transition-transform"
         >
           <Icon name="Plus" size={16} />
           Добавить лекарство
@@ -240,7 +240,7 @@ export function MedkitSection() {
       )}
 
       {items.length === 0 ? (
-        <div className="bg-white border border-dashed border-border rounded-2xl p-8 text-center">
+        <div className="bg-card border border-dashed border-border rounded-3xl p-8 text-center">
           <Icon name="Pill" size={28} className="text-muted-foreground mx-auto mb-2" />
           <p className="text-[13px] text-muted-foreground leading-snug">
             Аптечка пуста. Добавьте лекарства, которые есть дома — приложение подскажет,

@@ -77,10 +77,10 @@ export function DoseCalculator() {
   }, [w, drug, form, valid]);
 
   return (
-    <div className="bg-mint-50 border border-mint-200 rounded-xl p-3 space-y-3">
+    <div className="bg-mint-50 border border-mint-200 rounded-2xl p-3 space-y-3">
       <div className="flex items-center gap-2">
         <span className="text-base">🧮</span>
-        <p className="text-xs font-bold text-primary uppercase tracking-wide">
+        <p className="text-[12px] font-bold text-primary">
           Калькулятор дозы
         </p>
       </div>

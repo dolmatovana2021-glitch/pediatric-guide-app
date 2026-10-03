@@ -57,7 +57,7 @@ function AccountBlock() {
   const { user } = useAuth();
   if (!user) return null;
   return (
-    <div className="mt-5 bg-white border border-border rounded-2xl p-4 shadow-sm">
+    <div className="mt-5 bg-card border border-border rounded-3xl p-4 shadow-sm">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl bg-mint-50 border border-mint-200 flex items-center justify-center flex-shrink-0">
           <Icon name="Phone" size={18} className="text-primary" />
@@ -165,7 +165,7 @@ export function ProfileSection() {
         subtitle="Можно добавить несколько детей — данные хранятся только на устройстве"
       />
 
-      <div className="bg-white border border-border rounded-2xl p-3 mb-4 shadow-sm">
+      <div className="bg-card border border-border rounded-3xl p-3 mb-4 shadow-sm">
         <div className="flex items-center justify-between mb-2">
           <p className="text-xs font-semibold text-muted-foreground">
             {hasChildren ? `Дети (${children.length})` : "Ещё нет профилей"}
@@ -189,7 +189,7 @@ export function ProfileSection() {
                   onClick={() => selectChild(t.id)}
                   className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-semibold transition ${
                     isActive
-                      ? "bg-primary text-white border-primary shadow"
+                      ? "bg-primary text-primary-foreground border-primary shadow"
                       : "bg-mint-50 text-foreground border-mint-200 hover:bg-mint-100"
                   }`}
                 >
@@ -211,8 +211,8 @@ export function ProfileSection() {
       </div>
 
       {hasChildren && filled && (
-        <div className="bg-mint-50 border border-mint-200 rounded-2xl p-4 mb-4 flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-white border border-mint-200 flex items-center justify-center text-2xl flex-shrink-0">
+        <div className="bg-mint-50 border border-mint-200 rounded-3xl p-4 mb-4 flex items-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-card border border-mint-200 flex items-center justify-center text-2xl flex-shrink-0">
             {emojiFor(profile.gender)}
           </div>
           <div className="flex-1 min-w-0">
@@ -228,7 +228,7 @@ export function ProfileSection() {
       )}
 
       {hasChildren && (
-        <div className="bg-white border border-border rounded-2xl p-4 space-y-4 shadow-sm">
+        <div className="bg-card border border-border rounded-3xl p-4 space-y-4 shadow-sm">
           <div>
             <label className="text-xs font-semibold text-muted-foreground block mb-1.5">
               Имя
@@ -238,7 +238,7 @@ export function ProfileSection() {
               value={profile.name}
               onChange={(e) => update("name", e.target.value)}
               placeholder="Например, Маша"
-              className="block w-full max-w-full min-w-0 box-border appearance-none px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              className="block w-full max-w-full min-w-0 box-border appearance-none px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
             />
           </div>
 
@@ -252,7 +252,7 @@ export function ProfileSection() {
               onChange={(e) => update("birthDate", e.target.value)}
               max={new Date().toISOString().slice(0, 10)}
               style={{ WebkitAppearance: "none", MozAppearance: "none", minHeight: "42px" }}
-              className="block w-full max-w-full min-w-0 box-border appearance-none h-[42px] leading-[1.25rem] px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              className="block w-full max-w-full min-w-0 box-border appearance-none h-[42px] leading-[1.25rem] px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
             />
             {age && (
               <p className="text-[11px] text-primary font-semibold mt-1">
@@ -274,7 +274,7 @@ export function ProfileSection() {
               value={profile.weight}
               onChange={(e) => update("weight", e.target.value)}
               placeholder="Например, 12"
-              className="block w-full max-w-full min-w-0 box-border appearance-none px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              className="block w-full max-w-full min-w-0 box-border appearance-none px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
             />
             <p className="text-[11px] text-muted-foreground mt-1">
               Подставится в калькулятор дозы автоматически
@@ -296,7 +296,7 @@ export function ProfileSection() {
                   onClick={() => update("gender", g.v as ChildProfile["gender"])}
                   className={`text-xs font-semibold py-2 px-2 rounded-lg border transition flex items-center justify-center gap-1 ${
                     profile.gender === g.v
-                      ? "bg-primary text-white border-primary"
+                      ? "bg-primary text-primary-foreground border-primary"
                       : "bg-mint-50 text-foreground border-mint-200 hover:bg-mint-100"
                   }`}
                 >
@@ -316,11 +316,11 @@ export function ProfileSection() {
               onChange={(e) => update("allergies", e.target.value)}
               placeholder="Например: аллергия на пенициллин, лактазная недостаточность"
               rows={3}
-              className="block w-full max-w-full min-w-0 box-border appearance-none px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition resize-none"
+              className="block w-full max-w-full min-w-0 box-border appearance-none px-3 py-2.5 bg-mint-50 border border-mint-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition resize-none"
             />
           </div>
 
-          <div className="bg-mint-50 border border-mint-200 rounded-xl p-3">
+          <div className="bg-mint-50 border border-mint-200 rounded-2xl p-3">
             <button
               onClick={() => update("riskGroup", !profile.riskGroup)}
               className="w-full flex items-center gap-3 text-left"
@@ -348,7 +348,7 @@ export function ProfileSection() {
           <div className="space-y-2">
             <p className="text-xs font-semibold text-muted-foreground">Напоминания на главной</p>
 
-            <div className="bg-mint-50 border border-mint-200 rounded-xl p-3">
+            <div className="bg-mint-50 border border-mint-200 rounded-2xl p-3">
               <button
                 onClick={() => update("notifyVaccines", profile.notifyVaccines === false)}
                 className="w-full flex items-center gap-3 text-left"
@@ -373,7 +373,7 @@ export function ProfileSection() {
               </button>
             </div>
 
-            <div className="bg-mint-50 border border-mint-200 rounded-xl p-3">
+            <div className="bg-mint-50 border border-mint-200 rounded-2xl p-3">
               <button
                 onClick={() => update("notifyCheckups", profile.notifyCheckups === false)}
                 className="w-full flex items-center gap-3 text-left"
@@ -401,7 +401,7 @@ export function ProfileSection() {
 
           <button
             onClick={submit}
-            className="w-full bg-primary text-white rounded-xl py-3 px-4 font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
+            className="w-full bg-primary text-primary-foreground rounded-xl py-3 px-4 font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
           >
             <Icon name={saved ? "Check" : "Save"} size={16} />
             {saved ? "Сохранено" : "Сохранить"}

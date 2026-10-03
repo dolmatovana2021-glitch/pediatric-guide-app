@@ -13,7 +13,7 @@ const statusStyle: Record<
   { chip: string; icon: string; label: string; dot: string }
 > = {
   none: {
-    chip: "bg-white border-border text-muted-foreground",
+    chip: "bg-card border-border text-muted-foreground",
     icon: "Circle",
     label: "Не отмечено",
     dot: "bg-muted-foreground/40",
@@ -100,28 +100,28 @@ export function VaccinationSection() {
             {profile.name ? `Прививки: ${profile.name}` : "Прививочный лист"}
           </p>
           {age && (
-            <span className="ml-auto text-[11px] font-semibold bg-white text-teal-700 px-2 py-0.5 rounded-full border border-teal-200">
+            <span className="ml-auto text-[11px] font-semibold bg-card text-teal-700 px-2 py-0.5 rounded-full border border-teal-200">
               {age.label}
             </span>
           )}
         </div>
         <div className="grid grid-cols-3 gap-2 mb-3">
-          <div className="bg-white rounded-xl p-2.5 text-center border border-emerald-100">
+          <div className="bg-card rounded-xl p-2.5 text-center border border-emerald-100">
             <p className="text-xl font-bold text-emerald-600">{counts.done}</p>
             <p className="text-[10px] text-muted-foreground font-medium">Выполнено</p>
           </div>
-          <div className="bg-white rounded-xl p-2.5 text-center border border-amber-100">
+          <div className="bg-card rounded-xl p-2.5 text-center border border-amber-100">
             <p className="text-xl font-bold text-amber-600">{counts.planned}</p>
             <p className="text-[10px] text-muted-foreground font-medium">Запланировано</p>
           </div>
-          <div className="bg-white rounded-xl p-2.5 text-center border border-border">
+          <div className="bg-card rounded-xl p-2.5 text-center border border-border">
             <p className="text-xl font-bold text-foreground">{counts.total}</p>
             <p className="text-[10px] text-muted-foreground font-medium">Всего доз</p>
           </div>
         </div>
         <button
           onClick={() => saveChildProfile({ ...profile, riskGroup: !inRisk })}
-          className="w-full flex items-center gap-2.5 bg-white rounded-xl p-2.5 border border-teal-100 text-left"
+          className="w-full flex items-center gap-2.5 bg-card rounded-xl p-2.5 border border-teal-100 text-left"
         >
           <span
             className={`w-10 h-5.5 rounded-full flex-shrink-0 relative transition-colors ${
@@ -142,21 +142,21 @@ export function VaccinationSection() {
       </div>
 
       {ageMonths === null ? (
-        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3.5 mb-4 flex items-start gap-2.5">
+        <div className="bg-blue-50 border border-blue-200 rounded-3xl p-3.5 mb-4 flex items-start gap-2.5">
           <Icon name="Info" size={18} className="text-blue-500 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-blue-800 leading-relaxed">
             Укажите дату рождения в профиле — и приложение подсветит прививки, которые уже пора делать по возрасту.
           </p>
         </div>
       ) : counts.due > 0 ? (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-3.5 mb-4 flex items-start gap-2.5">
+        <div className="bg-red-50 border border-red-200 rounded-3xl p-3.5 mb-4 flex items-start gap-2.5">
           <Icon name="BellRing" size={18} className="text-red-500 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-red-800 leading-relaxed">
             По возрасту уже пора сделать <b>{counts.due}</b> прививок. Они отмечены значком «Пора» — обсудите их с педиатром.
           </p>
         </div>
       ) : (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-3.5 mb-4 flex items-start gap-2.5">
+        <div className="bg-emerald-50 border border-emerald-200 rounded-3xl p-3.5 mb-4 flex items-start gap-2.5">
           <Icon name="CircleCheck" size={18} className="text-emerald-500 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-emerald-800 leading-relaxed">
             Все прививки по текущему возрасту отмечены. Так держать!
@@ -176,8 +176,8 @@ export function VaccinationSection() {
         </span>
       </div>
 
-      <div className="bg-white border border-border rounded-2xl p-3 mb-4">
-        <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-2">
+      <div className="bg-card border border-border rounded-3xl p-3 mb-4">
+        <p className="text-[12px] font-bold text-muted-foreground mb-2">
           Показать категорию
         </p>
         <div className="flex flex-wrap gap-1.5">
@@ -185,8 +185,8 @@ export function VaccinationSection() {
             onClick={() => setFilter("all")}
             className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition ${
               filter === "all"
-                ? "bg-primary text-white border-primary"
-                : "bg-white text-foreground border-border"
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-card text-foreground border-border"
             }`}
           >
             Все
@@ -198,7 +198,7 @@ export function VaccinationSection() {
                 key={t}
                 onClick={() => setFilter(active ? "all" : t)}
                 className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition flex items-center gap-1.5 ${
-                  active ? tierMeta[t].chip : "bg-white text-foreground border-border"
+                  active ? tierMeta[t].chip : "bg-card text-foreground border-border"
                 }`}
               >
                 <span className={`w-2.5 h-2.5 rounded-sm ${tierMeta[t].dot}`} />
@@ -219,7 +219,7 @@ export function VaccinationSection() {
         {vaccineRows.every(
           (row) => row.doses.filter((d) => isApplicable(d.tier) && passesFilter(d.tier)).length === 0
         ) && (
-          <div className="bg-white border border-dashed border-border rounded-2xl p-6 text-center">
+          <div className="bg-card border border-dashed border-border rounded-3xl p-6 text-center">
             <p className="text-sm text-muted-foreground">В этой категории прививок нет для вашего ребёнка.</p>
           </div>
         )}
@@ -237,7 +237,7 @@ export function VaccinationSection() {
           return (
             <div
               key={row.id}
-              className={`bg-white border rounded-2xl overflow-hidden shadow-sm ${
+              className={`bg-card border rounded-2xl overflow-hidden shadow-sm ${
                 dueInRow > 0 ? "border-red-200 ring-1 ring-red-100" : "border-border"
               }`}
             >

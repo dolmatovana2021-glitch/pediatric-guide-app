@@ -30,7 +30,7 @@ function ListBlock({
 }) {
   return (
     <div>
-      <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5">
+      <p className="text-[12px] font-bold text-muted-foreground mb-1.5">
         {title}
       </p>
       <div className="space-y-1.5">
@@ -48,7 +48,7 @@ function ListBlock({
 function RashDetails({ item }: { item: RashItem }) {
   return (
     <div className="px-3.5 pb-3.5 space-y-3 animate-fade-in">
-      <div className="bg-mint-50 border border-mint-200 rounded-xl p-3 space-y-2">
+      <div className="bg-mint-50 border border-mint-200 rounded-2xl p-3 space-y-2">
         <InfoRow icon="Bug" label="Причина" text={item.cause} />
         <InfoRow icon="Clock" label="Инкубационный период" text={item.incubation} />
         <InfoRow icon="ScanFace" label="Характер сыпи" text={item.rash} />
@@ -78,7 +78,7 @@ function RashDetails({ item }: { item: RashItem }) {
         itemBg="bg-rose-50 border-rose-100"
       />
 
-      <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+      <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-2xl px-3 py-2">
         <Icon name="Info" size={15} className="text-amber-600 flex-shrink-0 mt-0.5" />
         <span className="text-[11px] text-amber-800 leading-snug">{RASH_DISCLAIMER}</span>
       </div>
@@ -133,7 +133,7 @@ export function RashSection() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Поиск по названию или симптомам..."
-          className="block w-full max-w-full min-w-0 box-border appearance-none pl-9 pr-9 py-2.5 bg-white border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+          className="block w-full max-w-full min-w-0 box-border appearance-none pl-9 pr-9 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
         />
         {query && (
           <button
@@ -147,7 +147,7 @@ export function RashSection() {
       </div>
 
       {q && totalFound === 0 && (
-        <div className="bg-white border border-border rounded-2xl p-6 text-center text-sm text-muted-foreground">
+        <div className="bg-card border border-border rounded-3xl p-6 text-center text-sm text-muted-foreground">
           Ничего не найдено по запросу «{query}»
         </div>
       )}
@@ -158,7 +158,7 @@ export function RashSection() {
           return (
             <div
               key={cat.id}
-              className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm"
+              className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm"
             >
               <button
                 onClick={() => !q && setOpenCat(open ? null : cat.id)}
@@ -189,7 +189,7 @@ export function RashSection() {
                     return (
                       <div
                         key={item.id}
-                        className="bg-white border border-border rounded-xl overflow-hidden"
+                        className="bg-card border border-border rounded-xl overflow-hidden"
                       >
                         <button
                           onClick={() => setOpenItem(itemOpen ? null : item.id)}

@@ -22,7 +22,7 @@ export function SleepLogChart({ chartData, norm }: Props) {
   if (!(chartData.length > 0 && norm)) return null;
 
   return (
-    <div className="bg-white border border-border rounded-2xl p-4 shadow-sm mb-4">
+    <div className="bg-card border border-border rounded-3xl p-4 shadow-sm mb-4">
       <p className="text-[11px] font-semibold text-muted-foreground mb-2">
         Сон по дням, часов
       </p>

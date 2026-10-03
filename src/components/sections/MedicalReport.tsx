@@ -42,7 +42,7 @@ export function MedicalReport({ profile, measurements }: Props) {
     <>
       <button
         onClick={() => window.print()}
-        className="w-full bg-white border border-border text-foreground rounded-2xl py-3 text-sm font-semibold flex items-center justify-center gap-2 mt-3 shadow-sm active:scale-95 transition-transform print:hidden"
+        className="w-full bg-card border border-border text-foreground rounded-2xl py-3 text-sm font-semibold flex items-center justify-center gap-2 mt-3 shadow-sm active:scale-95 transition-transform print:hidden"
       >
         <Icon name="Printer" size={16} className="text-primary" />
         Выгрузить отчёт для врача

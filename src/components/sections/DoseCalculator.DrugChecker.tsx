@@ -10,10 +10,10 @@ type Props = {
 
 export function DrugChecker({ drugQuery, drugCheck, onQueryChange, onPickDrug }: Props) {
   return (
-    <div className="bg-white border border-mint-200 rounded-xl p-3 space-y-2">
+    <div className="bg-card border border-mint-200 rounded-xl p-3 space-y-2">
       <div className="flex items-center gap-2">
         <span className="text-base">🔎</span>
-        <p className="text-xs font-bold text-primary uppercase tracking-wide">
+        <p className="text-[12px] font-bold text-primary">
           Проверить препарат
         </p>
       </div>
@@ -26,7 +26,7 @@ export function DrugChecker({ drugQuery, drugCheck, onQueryChange, onPickDrug }:
           value={drugQuery}
           onChange={(e) => onQueryChange(e.target.value)}
           placeholder="например, Найз, Нурофен, Анальгин"
-          className="w-full text-sm py-2 px-3 pr-9 rounded-lg border border-mint-200 bg-mint-50 focus:outline-none focus:border-primary focus:bg-white transition"
+          className="w-full text-sm py-2 px-3 pr-9 rounded-lg border border-mint-200 bg-mint-50 focus:outline-none focus:border-primary focus:bg-card transition"
         />
         {drugQuery && (
           <button
