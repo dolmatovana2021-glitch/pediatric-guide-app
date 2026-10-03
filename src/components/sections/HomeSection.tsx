@@ -11,6 +11,38 @@ import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useSectionVisibility, isSectionVisible } from "@/components/shared/sectionVisibility";
 import { HomeHero } from "@/components/sections/HomeHero";
 
+type QuickCard = {
+  id: Section;
+  emoji: string;
+  label: string;
+  hint: string;
+  group: "urgent" | "care";
+  tile: string;
+  chip: string;
+};
+
+const groups: { id: QuickCard["group"]; title: string }[] = [
+  { id: "urgent", title: "Если малыш заболел" },
+  { id: "care", title: "Забота и развитие" },
+];
+
+function SectionTile({ card, onClick }: { card: QuickCard; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`${card.tile} border rounded-3xl p-3 flex items-center gap-3 text-left active:scale-[0.97] transition-transform`}
+    >
+      <span className={`${card.chip} w-11 h-11 rounded-2xl flex items-center justify-center text-[22px] flex-shrink-0`}>
+        {card.emoji}
+      </span>
+      <span className="min-w-0">
+        <span className="block text-[13px] font-bold text-foreground leading-tight">{card.label}</span>
+        <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5 truncate">{card.hint}</span>
+      </span>
+    </button>
+  );
+}
+
 export function HomeSection({ setSection }: { setSection: (s: Section) => void }) {
   const profile = useChildProfile();
   const age = calcAge(profile.birthDate);
@@ -30,20 +62,19 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
     return () => clearInterval(id);
   }, []);
 
-  const quickCards: { id: Section; emoji: string; label: string; color: string }[] = [
-    { id: "firstaid", emoji: "🚑", label: "Первая помощь", color: "bg-red-50 border-red-200 hover:border-red-300" },
-    { id: "emergency", emoji: "🆘", label: "Неотложка", color: "bg-rose-50 border-rose-200 hover:border-rose-300" },
-    { id: "redflags", emoji: "🚩", label: "Красные флаги", color: "bg-pink-50 border-pink-200 hover:border-pink-300" },
-    { id: "rash", emoji: "🔴", label: "Сыпь", color: "bg-rose-50 border-rose-200 hover:border-rose-300" },
-    { id: "illness", emoji: "🤒", label: "Дневник болезни", color: "bg-orange-50 border-orange-200 hover:border-orange-300" },
-    { id: "medkit", emoji: "💊", label: "Аптечка", color: "bg-teal-50 border-teal-200 hover:border-teal-300" },
-    { id: "development", emoji: "🌱", label: "Развитие", color: "bg-violet-50 border-violet-200 hover:border-violet-300" },
-    { id: "vaccination", emoji: "💉", label: "Вакцинация", color: "bg-mint-50 border-mint-200 hover:border-mint-300" },
-    { id: "checkup", emoji: "🩺", label: "Осмотры", color: "bg-sky-50 border-sky-200 hover:border-sky-300" },
-    { id: "contacts", emoji: "👩‍⚕️", label: "Врачи", color: "bg-teal-50 border-teal-200 hover:border-teal-300" },
-    { id: "useful", emoji: "🔗", label: "Полезное", color: "bg-amber-50 border-amber-200 hover:border-amber-300" },
-    { id: "docs", emoji: "📄", label: "Документы", color: "bg-slate-50 border-slate-200 hover:border-slate-300" },
-    { id: "settings", emoji: "⚙️", label: "Настройки", color: "bg-gray-50 border-gray-200 hover:border-gray-300" },
+  const quickCards: QuickCard[] = [
+    { id: "firstaid", emoji: "🚑", label: "Первая помощь", hint: "Пошагово", group: "urgent", tile: "bg-red-50 border-red-200", chip: "bg-red-100" },
+    { id: "redflags", emoji: "🚩", label: "Красные флаги", hint: "Когда к врачу", group: "urgent", tile: "bg-pink-50 border-pink-200", chip: "bg-pink-100" },
+    { id: "rash", emoji: "🔴", label: "Сыпь", hint: "Что это может быть", group: "urgent", tile: "bg-rose-50 border-rose-200", chip: "bg-rose-100" },
+    { id: "illness", emoji: "🤒", label: "Дневник болезни", hint: "Ход болезни", group: "urgent", tile: "bg-orange-50 border-orange-200", chip: "bg-orange-100" },
+    { id: "medkit", emoji: "💊", label: "Аптечка", hint: "Дозы и сроки", group: "care", tile: "bg-teal-50 border-teal-200", chip: "bg-teal-100" },
+    { id: "development", emoji: "🌱", label: "Развитие", hint: "Нормы и режим", group: "care", tile: "bg-violet-50 border-violet-200", chip: "bg-violet-100" },
+    { id: "vaccination", emoji: "💉", label: "Вакцинация", hint: "График прививок", group: "care", tile: "bg-mint-50 border-mint-200", chip: "bg-mint-100" },
+    { id: "checkup", emoji: "🩺", label: "Осмотры", hint: "Плановые визиты", group: "care", tile: "bg-sky-50 border-sky-200", chip: "bg-sky-100" },
+    { id: "contacts", emoji: "👩‍⚕️", label: "Врачи", hint: "Контакты", group: "care", tile: "bg-teal-50 border-teal-200", chip: "bg-teal-100" },
+    { id: "docs", emoji: "📄", label: "Документы", hint: "Справки и формы", group: "care", tile: "bg-slate-50 border-slate-200", chip: "bg-slate-100" },
+    { id: "useful", emoji: "🔗", label: "Полезное", hint: "Статьи и сервисы", group: "care", tile: "bg-amber-50 border-amber-200", chip: "bg-amber-100" },
+    { id: "settings", emoji: "⚙️", label: "Настройки", hint: "Тема и разделы", group: "care", tile: "bg-gray-50 border-gray-200", chip: "bg-gray-100" },
   ];
 
   const visibility = useSectionVisibility();
@@ -68,9 +99,9 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
       {dueVaccines > 0 && (
         <button
           onClick={() => setSection("vaccination")}
-          className="w-full mb-5 rounded-2xl p-4 border border-red-200 bg-red-50 flex items-center gap-3 active:scale-[0.98] transition-transform"
+          className="w-full mb-3 rounded-3xl p-3.5 border border-red-200 bg-red-50 flex items-center gap-3 active:scale-[0.98] transition-transform"
         >
-          <div className="w-12 h-12 rounded-full bg-white border border-red-200 flex items-center justify-center flex-shrink-0 relative">
+          <div className="w-11 h-11 rounded-2xl bg-red-100 flex items-center justify-center flex-shrink-0 relative">
             <span className="text-2xl">💉</span>
             <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center">
               {dueVaccines}
@@ -87,9 +118,9 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
       {dueCheckup && (
         <button
           onClick={() => setSection("checkup")}
-          className="w-full mb-5 rounded-2xl p-4 border border-sky-200 bg-sky-50 flex items-center gap-3 active:scale-[0.98] transition-transform"
+          className="w-full mb-3 rounded-3xl p-3.5 border border-sky-200 bg-sky-50 flex items-center gap-3 active:scale-[0.98] transition-transform"
         >
-          <div className="w-12 h-12 rounded-full bg-white border border-sky-200 flex items-center justify-center flex-shrink-0">
+          <div className="w-11 h-11 rounded-2xl bg-sky-100 flex items-center justify-center flex-shrink-0">
             <span className="text-2xl">🩺</span>
           </div>
           <div className="flex-1 min-w-0 text-left">
@@ -100,21 +131,24 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
         </button>
       )}
 
-      <h3 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground mb-3">Разделы</h3>
-      <div className="grid grid-cols-3 gap-3 mb-5">
-        {visibleCards.map((card) => (
-          <button
-            key={card.id}
-            onClick={() => setSection(card.id)}
-            className={`${card.color} border rounded-2xl p-3 text-center card-hover flex flex-col items-center gap-1.5`}
-          >
-            <span className="text-2xl">{card.emoji}</span>
-            <span className="text-xs font-semibold text-foreground">{card.label}</span>
-          </button>
-        ))}
-      </div>
+      {(dueVaccines > 0 || dueCheckup) && <div className="h-2" />}
 
-      <div className="bg-mint-50 border border-mint-200 rounded-2xl p-4 overflow-hidden">
+      {groups.map((g) => {
+        const cards = visibleCards.filter((c) => c.group === g.id);
+        if (!cards.length) return null;
+        return (
+          <div key={g.id} className="mb-5">
+            <h3 className="font-bold text-[15px] text-foreground mb-2.5 px-1">{g.title}</h3>
+            <div className="grid grid-cols-2 gap-2.5">
+              {cards.map((card) => (
+                <SectionTile key={card.id} card={card} onClick={() => setSection(card.id)} />
+              ))}
+            </div>
+          </div>
+        );
+      })}
+
+      <div className="bg-mint-50 border border-mint-200 rounded-3xl p-4 overflow-hidden">
         <div className="flex items-center gap-2 mb-2">
           <p className="font-caveat text-primary text-base font-semibold">💡 Совет дня</p>
           <span
@@ -135,7 +169,7 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
         </p>
         <button
           onClick={nextTip}
-          className="w-full bg-white border border-mint-200 text-primary rounded-xl py-2 px-3 text-sm font-semibold flex items-center justify-center gap-2 active:scale-95 transition-transform group"
+          className="w-full bg-card border border-mint-200 text-primary rounded-2xl py-2.5 px-3 text-sm font-semibold flex items-center justify-center gap-2 active:scale-95 transition-transform group"
         >
           Следующий совет
           <Icon name="ArrowRight" size={14} className="group-hover:translate-x-1 transition-transform" />
