@@ -58,45 +58,12 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
     <SectionWrapper>
       <HomeHero
         name={profile.name || undefined}
-        ageLabel={age?.label}
+        details={[age?.label, profile.weight ? `${profile.weight} кг` : ""].filter(Boolean).join(" · ")}
+        emoji={profile.gender === "boy" ? "👦" : profile.gender === "girl" ? "👧" : "🧒"}
+        profileFilled={Boolean(profileFilled)}
         onEmergency={() => setSection("emergency")}
+        onProfile={() => setSection("profile")}
       />
-
-      <button
-        onClick={() => setSection("profile")}
-        className={`w-full mb-5 rounded-2xl p-4 border flex items-center gap-3 active:scale-[0.98] transition-transform ${
-          profileFilled
-            ? "bg-mint-50 border-mint-200"
-            : "bg-white border-dashed border-mint-300"
-        }`}
-      >
-        <div className="w-12 h-12 rounded-full bg-white border border-mint-200 flex items-center justify-center text-2xl flex-shrink-0">
-          {profile.gender === "boy" ? "👦" : profile.gender === "girl" ? "👧" : "🧒"}
-        </div>
-        <div className="flex-1 min-w-0 text-left">
-          {profileFilled ? (
-            <>
-              <p className="font-bold text-foreground text-sm truncate">
-                {profile.name || "Малыш"}
-              </p>
-              <p className="text-[11px] text-muted-foreground truncate">
-                {age ? age.label : ""}
-                {age && profile.weight ? " · " : ""}
-                {profile.weight ? `${profile.weight} кг` : ""}
-                {!age && !profile.weight ? "Профиль" : ""}
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="font-bold text-foreground text-sm">Заполнить профиль</p>
-              <p className="text-[11px] text-muted-foreground">
-                Имя, возраст и вес — для точного расчёта дозы
-              </p>
-            </>
-          )}
-        </div>
-        <Icon name="ChevronRight" size={18} className="text-muted-foreground flex-shrink-0" />
-      </button>
 
       {dueVaccines > 0 && (
         <button
