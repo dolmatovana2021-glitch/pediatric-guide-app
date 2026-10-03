@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 import {
   Section,
-  DOCTOR_BEAR,
   dailyTips,
   SectionWrapper,
 } from "@/components/shared/SectionShared";
@@ -10,6 +9,7 @@ import { useChildProfile, calcAge } from "@/components/shared/childProfile";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useSectionVisibility, isSectionVisible } from "@/components/shared/sectionVisibility";
+import { HomeHero } from "@/components/sections/HomeHero";
 
 export function HomeSection({ setSection }: { setSection: (s: Section) => void }) {
   const profile = useChildProfile();
@@ -56,32 +56,11 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
 
   return (
     <SectionWrapper>
-      <div className="blob-bg rounded-3xl p-6 mb-5 relative overflow-hidden">
-        <div className="flex items-start gap-4">
-          <div className="flex-1">
-            <p className="font-caveat text-primary text-lg font-semibold mb-1">Привет, родитель! 👋</p>
-            <h1 className="text-3xl font-bold text-foreground leading-tight mb-3">
-              МалышДок —<br />ваш педиатрический<br />помощник
-            </h1>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              Первая помощь, болезни и неотложные ситуации — всё под рукой
-            </p>
-          </div>
-          <div className="w-28 h-28 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg">
-            <img src={DOCTOR_BEAR} alt="Доктор" className="w-full h-full object-cover" />
-          </div>
-        </div>
-        <button
-          onClick={() => setSection("emergency")}
-          className="mt-4 w-full bg-red-500 text-white rounded-2xl py-3 px-4 flex items-center justify-between font-semibold text-sm shadow-md active:scale-95 transition-transform"
-        >
-          <span className="flex items-center gap-2">
-            <span className="text-lg">🆘</span>
-            Неотложная помощь!
-          </span>
-          <Icon name="ChevronRight" size={18} />
-        </button>
-      </div>
+      <HomeHero
+        name={profile.name || undefined}
+        ageLabel={age?.label}
+        onEmergency={() => setSection("emergency")}
+      />
 
       <button
         onClick={() => setSection("profile")}
