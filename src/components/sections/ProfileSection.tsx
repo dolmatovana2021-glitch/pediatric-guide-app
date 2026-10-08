@@ -371,7 +371,7 @@ export function ProfileSection() {
       )}
 
       <p className="text-[11px] text-muted-foreground text-center mt-3 px-3 leading-relaxed">
-        ☁️ Данные привязаны к вашему номеру и доступны на любом устройстве после входа
+        🔒 Данные хранятся только на этом устройстве и никуда не отправляются
       </p>
     </SectionWrapper>
   );
