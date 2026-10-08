@@ -1,6 +1,7 @@
 import Icon from "@/components/ui/icon";
 import { ThemePicker } from "@/components/shared/ThemeToggle";
 import { SectionWrapper, SectionTitle } from "@/components/shared/SectionLayout";
+import { InstallAppCard } from "@/components/shared/InstallAppCard";
 import {
   useSectionVisibility,
   setSectionVisible,
@@ -36,6 +37,8 @@ export function SettingsSection() {
         title="Настройки"
         subtitle="Оформление и разделы на главном экране"
       />
+
+      <InstallAppCard force />
 
       <div className="bg-card border border-border rounded-3xl p-4 mb-5 shadow-sm">
         <p className="font-semibold text-foreground text-sm mb-1">Тема оформления</p>

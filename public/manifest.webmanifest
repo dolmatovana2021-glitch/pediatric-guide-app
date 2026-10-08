@@ -1,0 +1,19 @@
+{
+  "name": "МалышДок — педиатрический помощник",
+  "short_name": "МалышДок",
+  "description": "Первая помощь, прививки, болезни и развитие малыша — всегда под рукой, даже без интернета",
+  "lang": "ru",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f9f8f5",
+  "theme_color": "#f9f8f5",
+  "categories": ["health", "medical", "lifestyle"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

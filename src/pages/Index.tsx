@@ -17,6 +17,8 @@ import { FeedingLogSection } from "@/components/sections/FeedingLogSection";
 import { SettingsSection } from "@/components/sections/SettingsSection";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { BottomNav } from "@/components/shared/BottomNav";
+import { OfflineBanner } from "@/components/shared/InstallAppCard";
+import { useOnline } from "@/components/shared/pwa";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
 import { useSectionVisibility, isSectionVisible } from "@/components/shared/sectionVisibility";
@@ -26,6 +28,7 @@ export default function Index() {
   const dueCheckup = useDueCheckup();
   const dueVaccines = useDueVaccines();
   const visibility = useSectionVisibility();
+  const online = useOnline();
 
   const activeSection: Section = isSectionVisible(section, visibility) ? section : "home";
 
@@ -58,6 +61,7 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background font-golos">
+      <OfflineBanner online={online} />
       <div className="max-w-[480px] mx-auto flex flex-col min-h-screen relative">
 
         <div className="sticky top-0 z-20 bg-background/85 backdrop-blur-md px-4 py-2.5 flex items-center gap-3">

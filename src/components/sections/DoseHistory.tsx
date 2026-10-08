@@ -68,7 +68,7 @@ function showBrowserNotification(title: string, body: string) {
   try {
     if (typeof Notification === "undefined") return;
     if (Notification.permission !== "granted") return;
-    new Notification(title, { body, icon: "/favicon.ico", tag: "malyshdok-dose" });
+    new Notification(title, { body, icon: "/icon-192.png", tag: "malyshdok-dose" });
   } catch {
     /* ignore */
   }
