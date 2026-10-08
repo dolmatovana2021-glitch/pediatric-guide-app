@@ -11,6 +11,7 @@ import { useSectionVisibility, isSectionVisible } from "@/components/shared/sect
 import { HomeHero } from "@/components/sections/HomeHero";
 import { DailyTipCard } from "@/components/sections/DailyTipCard";
 import { InstallAppCard } from "@/components/shared/InstallAppCard";
+import { BackupReminderCard } from "@/components/sections/BackupReminderCard";
 
 type QuickCard = {
   id: Section;
@@ -120,6 +121,8 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
       {(dueVaccines > 0 || dueCheckup) && <div className="h-2" />}
 
       <InstallAppCard />
+
+      <BackupReminderCard />
 
       {groups.map((g) => {
         const cards = visibleCards.filter((c) => c.group === g.id);

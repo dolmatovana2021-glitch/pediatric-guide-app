@@ -1,4 +1,12 @@
+import { useEffect, useState } from "react";
+
 const APP_ID = "malyshdok";
+const LAST_BACKUP_KEY = "malyshdok:lastBackupAt";
+const SNOOZE_KEY = "malyshdok:backupSnoozeUntil";
+const FIRST_SEEN_KEY = "malyshdok:firstSeenAt";
+const BACKUP_EVENT = "malyshdok:backup:update";
+const DAY = 86400000;
+export const BACKUP_INTERVAL_DAYS = 30;
 const FORMAT_VERSION = 1;
 
 const DATA_KEYS = [
@@ -117,6 +125,7 @@ export async function saveBackupFile(): Promise<"shared" | "downloaded" | "cance
   if (coarse && nav.share && nav.canShare?.({ files: [file] })) {
     try {
       await nav.share({ files: [file], title: "МалышДок — резервная копия" });
+      markBackupDone();
       return "shared";
     } catch (e) {
       if ((e as DOMException)?.name === "AbortError") return "cancelled";
@@ -131,6 +140,7 @@ export async function saveBackupFile(): Promise<"shared" | "downloaded" | "cance
   a.click();
   a.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 2000);
+  markBackupDone();
   return "downloaded";
 }
 
@@ -178,4 +188,97 @@ export function restoreBackup(file: BackupFile) {
       /* ignore */
     }
   }
+}
+
+function readNum(key: string): number {
+  try {
+    const v = Number(localStorage.getItem(key));
+    return Number.isFinite(v) && v > 0 ? v : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function writeNum(key: string, v: number) {
+  try {
+    localStorage.setItem(key, String(v));
+  } catch {
+    /* ignore */
+  }
+  window.dispatchEvent(new CustomEvent(BACKUP_EVENT));
+}
+
+export function markBackupDone() {
+  writeNum(LAST_BACKUP_KEY, Date.now());
+  try {
+    localStorage.removeItem(SNOOZE_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
+export function snoozeBackupReminder(days = 7) {
+  writeNum(SNOOZE_KEY, Date.now() + days * DAY);
+}
+
+export function getLastBackupAt(): number {
+  return readNum(LAST_BACKUP_KEY);
+}
+
+function firstSeenAt(): number {
+  const v = readNum(FIRST_SEEN_KEY);
+  if (v) return v;
+  const now = Date.now();
+  try {
+    localStorage.setItem(FIRST_SEEN_KEY, String(now));
+  } catch {
+    /* ignore */
+  }
+  return now;
+}
+
+export type BackupReminder = {
+  due: boolean;
+  lastBackupAt: number;
+  daysSince: number | null;
+};
+
+function readReminder(): BackupReminder {
+  const last = getLastBackupAt();
+  const now = Date.now();
+  const daysSince = last ? Math.floor((now - last) / DAY) : null;
+  const since = last || firstSeenAt();
+  const snoozed = readNum(SNOOZE_KEY) > now;
+  const due = !snoozed && now - since >= BACKUP_INTERVAL_DAYS * DAY && hasAnyData();
+  return { due, lastBackupAt: last, daysSince };
+}
+
+const WATCH_EVENTS = [
+  BACKUP_EVENT,
+  "malyshdok:childProfile:update",
+  "malyshdok:vaccineStatus:update",
+  "malyshdok:checkupStatus:update",
+  "malyshdok:medkit:update",
+  "storage",
+];
+
+export function useBackupReminder(): BackupReminder {
+  const [state, setState] = useState<BackupReminder>(readReminder);
+  useEffect(() => {
+    const refresh = () => setState(readReminder());
+    refresh();
+    WATCH_EVENTS.forEach((e) => window.addEventListener(e, refresh));
+    return () => WATCH_EVENTS.forEach((e) => window.removeEventListener(e, refresh));
+  }, []);
+  return state;
+}
+
+export function formatBackupAge(r: BackupReminder): string {
+  if (!r.lastBackupAt || r.daysSince === null) return "Копию ещё не сохраняли";
+  const d = r.daysSince;
+  if (d === 0) return "Последняя копия — сегодня";
+  if (d === 1) return "Последняя копия — вчера";
+  const m10 = d % 10, m100 = d % 100;
+  const word = m10 === 1 && m100 !== 11 ? "день" : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? "дня" : "дней";
+  return `Последняя копия — ${d} ${word} назад`;
 }

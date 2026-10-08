@@ -12,11 +12,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
   BackupError,
+  formatBackupAge,
   hasAnyData,
   readBackupFile,
   restoreBackup,
   saveBackupFile,
   summarize,
+  useBackupReminder,
   type BackupFile,
   type BackupSummary,
 } from "@/components/shared/backup";
@@ -62,6 +64,7 @@ export function BackupCard() {
   const [notice, setNotice] = useState<Notice>(null);
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState<BackupFile | null>(null);
+  const reminder = useBackupReminder();
 
   const onSave = async () => {
     setNotice(null);
@@ -121,6 +124,16 @@ export function BackupCard() {
             Профили детей, прививки, осмотры, аптечка и дневники — в одном файле
           </p>
         </div>
+      </div>
+
+      <div
+        className={`mt-3 flex items-center gap-1.5 text-[11px] ${
+          reminder.due ? "text-amber-700 dark:text-amber-400 font-medium" : "text-muted-foreground"
+        }`}
+      >
+        <Icon name={reminder.due ? "AlertCircle" : "Clock"} size={12} />
+        {formatBackupAge(reminder)}
+        {reminder.due && " — пора обновить"}
       </div>
 
       <div className="mt-3 grid grid-cols-1 gap-2">
