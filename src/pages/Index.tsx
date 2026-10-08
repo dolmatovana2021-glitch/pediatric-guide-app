@@ -17,38 +17,21 @@ import { FeedingLogSection } from "@/components/sections/FeedingLogSection";
 import { SettingsSection } from "@/components/sections/SettingsSection";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { BottomNav } from "@/components/shared/BottomNav";
-import { LoginScreen } from "@/components/sections/LoginScreen";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
 import { useSectionVisibility, isSectionVisible } from "@/components/shared/sectionVisibility";
-import { useAuth } from "@/components/shared/auth";
-import { useChildrenSync } from "@/components/shared/childrenSync";
 
 export default function Index() {
   const [section, setSection] = useState<Section>("home");
   const dueCheckup = useDueCheckup();
   const dueVaccines = useDueVaccines();
   const visibility = useSectionVisibility();
-  const { user, loading: authLoading } = useAuth();
-  useChildrenSync(Boolean(user));
 
   const activeSection: Section = isSectionVisible(section, visibility) ? section : "home";
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [activeSection]);
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Icon name="Loader2" size={28} className="text-primary animate-spin" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <LoginScreen />;
-  }
 
   const renderSection = () => {
     switch (activeSection) {
