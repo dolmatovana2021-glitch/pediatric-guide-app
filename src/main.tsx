@@ -7,3 +7,7 @@ import { setupPwa } from '@/components/shared/pwa'
 setupPwa();
 
 createRoot(document.getElementById("root")!).render(<App />);
+
+requestAnimationFrame(() => {
+  (window as Window & { __hideSplash?: () => void }).__hideSplash?.();
+});

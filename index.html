@@ -47,9 +47,67 @@
       <script src="https://cdn.poehali.dev/intertnal/js/inspector-min.js"></script>
       <script src="https://cdn.poehali.dev/intertnal/js/ve-2.0.0-rc.2.min.js" defer=""></script>
       <script src="https://cdn.poehali.dev/intertnal/js/pp-min-4.js"></script>
+    <style>
+      #splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
+        background:radial-gradient(120% 80% at 50% 38%,#fffaf0 0%,#f9f8f5 55%,#f3ece3 100%);
+        transition:opacity .45s ease,visibility .45s ease;padding-bottom:env(safe-area-inset-bottom)}
+      html.dark #splash{background:radial-gradient(120% 80% at 50% 38%,#1f2a2b 0%,#13161c 60%,#0f1115 100%)}
+      #splash.splash-hide{opacity:0;visibility:hidden}
+      #splash .sp-halo{position:absolute;width:300px;height:300px;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-62%);
+        background:radial-gradient(circle,rgba(86,190,168,.28) 0%,rgba(86,190,168,0) 70%);animation:sp-pulse 2.4s ease-in-out infinite}
+      #splash .sp-bear{position:relative;width:230px;height:230px;object-fit:contain;
+        animation:sp-in .7s cubic-bezier(.34,1.56,.64,1) both,sp-bob 2.4s ease-in-out .7s infinite;filter:drop-shadow(0 14px 18px rgba(60,90,80,.18))}
+      #splash .sp-shadow{width:96px;height:12px;border-radius:50%;background:rgba(40,70,60,.14);margin-top:2px;animation:sp-shadow 2.4s ease-in-out .7s infinite}
+      html.dark #splash .sp-shadow{background:rgba(0,0,0,.45)}
+      #splash .sp-title{margin-top:18px;font-family:Caveat,"Golos Text",cursive;font-weight:700;font-size:52px;line-height:1;color:hsl(168 45% 40%);
+        animation:sp-up .6s ease .25s both}
+      html.dark #splash .sp-title{color:hsl(168 50% 58%)}
+      #splash .sp-sub{margin-top:8px;font-family:"Golos Text",system-ui,sans-serif;font-size:14px;color:#7b8794;animation:sp-up .6s ease .4s both}
+      #splash .sp-dots{display:flex;gap:7px;margin-top:28px;animation:sp-up .6s ease .55s both}
+      #splash .sp-dots i{width:8px;height:8px;border-radius:50%;background:hsl(168 45% 45%);opacity:.3;animation:sp-dot 1.2s ease-in-out infinite}
+      #splash .sp-dots i:nth-child(2){animation-delay:.2s}
+      #splash .sp-dots i:nth-child(3){animation-delay:.4s}
+      @keyframes sp-in{from{opacity:0;transform:scale(.6) translateY(20px)}to{opacity:1;transform:none}}
+      @keyframes sp-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+      @keyframes sp-shadow{0%,100%{transform:scaleX(1);opacity:1}50%{transform:scaleX(.8);opacity:.6}}
+      @keyframes sp-pulse{0%,100%{transform:translate(-50%,-62%) scale(1)}50%{transform:translate(-50%,-62%) scale(1.08)}}
+      @keyframes sp-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+      @keyframes sp-dot{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
+      @media (prefers-reduced-motion:reduce){#splash *{animation:none!important}}
+    </style>
   </head>
 
 <body>
+<div id="splash" aria-hidden="true">
+  <div class="sp-halo"></div>
+  <img class="sp-bear" src="/bear/main.webp?v=3" alt="" width="230" height="230" decoding="async" fetchpriority="high">
+  <div class="sp-shadow"></div>
+  <div class="sp-title">МалышДок</div>
+  <div class="sp-sub">Здоровье малыша — под рукой</div>
+  <div class="sp-dots"><i></i><i></i><i></i></div>
+</div>
+<script>
+  (function () {
+    var el = document.getElementById("splash");
+    var standalone = false;
+    try {
+      standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    } catch (e) {}
+    var forced = /[?&]splash=1/.test(location.search);
+    if (!standalone && !forced) { el.parentNode.removeChild(el); window.__hideSplash = function () {}; return; }
+    var start = Date.now(), done = false;
+    function hide() {
+      if (done) return; done = true;
+      var wait = Math.max(0, 1400 - (Date.now() - start));
+      setTimeout(function () {
+        el.classList.add("splash-hide");
+        setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 500);
+      }, wait);
+    }
+    window.__hideSplash = hide;
+    setTimeout(hide, 6000);
+  })();
+</script>
 <div id="root"></div>
 <script type="module" src="/src/main.tsx"></script>
 
