@@ -1,4 +1,5 @@
 import Icon from "@/components/ui/icon";
+import { childEmoji } from "@/components/shared/childProfile";
 
 type AgeInfo = { years: number; months: number; label: string } | null;
 
@@ -6,6 +7,7 @@ type ProfileLike = {
   weight: string;
   name?: string;
   gender?: string;
+  avatar?: string;
 };
 
 type Props = {
@@ -41,7 +43,7 @@ export function WeightInput({
           }`}
         >
           <span className="text-base">
-            {profile.gender === "boy" ? "👦" : profile.gender === "girl" ? "👧" : "🧒"}
+            {childEmoji({ gender: profile.gender as "boy" | "girl" | "", avatar: profile.avatar })}
           </span>
           <span className="flex-1 text-left truncate">
             <span className="font-semibold">{profile.name || "Малыш"}</span>

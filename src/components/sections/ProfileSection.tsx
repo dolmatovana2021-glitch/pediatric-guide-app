@@ -13,18 +13,16 @@ import {
   setActiveChildId,
   getActiveChildId,
   listMeasurements,
+  childEmoji,
   type Measurement,
 } from "@/components/shared/childProfile";
+import { AvatarPicker, avatarBg } from "@/components/sections/AvatarPicker";
 import { GrowthChart } from "@/components/sections/GrowthChart";
 import { MedicalReport } from "@/components/sections/MedicalReport";
 import { BackupCard } from "@/components/sections/BackupCard";
 
 
 const EVENT_NAME = "malyshdok:childProfile:update";
-
-function emojiFor(g: ChildProfile["gender"]) {
-  return g === "boy" ? "👦" : g === "girl" ? "👧" : "🧒";
-}
 
 export function ProfileSection() {
   const [children, setChildren] = useState<StoredChild[]>([]);
@@ -96,7 +94,7 @@ export function ProfileSection() {
       children.map((c, idx) => ({
         id: c.id,
         title: c.name?.trim() || `Ребёнок ${idx + 1}`,
-        emoji: emojiFor(c.gender),
+        emoji: childEmoji(c),
       })),
     [children],
   );
@@ -158,8 +156,8 @@ export function ProfileSection() {
 
       {hasChildren && filled && (
         <div className="bg-mint-50 border border-mint-200 rounded-3xl p-4 mb-4 flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-card border border-mint-200 flex items-center justify-center text-2xl flex-shrink-0">
-            {emojiFor(profile.gender)}
+          <div className={`w-12 h-12 rounded-full border border-mint-200 flex items-center justify-center text-2xl flex-shrink-0 ${avatarBg(profile.avatar)}`}>
+            {childEmoji(profile)}
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-bold text-foreground text-base truncate">
@@ -252,6 +250,12 @@ export function ProfileSection() {
               ))}
             </div>
           </div>
+
+          <AvatarPicker
+            value={profile.avatar}
+            onChange={(v) => update("avatar", v)}
+            taken={children.filter((c) => c.id !== activeId && c.avatar).map((c) => c.avatar as string)}
+          />
 
           <div>
             <label className="text-xs font-semibold text-muted-foreground block mb-1.5">

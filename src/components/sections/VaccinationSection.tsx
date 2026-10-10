@@ -6,7 +6,7 @@ import {
   useVaccineStatuses,
   type DoseStatus,
 } from "@/components/shared/vaccineStatus";
-import { useChildProfile, calcAge, saveChildProfile } from "@/components/shared/childProfile";
+import { useChildProfile, calcAge, saveChildProfile, childEmoji } from "@/components/shared/childProfile";
 
 const statusStyle: Record<
   DoseStatus,
@@ -96,7 +96,7 @@ export function VaccinationSection() {
 
       <div className="bg-gradient-to-br from-teal-50 to-mint-50 border border-teal-200 rounded-2xl p-4 mb-4">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-xl">{profile.gender === "boy" ? "👦" : profile.gender === "girl" ? "👧" : "🧒"}</span>
+          <span className="text-xl">{childEmoji(profile)}</span>
           <p className="font-bold text-foreground text-sm">
             {profile.name ? `Прививки: ${profile.name}` : "Прививочный лист"}
           </p>

@@ -6,7 +6,7 @@ import {
   doctorsForGender,
   CHECKUP_SOURCE,
 } from "@/components/shared/checkupData";
-import { useChildProfile, calcAge } from "@/components/shared/childProfile";
+import { useChildProfile, calcAge, childEmoji } from "@/components/shared/childProfile";
 import { useCheckupStatuses } from "@/components/shared/checkupStatus";
 
 export function CheckupSection() {
@@ -46,7 +46,7 @@ export function CheckupSection() {
       <div className="bg-gradient-to-br from-sky-50 to-mint-50 border border-sky-200 rounded-2xl p-4 mb-4">
         <div className="flex items-center gap-2">
           <span className="text-xl">
-            {profile.gender === "boy" ? "👦" : profile.gender === "girl" ? "👧" : "🧒"}
+            {childEmoji(profile)}
           </span>
           <p className="font-bold text-foreground text-sm">
             {profile.name ? `Осмотры: ${profile.name}` : "График осмотров"}

@@ -16,6 +16,7 @@ import {
   setActiveChildId,
   useChildren,
   type IllnessEntry,
+  childEmoji,
 } from "@/components/shared/childProfile";
 import type { Section } from "@/components/shared/sectionTypes";
 import { caseDay, caseTitle } from "@/components/sections/IllnessCaseCard";
@@ -195,7 +196,7 @@ export function QuickTemperatureButton({ setSection }: { setSection: (s: Section
                         sel ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border"
                       }`}
                     >
-                      {c.gender === "boy" ? "👦 " : c.gender === "girl" ? "👧 " : "🧒 "}
+                      {childEmoji(c)}{" "}
                       {c.name?.trim() || `Ребёнок ${i + 1}`}
                     </button>
                   );

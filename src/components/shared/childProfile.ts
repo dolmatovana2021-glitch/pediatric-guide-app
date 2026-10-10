@@ -46,6 +46,7 @@ export type ChildProfile = {
   birthDate: string;
   weight: string;
   gender: "boy" | "girl" | "";
+  avatar?: string;
   allergies: string;
   riskGroup: boolean;
   notifyVaccines: boolean;
@@ -81,6 +82,16 @@ export const EMPTY_PROFILE: ChildProfile = {
   sleep: [],
   feeds: [],
 };
+
+export const CHILD_AVATARS = [
+  "🐻", "🐼", "🐨", "🐰", "🦊", "🐱", "🐶", "🐯", "🦁", "🐸",
+  "🐵", "🐧", "🐥", "🦄", "🐢", "🐳", "🦉", "🐞", "🦋", "🐝",
+];
+
+export function childEmoji(p: Pick<ChildProfile, "gender" | "avatar"> | null | undefined): string {
+  if (p?.avatar) return p.avatar;
+  return p?.gender === "boy" ? "👦" : p?.gender === "girl" ? "👧" : "🧒";
+}
 
 function makeId(): string {
   return `c_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
