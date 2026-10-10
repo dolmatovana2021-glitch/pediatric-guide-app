@@ -38,7 +38,7 @@ function SectionTile({ card, onClick }: { card: QuickCard; onClick: () => void }
         {card.emoji}
       </span>
       <span className="min-w-0">
-        <span className="block text-[13px] font-bold text-foreground leading-tight">{card.label}</span>
+        <span className="block font-heading text-[14px] font-extrabold text-foreground leading-tight">{card.label}</span>
         <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5 truncate">{card.hint}</span>
       </span>
     </button>
@@ -69,7 +69,10 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
 
   const profileFilled = profile.name || profile.birthDate || profile.weight;
   const dueVaccines = useDueVaccines();
-  const dueWord = dueVaccines === 1 ? "прививку" : dueVaccines >= 2 && dueVaccines <= 4 ? "прививки" : "прививок";
+  const m10 = dueVaccines % 10;
+  const m100 = dueVaccines % 100;
+  const dueWord =
+    m10 === 1 && m100 !== 11 ? "прививку" : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? "прививки" : "прививок";
   const dueCheckup = useDueCheckup();
 
   return (
@@ -129,7 +132,7 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
         if (!cards.length) return null;
         return (
           <div key={g.id} className="mb-5">
-            <h3 className="font-bold text-[15px] text-foreground mb-2.5 px-1">{g.title}</h3>
+            <h3 className="font-heading font-extrabold text-[16px] text-foreground mb-2.5 px-1">{g.title}</h3>
             <div className="grid grid-cols-2 gap-2.5">
               {cards.map((card) => (
                 <SectionTile key={card.id} card={card} onClick={() => setSection(card.id)} />

@@ -82,7 +82,7 @@ export function SectionTitle({
           </span>
         )}
         <div className="min-w-0">
-          <h2 className="text-[17px] font-bold text-foreground leading-tight">{title}</h2>
+          <h2 className="font-heading text-[18px] font-extrabold text-foreground leading-tight">{title}</h2>
           {subtitle && (
             <p className="text-[12px] text-muted-foreground leading-snug mt-0.5">{subtitle}</p>
           )}
@@ -111,7 +111,7 @@ export function SectionTitle({
           </span>
         )}
         <div className="min-w-0">
-          <h2 className="text-[21px] font-bold text-foreground leading-tight">{title}</h2>
+          <h2 className="font-heading text-[23px] font-extrabold text-foreground leading-tight">{title}</h2>
           {subtitle && (
             <p className="text-[12px] text-muted-foreground leading-snug mt-1">{subtitle}</p>
           )}
@@ -133,7 +133,7 @@ export function BlockTitle({
   return (
     <div className="flex items-center gap-2 mb-2.5 mt-1 px-1">
       {icon && <Icon name={icon} size={16} className="text-primary" />}
-      <h3 className="font-bold text-[15px] text-foreground">{children}</h3>
+      <h3 className="font-heading font-extrabold text-[16px] text-foreground">{children}</h3>
       {action && <div className="ml-auto">{action}</div>}
     </div>
   );
