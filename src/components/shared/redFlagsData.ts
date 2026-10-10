@@ -1,6 +1,14 @@
 export type RedFlagGroup = { title: string; items: string[] };
 
+export type RedFlagKind = "symptom" | "disease";
+
+export const RED_FLAG_KINDS: { id: RedFlagKind; label: string; hint: string }[] = [
+  { id: "symptom", label: "Симптомы", hint: "Что вы видите у ребёнка" },
+  { id: "disease", label: "Заболевания", hint: "Когда известный диагноз становится опасным" },
+];
+
 export const redFlags: {
+  kind: RedFlagKind;
   icon: string;
   color: string;
   title: string;
@@ -10,6 +18,7 @@ export const redFlags: {
   action: string;
 }[] = [
   {
+    kind: "symptom",
     icon: "Thermometer",
     color: "bg-rose-50 text-rose-600 border-rose-200",
     title: "Лихорадка",
@@ -84,6 +93,7 @@ export const redFlags: {
     action: "Срочно вызвать педиатра или 103. У младенцев до 3 месяцев — сразу скорая.",
   },
   {
+    kind: "symptom",
     icon: "Zap",
     color: "bg-amber-50 text-amber-600 border-amber-200",
     title: "Судороги",
@@ -153,6 +163,7 @@ export const redFlags: {
     action: "Вызвать 103. После приступа — обеспечить покой, не давать сразу еду и питьё.",
   },
   {
+    kind: "symptom",
     icon: "Sparkles",
     color: "bg-pink-50 text-pink-600 border-pink-200",
     title: "Сыпь",
@@ -216,6 +227,7 @@ export const redFlags: {
     action: "Немедленно 103 — сыпь со «звёздочками» может быть менингококковой инфекцией.",
   },
   {
+    kind: "symptom",
     icon: "Brain",
     color: "bg-purple-50 text-purple-600 border-purple-200",
     title: "Нарушение сознания",
@@ -287,6 +299,7 @@ export const redFlags: {
     action: "Немедленно 103. Уложить на бок, не давать есть/пить. Контролировать дыхание.",
   },
   {
+    kind: "symptom",
     icon: "Wind",
     color: "bg-blue-50 text-blue-600 border-blue-200",
     title: "Нарушение дыхания",
@@ -347,6 +360,7 @@ export const redFlags: {
     action: "Немедленно 103. Полусидячее положение, свежий воздух, не давать новых лекарств.",
   },
   {
+    kind: "disease",
     icon: "Bug",
     color: "bg-teal-50 text-teal-600 border-teal-200",
     title: "Грипп",
@@ -416,6 +430,7 @@ export const redFlags: {
       "Вызовите педиатра на дом. Поите часто и понемногу, при температуре и плохом самочувствии дайте парацетамол или ибупрофен по возрасту и весу. При любом красном флаге — 103. Ежегодная прививка от гриппа с 6 месяцев снижает риск тяжёлого течения.",
   },
   {
+    kind: "disease",
     icon: "Flame",
     color: "bg-red-50 text-red-600 border-red-200",
     title: "Ангина",
@@ -476,6 +491,7 @@ export const redFlags: {
       "Покажите ребёнка врачу для теста на стрептококк. Поите тёплым часто и понемногу, при боли и температуре — парацетамол или ибупрофен по возрасту и весу. Если назначен антибиотик — полный курс. Не может глотать или дышать — 103.",
   },
   {
+    kind: "disease",
     icon: "Ear",
     color: "bg-indigo-50 text-indigo-600 border-indigo-200",
     title: "Отит",
@@ -527,6 +543,7 @@ export const redFlags: {
       "При боли — парацетамол или ибупрофен по возрасту и весу, приподнятый головной конец, промывание носа. В ближайшее время покажите ребёнка педиатру или ЛОРу. Отёк за ухом, перекос лица, сильная головная боль — 103.",
   },
   {
+    kind: "disease",
     icon: "CircleDot",
     color: "bg-lime-50 text-lime-700 border-lime-200",
     title: "Ветрянка",
@@ -579,6 +596,7 @@ export const redFlags: {
       "Парацетамол при температуре, коротко подстриженные ногти, свободная хлопковая одежда, прохладный душ без мочалки. Средства от зуда — по согласованию с педиатром. При тяжёлом дыхании, вялости, судорогах или кровоизлияниях — 103.",
   },
   {
+    kind: "symptom",
     icon: "Droplets",
     color: "bg-orange-50 text-orange-600 border-orange-200",
     title: "Рвота и/или диарея",

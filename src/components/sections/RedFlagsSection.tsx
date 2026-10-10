@@ -5,21 +5,12 @@ import {
   SectionWrapper,
   SectionTitle,
 } from "@/components/shared/SectionShared";
+import { RED_FLAG_KINDS, type RedFlagKind } from "@/components/shared/redFlagsData";
 
-const QUICK_TAGS = [
-  "грипп",
-  "ангина",
-  "отит",
-  "ветрянка",
-  "температура",
-  "сыпь",
-  "судороги",
-  "рвота",
-  "дыхание",
-  "сонливость",
-  "обезвоживание",
-  "синюшность",
-];
+const QUICK_TAGS: Record<RedFlagKind, string[]> = {
+  symptom: ["температура", "сыпь", "судороги", "рвота", "дыхание", "сонливость", "обезвоживание", "синюшность"],
+  disease: ["температура", "судороги", "вялый", "сыпь", "в ухе", "в горле", "антибиотик", "аспирин"],
+};
 
 function highlight(text: string, query: string) {
   if (!query.trim()) return text;
@@ -49,12 +40,13 @@ function highlight(text: string, query: string) {
 }
 
 export function RedFlagsSection() {
-  const [open, setOpen] = useState<number | null>(null);
+  const [open, setOpen] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [kind, setKind] = useState<RedFlagKind>("symptom");
 
   const q = query.trim().toLowerCase();
 
-  const filteredFlags = useMemo(() => {
+  const scored = useMemo(() => {
     if (!q) return redFlags.map((f) => ({ flag: f, matches: 0 }));
     return redFlags
       .map((flag) => {
@@ -73,6 +65,16 @@ export function RedFlagsSection() {
       .sort((a, b) => b.matches - a.matches);
   }, [q]);
 
+  const counts = useMemo(() => {
+    const c: Record<RedFlagKind, number> = { symptom: 0, disease: 0 };
+    scored.forEach((x) => (c[x.flag.kind] += 1));
+    return c;
+  }, [scored]);
+
+  const filteredFlags = useMemo(() => scored.filter((x) => x.flag.kind === kind), [scored, kind]);
+  const otherKind: RedFlagKind = kind === "symptom" ? "disease" : "symptom";
+  const otherLabel = RED_FLAG_KINDS.find((k) => k.id === otherKind)!.label;
+
   const totalMatches = filteredFlags.reduce((s, x) => s + x.matches, 0);
 
   return (
@@ -86,6 +88,43 @@ export function RedFlagsSection() {
         </p>
       </div>
 
+      <div className="grid grid-cols-2 gap-1 p-1 mb-3 bg-muted rounded-2xl">
+        {RED_FLAG_KINDS.map((k) => {
+          const active = k.id === kind;
+          return (
+            <button
+              key={k.id}
+              onClick={() => {
+                setKind(k.id);
+                setOpen(null);
+              }}
+              className={`rounded-xl py-2.5 px-2 text-center transition-all ${
+                active ? "bg-card shadow-sm" : "active:scale-95"
+              }`}
+            >
+              <span className={`flex items-center justify-center gap-1.5 text-[14px] font-bold ${active ? "text-foreground" : "text-muted-foreground"}`}>
+                <span>{k.id === "symptom" ? "🩺" : "🦠"}</span>
+                {k.label}
+                {q ? (
+                  <span
+                    className={`text-[10px] font-bold rounded-full px-1.5 py-0.5 ${
+                      counts[k.id] > 0 ? "bg-yellow-200 text-rose-900" : "bg-background text-muted-foreground"
+                    }`}
+                  >
+                    {counts[k.id]}
+                  </span>
+                ) : (
+                  <span className="text-[11px] font-semibold text-muted-foreground">
+                    {redFlags.filter((f) => f.kind === k.id).length}
+                  </span>
+                )}
+              </span>
+              <span className="block text-[10px] text-muted-foreground leading-tight mt-0.5">{k.hint}</span>
+            </button>
+          );
+        })}
+      </div>
+
       <div className="bg-card border border-mint-200 rounded-3xl p-3 mb-3 shadow-sm">
         <div className="relative">
           <Icon name="Search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -96,7 +135,7 @@ export function RedFlagsSection() {
               setQuery(e.target.value);
               setOpen(null);
             }}
-            placeholder="Найти симптом: рвота, сыпь, температура..."
+            placeholder={kind === "symptom" ? "Найти симптом: рвота, сыпь, температура..." : "Поиск по заболеваниям: горло, ухо, сыпь..."}
             className="w-full pl-10 pr-10 py-2.5 bg-mint-50 border border-mint-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
           />
           {query && (
@@ -111,7 +150,7 @@ export function RedFlagsSection() {
         </div>
 
         <div className="flex flex-wrap gap-1.5 mt-2.5">
-          {QUICK_TAGS.map((tag) => (
+          {QUICK_TAGS[kind].map((tag) => (
             <button
               key={tag}
               onClick={() => {
@@ -132,7 +171,9 @@ export function RedFlagsSection() {
         {q && (
           <p className="text-[11px] text-muted-foreground mt-2.5">
             {filteredFlags.length === 0
-              ? "Ничего не найдено — попробуйте другое слово"
+              ? counts[otherKind] > 0
+                ? `Во вкладке «${RED_FLAG_KINDS.find((k) => k.id === kind)!.label}» нет совпадений`
+                : "Ничего не найдено — попробуйте другое слово"
               : `Найдено совпадений: ${totalMatches} в ${filteredFlags.length} ${
                   filteredFlags.length === 1 ? "разделе" : "разделах"
                 }`}
@@ -144,6 +185,15 @@ export function RedFlagsSection() {
         <div className="bg-card border border-mint-200 rounded-3xl p-6 text-center">
           <div className="text-4xl mb-2">🔍</div>
           <p className="text-sm font-semibold text-foreground mb-1">Ничего не нашли</p>
+          {counts[otherKind] > 0 && (
+            <button
+              onClick={() => setKind(otherKind)}
+              className="mb-3 inline-flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-semibold"
+            >
+              Найдено во вкладке «{otherLabel}»: {counts[otherKind]}
+              <Icon name="ArrowRight" size={14} />
+            </button>
+          )}
           <p className="text-xs text-muted-foreground mb-3">
             Если симптом тревожит — лучше сразу позвонить 103
           </p>
@@ -157,15 +207,15 @@ export function RedFlagsSection() {
         </div>
       ) : (
         <div className="space-y-3">
-          {filteredFlags.map(({ flag, matches }, i) => {
-            const isOpen = open === i || (q.length > 0 && matches > 0);
+          {filteredFlags.map(({ flag, matches }) => {
+            const isOpen = open === flag.title || (q.length > 0 && matches > 0);
             return (
               <div
-                key={i}
+                key={flag.title}
                 className={`bg-card border rounded-2xl overflow-hidden shadow-sm ${flag.color.split(" ")[2]}`}
               >
                 <button
-                  onClick={() => setOpen(open === i ? null : i)}
+                  onClick={() => setOpen(open === flag.title ? null : flag.title)}
                   className="w-full flex items-center gap-3 p-4 text-left"
                 >
                   <div
