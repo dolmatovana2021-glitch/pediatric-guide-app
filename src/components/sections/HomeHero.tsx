@@ -46,20 +46,20 @@ export function HomeHero({
 
       <button
         onClick={onProfile}
-        className={`rounded-3xl p-4 text-left text-foreground shadow-md active:scale-[0.97] transition-transform bg-gradient-to-br ${
+        className={`rounded-3xl p-4 text-left border active:scale-[0.97] transition-transform ${
           profileFilled
-            ? "from-peach-100 to-peach-200 shadow-peach-300/30"
-            : "from-mint-100 to-mint-200 shadow-mint-300/30"
+            ? "bg-peach-50 border-peach-200"
+            : "bg-card border-dashed border-peach-300"
         }`}
       >
         <div className="flex items-start justify-between">
-          <span className="text-2xl leading-none">{emoji}</span>
-          <Icon name="ChevronRight" size={16} className="text-foreground/50" />
+          <span className="text-2xl">{emoji}</span>
+          <Icon name="ChevronRight" size={16} className="text-muted-foreground" />
         </div>
-        <p className="font-bold text-sm mt-2 truncate">
+        <p className="font-bold text-foreground text-sm mt-2 truncate">
           {profileFilled ? name || "Малыш" : "Заполнить профиль"}
         </p>
-        <p className="text-[11px] text-foreground/65 truncate">
+        <p className="text-[11px] text-muted-foreground truncate">
           {profileFilled ? details || "Профиль" : "Для расчёта дозы"}
         </p>
       </button>
