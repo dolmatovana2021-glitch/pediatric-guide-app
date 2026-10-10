@@ -16,12 +16,11 @@ import { QuickTemperatureButton } from "@/components/sections/QuickTemperature";
 
 type QuickCard = {
   id: Section;
-  emoji: string;
+  icon: string;
   label: string;
   hint: string;
   group: "urgent" | "care";
   tile: string;
-  chip: string;
 };
 
 const groups: { id: QuickCard["group"]; title: string }[] = [
@@ -33,15 +32,14 @@ function SectionTile({ card, onClick }: { card: QuickCard; onClick: () => void }
   return (
     <button
       onClick={onClick}
-      className={`${card.tile} border rounded-3xl p-3 flex items-center gap-3 text-left active:scale-[0.97] transition-transform`}
+      className={`${card.tile} rounded-3xl p-4 text-left text-white shadow-md active:scale-[0.97] transition-transform`}
     >
-      <span className={`${card.chip} w-11 h-11 rounded-2xl flex items-center justify-center text-[22px] flex-shrink-0`}>
-        {card.emoji}
-      </span>
-      <span className="min-w-0">
-        <span className="block text-[13px] font-bold text-foreground leading-tight">{card.label}</span>
-        <span className="block text-[11px] text-muted-foreground leading-snug mt-0.5 truncate">{card.hint}</span>
-      </span>
+      <div className="flex items-start justify-between">
+        <Icon name={card.icon} fallback="Circle" size={24} />
+        <Icon name="ChevronRight" size={16} className="text-white/80" />
+      </div>
+      <p className="font-bold text-sm mt-2 leading-tight">{card.label}</p>
+      <p className="text-[11px] text-white/85 truncate">{card.hint}</p>
     </button>
   );
 }
@@ -50,19 +48,20 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
   const profile = useChildProfile();
   const age = calcAge(profile.birthDate);
   const quickCards: QuickCard[] = [
-    { id: "firstaid", emoji: "🚑", label: "Первая помощь", hint: "Пошагово", group: "urgent", tile: "bg-red-50 border-red-200", chip: "bg-red-100" },
-    { id: "redflags", emoji: "🚩", label: "Красные флаги", hint: "Когда к врачу", group: "urgent", tile: "bg-pink-50 border-pink-200", chip: "bg-pink-100" },
-    { id: "rash", emoji: "🔴", label: "Сыпь", hint: "Что это может быть", group: "urgent", tile: "bg-rose-50 border-rose-200", chip: "bg-rose-100" },
-    { id: "illness", emoji: "🤒", label: "Дневник болезни", hint: "Ход болезни", group: "urgent", tile: "bg-orange-50 border-orange-200", chip: "bg-orange-100" },
-    { id: "medkit", emoji: "💊", label: "Аптечка", hint: "Дозы и сроки", group: "care", tile: "bg-teal-50 border-teal-200", chip: "bg-teal-100" },
-    { id: "development", emoji: "🌱", label: "Развитие", hint: "Нормы и режим", group: "care", tile: "bg-violet-50 border-violet-200", chip: "bg-violet-100" },
-    { id: "vaccination", emoji: "💉", label: "Вакцинация", hint: "График прививок", group: "care", tile: "bg-mint-50 border-mint-200", chip: "bg-mint-100" },
-    { id: "checkup", emoji: "🩺", label: "Осмотры", hint: "Плановые визиты", group: "care", tile: "bg-sky-50 border-sky-200", chip: "bg-sky-100" },
-    { id: "contacts", emoji: "👩‍⚕️", label: "Врачи", hint: "Контакты", group: "care", tile: "bg-teal-50 border-teal-200", chip: "bg-teal-100" },
-    { id: "docs", emoji: "📄", label: "Документы", hint: "Справки и формы", group: "care", tile: "bg-slate-50 border-slate-200", chip: "bg-slate-100" },
-    { id: "useful", emoji: "🔗", label: "Полезное", hint: "Статьи и сервисы", group: "care", tile: "bg-amber-50 border-amber-200", chip: "bg-amber-100" },
-    { id: "settings", emoji: "⚙️", label: "Настройки", hint: "Тема и разделы", group: "care", tile: "bg-gray-50 border-gray-200", chip: "bg-gray-100" },
+    { id: "firstaid", icon: "Ambulance", label: "Первая помощь", hint: "Пошагово", group: "urgent", tile: "bg-red-600 shadow-red-600/20" },
+    { id: "redflags", icon: "Flag", label: "Красные флаги", hint: "Когда к врачу", group: "urgent", tile: "bg-pink-500 shadow-pink-500/20" },
+    { id: "rash", icon: "ScanSearch", label: "Сыпь", hint: "Что это может быть", group: "urgent", tile: "bg-rose-500 shadow-rose-500/20" },
+    { id: "illness", icon: "Thermometer", label: "Дневник болезни", hint: "Ход болезни", group: "urgent", tile: "bg-orange-500 shadow-orange-500/20" },
+    { id: "medkit", icon: "Pill", label: "Аптечка", hint: "Дозы и сроки", group: "care", tile: "bg-teal-600 shadow-teal-600/20" },
+    { id: "development", icon: "Sprout", label: "Развитие", hint: "Нормы и режим", group: "care", tile: "bg-violet-500 shadow-violet-500/20" },
+    { id: "vaccination", icon: "Syringe", label: "Вакцинация", hint: "График прививок", group: "care", tile: "bg-mint-500 shadow-mint-500/20" },
+    { id: "checkup", icon: "Stethoscope", label: "Осмотры", hint: "Плановые визиты", group: "care", tile: "bg-sky-600 shadow-sky-600/20" },
+    { id: "contacts", icon: "UserRound", label: "Врачи", hint: "Контакты", group: "care", tile: "bg-cyan-700 shadow-cyan-700/20" },
+    { id: "docs", icon: "FileText", label: "Документы", hint: "Справки и формы", group: "care", tile: "bg-slate-500 shadow-slate-500/20" },
+    { id: "useful", icon: "Link", label: "Полезное", hint: "Статьи и сервисы", group: "care", tile: "bg-amber-600 shadow-amber-600/20" },
+    { id: "settings", icon: "Settings", label: "Настройки", hint: "Тема и разделы", group: "care", tile: "bg-gray-500 shadow-gray-500/20" },
   ];
+
 
   const visibility = useSectionVisibility();
   const visibleCards = quickCards.filter((card) => isSectionVisible(card.id, visibility));
