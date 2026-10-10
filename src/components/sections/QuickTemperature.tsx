@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/drawer";
 import {
   addIllnessEntry,
+  getActiveIllnessCase,
   listIllnessEntries,
   removeIllnessEntry,
   setActiveChildId,
@@ -17,6 +18,7 @@ import {
   type IllnessEntry,
 } from "@/components/shared/childProfile";
 import type { Section } from "@/components/shared/sectionTypes";
+import { caseDay, caseTitle } from "@/components/sections/IllnessCaseCard";
 
 const MIN = 34;
 const MAX = 43;
@@ -70,12 +72,23 @@ export function QuickTemperatureButton({ setSection }: { setSection: (s: Section
   const [value, setValue] = useState(DEFAULT_TEMP);
   const [draft, setDraft] = useState(fmt(DEFAULT_TEMP));
 
-  const active = list.find((c) => c.id === activeId) ?? null;
-  const last = useMemo(() => (active ? lastTemperature(listIllnessEntries(active.id)) : null), [active]);
+  const sickChildren = useMemo(
+    () => list.filter((c) => getActiveIllnessCase(c.id)),
+    [list],
+  );
+  const active = sickChildren.find((c) => c.id === activeId) ?? sickChildren[0] ?? null;
+  const activeCase = active ? getActiveIllnessCase(active.id) : null;
+  const last = useMemo(
+    () =>
+      active && activeCase
+        ? lastTemperature(listIllnessEntries(active.id).filter((e) => e.caseId === activeCase.id))
+        : null,
+    [active, activeCase],
+  );
 
   useEffect(() => {
     if (!open) return;
-    const id = activeId || list[0]?.id || "";
+    const id = active?.id || "";
     setChildId(id);
     const prev = id ? lastTemperature(listIllnessEntries(id)) : null;
     const start = prev?.temperature != null && Date.now() - new Date(prev.datetime).getTime() < 2 * 86400000
@@ -84,6 +97,8 @@ export function QuickTemperatureButton({ setSection }: { setSection: (s: Section
     setValue(start);
     setDraft(fmt(start));
   }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const pickable = sickChildren;
 
   const apply = (n: number) => {
     const v = round1(Math.min(MAX, Math.max(MIN, n)));
@@ -123,21 +138,7 @@ export function QuickTemperatureButton({ setSection }: { setSection: (s: Section
     });
   };
 
-  if (list.length === 0) {
-    return (
-      <button
-        onClick={() => setSection("profile")}
-        className="w-full mb-5 rounded-3xl border border-dashed border-orange-300 bg-card p-3.5 flex items-center gap-3 text-left active:scale-[0.98] transition-transform"
-      >
-        <span className="w-11 h-11 rounded-2xl bg-orange-100 flex items-center justify-center text-2xl flex-shrink-0">🌡️</span>
-        <span className="flex-1 min-w-0">
-          <span className="block font-bold text-sm text-foreground">Записать температуру</span>
-          <span className="block text-[11px] text-muted-foreground">Сначала добавьте ребёнка в профиле</span>
-        </span>
-        <Icon name="ChevronRight" size={18} className="text-muted-foreground flex-shrink-0" />
-      </button>
-    );
-  }
+  if (!active || !activeCase) return null;
 
   const t = tone(draftValid ? draftNum : value);
   const lastTone = last?.temperature != null ? tone(last.temperature) : null;
@@ -160,7 +161,10 @@ export function QuickTemperatureButton({ setSection }: { setSection: (s: Section
                 {ago(last.datetime)}
               </>
             ) : (
-              <>Сразу в дневник болезни{active?.name ? ` · ${active.name}` : ""}</>
+              <>
+                {caseTitle(activeCase)} · {caseDay(activeCase)}-й день
+                {active.name ? ` · ${active.name}` : ""}
+              </>
             )}
           </span>
         </span>
@@ -179,9 +183,9 @@ export function QuickTemperatureButton({ setSection }: { setSection: (s: Section
           </DrawerHeader>
 
           <div className="px-4 pb-6">
-            {list.length > 1 && (
+            {pickable.length > 1 && (
               <div className="flex gap-1.5 overflow-x-auto pb-1 mb-3 -mx-1 px-1 justify-center flex-wrap">
-                {list.map((c, i) => {
+                {pickable.map((c, i) => {
                   const sel = c.id === childId;
                   return (
                     <button

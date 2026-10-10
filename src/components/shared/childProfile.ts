@@ -14,6 +14,14 @@ export type IllnessEntry = {
   symptoms: string[];
   medication: string;
   note: string;
+  caseId?: string;
+};
+
+export type IllnessCase = {
+  id: string;
+  title: string;
+  startedAt: string;
+  endedAt: string | null;
 };
 
 export type SleepEntry = {
@@ -44,6 +52,7 @@ export type ChildProfile = {
   notifyCheckups: boolean;
   measurements?: Measurement[];
   illness?: IllnessEntry[];
+  illnessCases?: IllnessCase[];
   teeth?: Record<string, string>;
   sleep?: SleepEntry[];
   feeds?: FeedEntry[];
@@ -67,6 +76,7 @@ export const EMPTY_PROFILE: ChildProfile = {
   notifyCheckups: true,
   measurements: [],
   illness: [],
+  illnessCases: [],
   teeth: {},
   sleep: [],
   feeds: [],
@@ -280,12 +290,79 @@ export function addIllnessEntry(
   if (idx === -1) return null;
   const illness = Array.isArray(list[idx].illness) ? [...list[idx].illness!] : [];
   const id = makeId();
-  illness.push({ id, ...entry });
+  const caseId = entry.caseId ?? findActiveCase(list[idx])?.id;
+  illness.push({ id, ...entry, ...(caseId ? { caseId } : {}) });
   list[idx] = { ...list[idx], illness };
   writeList(list);
   syncLegacy(list[idx]);
   emit();
   return id;
+}
+
+function findActiveCase(child: ChildProfile | undefined | null): IllnessCase | null {
+  const cases = child?.illnessCases;
+  if (!Array.isArray(cases)) return null;
+  for (let i = cases.length - 1; i >= 0; i--) {
+    if (!cases[i].endedAt) return cases[i];
+  }
+  return null;
+}
+
+export function getActiveIllnessCase(childId: string): IllnessCase | null {
+  return findActiveCase(readList().find((c) => c.id === childId));
+}
+
+export function listIllnessCases(childId: string): IllnessCase[] {
+  const arr = readList().find((c) => c.id === childId)?.illnessCases;
+  return Array.isArray(arr) ? [...arr].sort((a, b) => a.startedAt.localeCompare(b.startedAt)) : [];
+}
+
+export function startIllnessCase(childId: string, data: { title: string; startedAt: string }): string | null {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return null;
+  const now = data.startedAt;
+  const cases = (list[idx].illnessCases ?? []).map((c) => (c.endedAt ? c : { ...c, endedAt: now }));
+  const id = makeId();
+  cases.push({ id, title: data.title.trim(), startedAt: data.startedAt, endedAt: null });
+  list[idx] = { ...list[idx], illnessCases: cases };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
+  return id;
+}
+
+export function closeIllnessCase(childId: string, caseId: string, endedAt: string) {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return;
+  const cases = (list[idx].illnessCases ?? []).map((c) => (c.id === caseId ? { ...c, endedAt } : c));
+  list[idx] = { ...list[idx], illnessCases: cases };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
+}
+
+export function reopenIllnessCase(childId: string, caseId: string) {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return;
+  const cases = (list[idx].illnessCases ?? []).map((c) => (c.id === caseId ? { ...c, endedAt: null } : c));
+  list[idx] = { ...list[idx], illnessCases: cases };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
+}
+
+export function removeIllnessCase(childId: string, caseId: string) {
+  const list = readList();
+  const idx = list.findIndex((c) => c.id === childId);
+  if (idx === -1) return;
+  const cases = (list[idx].illnessCases ?? []).filter((c) => c.id !== caseId);
+  list[idx] = { ...list[idx], illnessCases: cases };
+  writeList(list);
+  syncLegacy(list[idx]);
+  emit();
 }
 
 export function removeIllnessEntry(childId: string, entryId: string) {
