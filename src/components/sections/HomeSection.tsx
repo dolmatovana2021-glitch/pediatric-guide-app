@@ -4,7 +4,7 @@ import {
   Section,
   SectionWrapper,
 } from "@/components/shared/SectionShared";
-import { useChildProfile, calcAge, childEmoji } from "@/components/shared/childProfile";
+import { useChildProfile, calcAge } from "@/components/shared/childProfile";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useSectionVisibility, isSectionVisible } from "@/components/shared/sectionVisibility";
@@ -13,6 +13,7 @@ import { DailyTipCard } from "@/components/sections/DailyTipCard";
 import { InstallAppCard } from "@/components/shared/InstallAppCard";
 import { BackupReminderCard } from "@/components/sections/BackupReminderCard";
 import { QuickTemperatureButton } from "@/components/sections/QuickTemperature";
+import { ChildAvatar } from "@/components/shared/ChildAvatar";
 
 type QuickCard = {
   id: Section;
@@ -81,7 +82,7 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
       <HomeHero
         name={profile.name || undefined}
         details={[age?.label, profile.weight ? `${profile.weight} кг` : ""].filter(Boolean).join(" · ")}
-        emoji={childEmoji(profile)}
+        emoji={<ChildAvatar child={profile} size={32} />}
         profileFilled={Boolean(profileFilled)}
         onEmergency={() => setSection("emergency")}
         onProfile={() => setSection("profile")}

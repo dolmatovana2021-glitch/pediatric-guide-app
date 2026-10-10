@@ -16,10 +16,10 @@ import {
   setActiveChildId,
   useChildren,
   type IllnessEntry,
-  childEmoji,
 } from "@/components/shared/childProfile";
 import type { Section } from "@/components/shared/sectionTypes";
 import { caseDay, caseTitle } from "@/components/sections/IllnessCaseCard";
+import { ChildAvatar } from "@/components/shared/ChildAvatar";
 
 const MIN = 34;
 const MAX = 43;
@@ -196,8 +196,10 @@ export function QuickTemperatureButton({ setSection }: { setSection: (s: Section
                         sel ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border"
                       }`}
                     >
-                      {childEmoji(c)}{" "}
-                      {c.name?.trim() || `Ребёнок ${i + 1}`}
+                      <span className="inline-flex items-center gap-1.5 align-middle">
+                        <ChildAvatar child={c} size={20} />
+                        {c.name?.trim() || `Ребёнок ${i + 1}`}
+                      </span>
                     </button>
                   );
                 })}

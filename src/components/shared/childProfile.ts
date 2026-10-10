@@ -84,12 +84,44 @@ export const EMPTY_PROFILE: ChildProfile = {
 };
 
 export const CHILD_AVATARS = [
-  "🐻", "🐼", "🐨", "🐰", "🦊", "🐱", "🐶", "🐯", "🦁", "🐸",
-  "🐵", "🐧", "🐥", "🦄", "🐢", "🐳", "🦉", "🐞", "🦋", "🐝",
-];
+  "bear", "bunny", "fox", "panda", "kitten", "puppy",
+  "koala", "lion", "penguin", "duckling", "hedgehog", "owl",
+] as const;
+
+export const AVATAR_LABELS: Record<string, string> = {
+  bear: "Медвежонок",
+  bunny: "Зайчик",
+  fox: "Лисёнок",
+  panda: "Панда",
+  kitten: "Котёнок",
+  puppy: "Щенок",
+  koala: "Коала",
+  lion: "Львёнок",
+  penguin: "Пингвинёнок",
+  duckling: "Утёнок",
+  hedgehog: "Ёжик",
+  owl: "Совёнок",
+};
+
+const LEGACY_EMOJI_AVATARS: Record<string, string> = {
+  "🐻": "bear", "🐼": "panda", "🐨": "koala", "🐰": "bunny", "🦊": "fox",
+  "🐱": "kitten", "🐶": "puppy", "🐯": "lion", "🦁": "lion", "🐧": "penguin",
+  "🐥": "duckling", "🦉": "owl",
+};
+
+export function childAvatar(p: Pick<ChildProfile, "avatar"> | null | undefined): string | null {
+  const v = p?.avatar;
+  if (!v) return null;
+  if ((CHILD_AVATARS as readonly string[]).includes(v)) return v;
+  return LEGACY_EMOJI_AVATARS[v] ?? null;
+}
+
+export function avatarSrc(id: string): string {
+  return `/avatars/${id}.webp`;
+}
 
 export function childEmoji(p: Pick<ChildProfile, "gender" | "avatar"> | null | undefined): string {
-  if (p?.avatar) return p.avatar;
+  if (p?.avatar && !childAvatar(p)) return p.avatar;
   return p?.gender === "boy" ? "👦" : p?.gender === "girl" ? "👧" : "🧒";
 }
 

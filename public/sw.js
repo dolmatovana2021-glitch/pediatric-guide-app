@@ -1,4 +1,4 @@
-const VERSION = "malyshdok-v1";
+const VERSION = "malyshdok-v2";
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 
@@ -15,6 +15,18 @@ const STATIC_FILES = [
   "/bear/school.webp?v=3",
   "/bear/firstaid.webp?v=3",
   "/bear/night.webp?v=3",
+  "/avatars/bear.webp",
+  "/avatars/bunny.webp",
+  "/avatars/fox.webp",
+  "/avatars/panda.webp",
+  "/avatars/kitten.webp",
+  "/avatars/puppy.webp",
+  "/avatars/koala.webp",
+  "/avatars/lion.webp",
+  "/avatars/penguin.webp",
+  "/avatars/duckling.webp",
+  "/avatars/hedgehog.webp",
+  "/avatars/owl.webp",
   "/rash-elements/bulla.webp",
   "/rash-elements/cicatrix.webp",
   "/rash-elements/crusta.webp",

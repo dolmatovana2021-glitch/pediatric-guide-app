@@ -1,5 +1,5 @@
 import Icon from "@/components/ui/icon";
-import { childEmoji } from "@/components/shared/childProfile";
+import { ChildAvatar } from "@/components/shared/ChildAvatar";
 
 type AgeInfo = { years: number; months: number; label: string } | null;
 
@@ -42,9 +42,7 @@ export function WeightInput({
               : "bg-card border-mint-200 text-foreground hover:bg-mint-100"
           }`}
         >
-          <span className="text-base">
-            {childEmoji({ gender: profile.gender as "boy" | "girl" | "", avatar: profile.avatar })}
-          </span>
+          <ChildAvatar child={{ gender: profile.gender as "boy" | "girl" | "", avatar: profile.avatar }} size={22} />
           <span className="flex-1 text-left truncate">
             <span className="font-semibold">{profile.name || "Малыш"}</span>
             {age ? ` · ${age.label}` : ""} · {profile.weight} кг

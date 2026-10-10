@@ -1,10 +1,11 @@
+import type { ReactNode } from "react";
 import Icon from "@/components/ui/icon";
 import { Bear } from "@/components/shared/Bear";
 
 type HomeHeroProps = {
   name?: string;
   details?: string;
-  emoji: string;
+  emoji: ReactNode;
   profileFilled: boolean;
   onEmergency: () => void;
   onProfile: () => void;
@@ -53,7 +54,7 @@ export function HomeHero({
         }`}
       >
         <div className="flex items-start justify-between">
-          <span className="text-2xl">{emoji}</span>
+          <span className="text-2xl leading-none flex items-center h-8">{emoji}</span>
           <Icon name="ChevronRight" size={16} className="text-muted-foreground" />
         </div>
         <p className="font-bold text-foreground text-sm mt-2 truncate">

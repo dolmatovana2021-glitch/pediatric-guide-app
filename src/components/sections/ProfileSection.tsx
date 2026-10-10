@@ -13,13 +13,13 @@ import {
   setActiveChildId,
   getActiveChildId,
   listMeasurements,
-  childEmoji,
   type Measurement,
 } from "@/components/shared/childProfile";
-import { AvatarPicker, avatarBg } from "@/components/sections/AvatarPicker";
+import { AvatarPicker } from "@/components/sections/AvatarPicker";
 import { GrowthChart } from "@/components/sections/GrowthChart";
 import { MedicalReport } from "@/components/sections/MedicalReport";
 import { BackupCard } from "@/components/sections/BackupCard";
+import { ChildAvatar } from "@/components/shared/ChildAvatar";
 
 
 const EVENT_NAME = "malyshdok:childProfile:update";
@@ -94,7 +94,7 @@ export function ProfileSection() {
       children.map((c, idx) => ({
         id: c.id,
         title: c.name?.trim() || `Ребёнок ${idx + 1}`,
-        emoji: childEmoji(c),
+        child: c,
       })),
     [children],
   );
@@ -137,7 +137,7 @@ export function ProfileSection() {
                       : "bg-mint-50 text-foreground border-mint-200 hover:bg-mint-100"
                   }`}
                 >
-                  <span className="text-base leading-none">{t.emoji}</span>
+                  <ChildAvatar child={t.child} size={22} />
                   <span className="max-w-[120px] truncate">{t.title}</span>
                 </button>
               );
@@ -156,8 +156,8 @@ export function ProfileSection() {
 
       {hasChildren && filled && (
         <div className="bg-mint-50 border border-mint-200 rounded-3xl p-4 mb-4 flex items-center gap-3">
-          <div className={`w-12 h-12 rounded-full border border-mint-200 flex items-center justify-center text-2xl flex-shrink-0 ${avatarBg(profile.avatar)}`}>
-            {childEmoji(profile)}
+          <div className="w-12 h-12 rounded-full bg-card border border-mint-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
+            <ChildAvatar child={profile} size={46} />
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-bold text-foreground text-base truncate">
