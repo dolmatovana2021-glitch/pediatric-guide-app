@@ -48,8 +48,8 @@ function NavButton({
         )}
       </span>
       <span
-        className={`font-heading text-[10px] leading-none ${
-          active ? "font-bold text-primary" : "font-semibold text-muted-foreground"
+        className={`text-[10px] leading-none ${
+          active ? "font-bold text-primary" : "font-medium text-muted-foreground"
         }`}
       >
         {item.label}

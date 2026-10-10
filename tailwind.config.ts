@@ -23,7 +23,6 @@ export default {
 			fontFamily: {
 				golos: ['Golos Text', 'sans-serif'],
 				caveat: ['Caveat', 'cursive'],
-				heading: ['Montserrat Alternates', 'Golos Text', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
