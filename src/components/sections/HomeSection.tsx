@@ -21,6 +21,7 @@ type QuickCard = {
   hint: string;
   group: "urgent" | "care";
   tile: string;
+  ink: string;
 };
 
 const groups: { id: QuickCard["group"]; title: string }[] = [
@@ -32,14 +33,14 @@ function SectionTile({ card, onClick }: { card: QuickCard; onClick: () => void }
   return (
     <button
       onClick={onClick}
-      className={`${card.tile} rounded-3xl p-4 text-left text-white shadow-md active:scale-[0.97] transition-transform`}
+      className={`${card.tile} bg-gradient-to-br rounded-3xl p-4 text-left text-foreground shadow-md active:scale-[0.97] transition-transform`}
     >
       <div className="flex items-start justify-between">
-        <Icon name={card.icon} fallback="Circle" size={24} />
-        <Icon name="ChevronRight" size={16} className="text-white/80" />
+        <Icon name={card.icon} fallback="Circle" size={24} className={card.ink} />
+        <Icon name="ChevronRight" size={16} className="text-foreground/50" />
       </div>
       <p className="font-bold text-sm mt-2 leading-tight">{card.label}</p>
-      <p className="text-[11px] text-white/85 truncate">{card.hint}</p>
+      <p className="text-[11px] text-foreground/65 truncate">{card.hint}</p>
     </button>
   );
 }
@@ -48,18 +49,18 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
   const profile = useChildProfile();
   const age = calcAge(profile.birthDate);
   const quickCards: QuickCard[] = [
-    { id: "firstaid", icon: "Ambulance", label: "Первая помощь", hint: "Пошагово", group: "urgent", tile: "bg-red-600 shadow-red-600/20" },
-    { id: "redflags", icon: "Flag", label: "Красные флаги", hint: "Когда к врачу", group: "urgent", tile: "bg-pink-500 shadow-pink-500/20" },
-    { id: "rash", icon: "ScanSearch", label: "Сыпь", hint: "Что это может быть", group: "urgent", tile: "bg-rose-500 shadow-rose-500/20" },
-    { id: "illness", icon: "Thermometer", label: "Дневник болезни", hint: "Ход болезни", group: "urgent", tile: "bg-orange-500 shadow-orange-500/20" },
-    { id: "medkit", icon: "Pill", label: "Аптечка", hint: "Дозы и сроки", group: "care", tile: "bg-teal-600 shadow-teal-600/20" },
-    { id: "development", icon: "Sprout", label: "Развитие", hint: "Нормы и режим", group: "care", tile: "bg-violet-500 shadow-violet-500/20" },
-    { id: "vaccination", icon: "Syringe", label: "Вакцинация", hint: "График прививок", group: "care", tile: "bg-mint-500 shadow-mint-500/20" },
-    { id: "checkup", icon: "Stethoscope", label: "Осмотры", hint: "Плановые визиты", group: "care", tile: "bg-sky-600 shadow-sky-600/20" },
-    { id: "contacts", icon: "UserRound", label: "Врачи", hint: "Контакты", group: "care", tile: "bg-cyan-700 shadow-cyan-700/20" },
-    { id: "docs", icon: "FileText", label: "Документы", hint: "Справки и формы", group: "care", tile: "bg-slate-500 shadow-slate-500/20" },
-    { id: "useful", icon: "Link", label: "Полезное", hint: "Статьи и сервисы", group: "care", tile: "bg-amber-600 shadow-amber-600/20" },
-    { id: "settings", icon: "Settings", label: "Настройки", hint: "Тема и разделы", group: "care", tile: "bg-gray-500 shadow-gray-500/20" },
+    { id: "firstaid", icon: "Ambulance", label: "Первая помощь", hint: "Пошагово", group: "urgent", tile: "from-red-100 to-red-200 shadow-red-300/30", ink: "text-red-600 dark:text-red-400" },
+    { id: "redflags", icon: "Flag", label: "Красные флаги", hint: "Когда к врачу", group: "urgent", tile: "from-pink-100 to-pink-200 shadow-pink-300/30", ink: "text-pink-600 dark:text-pink-400" },
+    { id: "rash", icon: "ScanSearch", label: "Сыпь", hint: "Что это может быть", group: "urgent", tile: "from-rose-100 to-rose-200 shadow-rose-300/30", ink: "text-rose-600 dark:text-rose-400" },
+    { id: "illness", icon: "Thermometer", label: "Дневник болезни", hint: "Ход болезни", group: "urgent", tile: "from-orange-100 to-orange-200 shadow-orange-300/30", ink: "text-orange-600 dark:text-orange-400" },
+    { id: "medkit", icon: "Pill", label: "Аптечка", hint: "Дозы и сроки", group: "care", tile: "from-teal-100 to-teal-200 shadow-teal-300/30", ink: "text-teal-600 dark:text-teal-400" },
+    { id: "development", icon: "Sprout", label: "Развитие", hint: "Нормы и режим", group: "care", tile: "from-violet-100 to-violet-200 shadow-violet-300/30", ink: "text-violet-600 dark:text-violet-400" },
+    { id: "vaccination", icon: "Syringe", label: "Вакцинация", hint: "График прививок", group: "care", tile: "from-mint-100 to-mint-200 shadow-mint-300/30", ink: "text-mint-600 dark:text-mint-400" },
+    { id: "checkup", icon: "Stethoscope", label: "Осмотры", hint: "Плановые визиты", group: "care", tile: "from-sky-100 to-sky-200 shadow-sky-300/30", ink: "text-sky-600 dark:text-sky-400" },
+    { id: "contacts", icon: "UserRound", label: "Врачи", hint: "Контакты", group: "care", tile: "from-cyan-100 to-cyan-200 shadow-cyan-300/30", ink: "text-cyan-600 dark:text-cyan-400" },
+    { id: "docs", icon: "FileText", label: "Документы", hint: "Справки и формы", group: "care", tile: "from-slate-100 to-slate-200 shadow-slate-300/30", ink: "text-slate-600 dark:text-slate-400" },
+    { id: "useful", icon: "Link", label: "Полезное", hint: "Статьи и сервисы", group: "care", tile: "from-amber-100 to-amber-200 shadow-amber-300/30", ink: "text-amber-600 dark:text-amber-400" },
+    { id: "settings", icon: "Settings", label: "Настройки", hint: "Тема и разделы", group: "care", tile: "from-gray-100 to-gray-200 shadow-gray-300/30", ink: "text-gray-600 dark:text-gray-400" },
   ];
 
 
