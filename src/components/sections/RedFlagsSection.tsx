@@ -7,6 +7,7 @@ import {
 } from "@/components/shared/SectionShared";
 
 const QUICK_TAGS = [
+  "грипп",
   "температура",
   "сыпь",
   "судороги",
