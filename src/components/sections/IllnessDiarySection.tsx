@@ -29,6 +29,7 @@ import {
   caseRange,
   caseTitle,
 } from "@/components/sections/IllnessCaseCard";
+import { IllnessStats } from "@/components/sections/IllnessStats";
 
 const EVENT_NAME = "malyshdok:childProfile:update";
 
@@ -461,6 +462,8 @@ export function IllnessDiarySection() {
               </button>
             </div>
           )}
+
+          {cases.length > 0 && <IllnessStats cases={cases} entries={allEntries} />}
 
           {pastCases.length > 0 && (
             <div className="mt-5 space-y-2">
