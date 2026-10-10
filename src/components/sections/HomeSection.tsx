@@ -12,6 +12,7 @@ import { HomeHero } from "@/components/sections/HomeHero";
 import { DailyTipCard } from "@/components/sections/DailyTipCard";
 import { InstallAppCard } from "@/components/shared/InstallAppCard";
 import { BackupReminderCard } from "@/components/sections/BackupReminderCard";
+import { QuickTemperatureButton } from "@/components/sections/QuickTemperature";
 
 type QuickCard = {
   id: Section;
@@ -85,6 +86,8 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
         onEmergency={() => setSection("emergency")}
         onProfile={() => setSection("profile")}
       />
+
+      <QuickTemperatureButton setSection={setSection} />
 
       {dueVaccines > 0 && (
         <button

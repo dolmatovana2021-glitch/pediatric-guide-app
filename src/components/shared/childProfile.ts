@@ -274,16 +274,18 @@ export function listIllnessEntries(childId: string): IllnessEntry[] {
 export function addIllnessEntry(
   childId: string,
   entry: Omit<IllnessEntry, "id">,
-) {
+): string | null {
   const list = readList();
   const idx = list.findIndex((c) => c.id === childId);
-  if (idx === -1) return;
+  if (idx === -1) return null;
   const illness = Array.isArray(list[idx].illness) ? [...list[idx].illness!] : [];
-  illness.push({ id: makeId(), ...entry });
+  const id = makeId();
+  illness.push({ id, ...entry });
   list[idx] = { ...list[idx], illness };
   writeList(list);
   syncLegacy(list[idx]);
   emit();
+  return id;
 }
 
 export function removeIllnessEntry(childId: string, entryId: string) {
