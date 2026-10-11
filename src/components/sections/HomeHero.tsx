@@ -55,8 +55,15 @@ export function HomeHero({
 
       <button
         onClick={onProfile}
-        className="relative bg-transparent text-left flex items-center gap-2 pl-1 pr-0 py-1 active:scale-[0.97] transition-transform"
+        className="relative bg-transparent text-left flex items-center gap-2.5 pl-0 pr-1 py-1 active:scale-[0.97] transition-transform"
       >
+        <span
+          className={`w-[72px] h-[72px] rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center bg-card shadow-sm ${
+            profileFilled ? "" : "border-2 border-dashed border-peach-300"
+          }`}
+        >
+          {emoji}
+        </span>
         <span className="flex-1 min-w-0">
           {profileFilled ? (
             <>
@@ -92,13 +99,6 @@ export function HomeHero({
               <span className="block text-[11px] text-muted-foreground leading-snug mt-1">Для расчёта дозы</span>
             </>
           )}
-        </span>
-        <span
-          className={`w-[72px] h-[72px] rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center bg-card shadow-sm ${
-            profileFilled ? "" : "border-2 border-dashed border-peach-300"
-          }`}
-        >
-          {emoji}
         </span>
       </button>
 
