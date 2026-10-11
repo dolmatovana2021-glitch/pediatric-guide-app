@@ -12,18 +12,20 @@ export function ChildAvatar({
   size = 24,
   className = "",
   round = true,
+  emojiScale = 0.82,
 }: {
   child: Pick<ChildProfile, "gender" | "avatar"> | null | undefined;
   size?: number;
   className?: string;
   round?: boolean;
+  emojiScale?: number;
 }) {
   const id = childAvatar(child);
   if (!id) {
     return (
       <span
         className={`inline-flex items-center justify-center leading-none flex-shrink-0 ${className}`}
-        style={{ width: size, height: size, fontSize: Math.round(size * 0.82) }}
+        style={{ width: size, height: size, fontSize: Math.round(size * emojiScale) }}
       >
         {childEmoji(child)}
       </span>

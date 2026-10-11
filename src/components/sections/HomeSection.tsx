@@ -82,7 +82,9 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
       <HomeHero
         name={profile.name || undefined}
         details={[age?.label, profile.weight ? `${profile.weight} кг` : ""].filter(Boolean).join(" · ")}
-        emoji={<ChildAvatar child={profile} size={32} />}
+        age={age?.label}
+        weight={profile.weight ? `${profile.weight} кг` : undefined}
+        emoji={<ChildAvatar child={profile} size={54} emojiScale={0.6} />}
         profileFilled={Boolean(profileFilled)}
         onEmergency={() => setSection("emergency")}
         onProfile={() => setSection("profile")}
