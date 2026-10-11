@@ -1,14 +1,5 @@
 import { useMemo, useState } from "react";
-import {
-  ComposedChart,
-  Line,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { GrowthCorridorChart } from "@/components/sections/GrowthCorridorChart";
 import Icon from "@/components/ui/icon";
 import {
   addMeasurement,
@@ -18,7 +9,6 @@ import {
   type Measurement,
 } from "@/components/shared/childProfile";
 import {
-  buildChartData,
   estimatePercentile,
   percentileVerdict,
   bmiVerdict,
@@ -70,26 +60,14 @@ export function GrowthChart({
           date: m.date,
         };
       })
-      .filter(Boolean) as { month: number; value: number; id: string; date: string }[];
+      .filter(Boolean)
+      .sort((a, b) => a!.month - b!.month) as { month: number; value: number; id: string; date: string }[];
   }, [measurements, metric, profile.birthDate, hasBirth]);
 
   const maxMonths = useMemo(() => {
     const maxPoint = points.length ? Math.max(...points.map((p) => p.month)) : 0;
     return Math.min(MAX_AGE_MONTHS, Math.max(12, Math.ceil((maxPoint + 3) / 6) * 6));
   }, [points]);
-
-  const curves = useMemo(
-    () => buildChartData(metric, gender, maxMonths),
-    [metric, gender, maxMonths],
-  );
-
-  const chartData = useMemo(() => {
-    const merged: Record<string, number | null>[] = curves.map((c) => ({ ...c, point: null }));
-    points.forEach((p) => {
-      merged.push({ month: p.month, point: p.value });
-    });
-    return merged.sort((a, b) => (a.month as number) - (b.month as number));
-  }, [curves, points]);
 
   const last = points.length ? points[points.length - 1] : null;
   const lastPercentile = last
@@ -183,69 +161,31 @@ export function GrowthChart({
             </div>
           )}
 
-          <div className="h-[240px] -ml-3">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={chartData} margin={{ top: 5, right: 8, bottom: 5, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis
-                  dataKey="month"
-                  type="number"
-                  domain={[0, maxMonths]}
-                  tick={{ fontSize: 10 }}
-                  tickFormatter={(v) => `${v}м`}
-                />
-                <YAxis
-                  tick={{ fontSize: 10 }}
-                  domain={metric === "bmi" ? [10, 22] : ["auto", "auto"]}
-                  width={38}
-                />
-                <Tooltip
-                  formatter={(value: number, name: string) => {
-                    const names: Record<string, string> = {
-                      p3: "3-й центиль",
-                      p15: "15-й",
-                      p50: "медиана",
-                      p85: "85-й",
-                      p97: "97-й",
-                      point: "Ваш замер",
-                    };
-                    const v = `${Number(value).toFixed(1)}${meta.unit ? ` ${meta.unit}` : ""}`;
-                    return [v, names[name] || name];
-                  }}
-                  labelFormatter={(l) => `${Number(l).toFixed(1)} мес`}
-                  contentStyle={{ fontSize: 12, borderRadius: 12 }}
-                />
-                <Line dataKey="p3" stroke="#fca5a5" dot={false} strokeWidth={1} connectNulls />
-                <Line dataKey="p15" stroke="#fcd34d" dot={false} strokeWidth={1} connectNulls />
-                <Line dataKey="p50" stroke="#34d399" dot={false} strokeWidth={2} connectNulls />
-                <Line dataKey="p85" stroke="#fcd34d" dot={false} strokeWidth={1} connectNulls />
-                <Line dataKey="p97" stroke="#fca5a5" dot={false} strokeWidth={1} connectNulls />
-                <Scatter dataKey="point" fill="#6366f1" shape="circle" />
-                <Line
-                  dataKey="point"
-                  stroke="#6366f1"
-                  strokeWidth={2}
-                  dot={{ r: 4, fill: "#6366f1" }}
-                  connectNulls
-                />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
+          <GrowthCorridorChart
+            metric={metric}
+            gender={gender}
+            maxMonths={maxMonths}
+            points={points}
+            unit={meta.unit}
+          />
 
-          <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-muted-foreground mt-1 mb-3">
+          <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-muted-foreground mt-2 mb-3">
             <span className="flex items-center gap-1">
-              <span className="w-3 h-0.5 bg-emerald-400 rounded" /> медиана
+              <span className="w-3 h-2.5 rounded-sm bg-emerald-100 border border-emerald-200" /> норма 15–85
             </span>
             <span className="flex items-center gap-1">
-              <span className="w-3 h-0.5 bg-amber-300 rounded" /> 15–85
+              <span className="w-3 h-2.5 rounded-sm bg-amber-100 border border-amber-200" /> 3–15 и 85–97
             </span>
             <span className="flex items-center gap-1">
-              <span className="w-3 h-0.5 bg-red-300 rounded" /> 3–97
+              <span className="w-3 h-2.5 rounded-sm bg-rose-50 border border-rose-200" /> ниже 3 / выше 97
             </span>
             <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-indigo-500" /> замеры
+              <span className="w-3 border-t-2 border-dashed border-emerald-500" /> медиана
             </span>
           </div>
+          {points.length > 1 && (
+            <p className="text-[10px] text-muted-foreground -mt-2 mb-3">Нажмите на точку, чтобы увидеть замер</p>
+          )}
 
           {open ? (
             <div className="bg-mint-50 border border-mint-200 rounded-2xl p-3 space-y-2.5 mb-3">
