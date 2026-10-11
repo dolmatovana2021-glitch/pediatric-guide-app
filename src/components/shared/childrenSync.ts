@@ -9,6 +9,8 @@ import {
 import {
   exportVaccineStatuses,
   importVaccineStatuses,
+  exportVaccineDates,
+  importVaccineDates,
   hasVaccineData,
 } from "@/components/shared/vaccineStatus";
 import {
@@ -57,6 +59,7 @@ export function useSyncStatus(): SyncStatus {
 
 type CloudSnapshot = ChildrenSnapshot & {
   vaccines?: Record<string, Record<string, string>>;
+  vaccineDates?: Record<string, Record<string, { date: string; note?: string }>>;
   checkups?: Record<string, Record<string, boolean>>;
   medkit?: MedItem[];
 };
@@ -65,6 +68,7 @@ function collect(): CloudSnapshot {
   return {
     ...exportChildrenState(),
     vaccines: exportVaccineStatuses() as Record<string, Record<string, string>>,
+    vaccineDates: exportVaccineDates(),
     checkups: exportCheckupStatuses(),
     medkit: exportMedkit(),
   };
@@ -77,6 +81,7 @@ function apply(remote: CloudSnapshot) {
       remote.vaccines as unknown as Parameters<typeof importVaccineStatuses>[0],
     );
   }
+  if (remote.vaccineDates) importVaccineDates(remote.vaccineDates);
   if (remote.checkups) importCheckupStatuses(remote.checkups);
   if (remote.medkit) importMedkit(remote.medkit);
 }

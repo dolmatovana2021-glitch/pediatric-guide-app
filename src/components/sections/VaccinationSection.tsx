@@ -8,6 +8,7 @@ import {
 } from "@/components/shared/vaccineStatus";
 import { useChildProfile, calcAge, saveChildProfile } from "@/components/shared/childProfile";
 import { ChildAvatar } from "@/components/shared/ChildAvatar";
+import { VaccineDoseDate } from "@/components/sections/VaccineDoseDate";
 
 const statusStyle: Record<
   DoseStatus,
@@ -34,7 +35,7 @@ const statusStyle: Record<
 };
 
 export function VaccinationSection() {
-  const { statuses, toggle } = useVaccineStatuses();
+  const { statuses, dates, toggle, setDate } = useVaccineStatuses();
   const profile = useChildProfile();
   const [openId, setOpenId] = useState<string | null>(null);
   const [filter, setFilter] = useState<VaccineTier | "all">("all");
@@ -278,15 +279,15 @@ export function VaccinationSection() {
               </button>
 
               {open && (
-                <div className="px-3.5 pb-3.5 space-y-2 animate-fade-in">
+                <div className="px-3.5 pb-3.5 space-y-3 animate-fade-in">
                   {visibleDoses.map((dose) => {
                     const status: DoseStatus = statuses[dose.id] || "none";
                     const st = statusStyle[status];
                     const due = isDue(dose.ageMonths, status, dose.tier);
                     const tier = tierMeta[dose.tier];
                     return (
+                      <div key={dose.id} className="space-y-1.5">
                       <button
-                        key={dose.id}
                         onClick={() => toggle(dose.id)}
                         className={`relative w-full flex items-center gap-3 rounded-xl border p-3 pl-4 text-left transition-colors active:scale-[0.98] overflow-hidden ${
                           due ? "bg-red-50 border-red-300 text-red-700" : st.chip
@@ -317,6 +318,12 @@ export function VaccinationSection() {
                         </div>
                         <span className="text-[10px] font-semibold whitespace-nowrap">{st.label}</span>
                       </button>
+                      <VaccineDoseDate
+                        value={dates[dose.id]}
+                        minDate={profile.birthDate || undefined}
+                        onChange={(v) => setDate(dose.id, v)}
+                      />
+                      </div>
                     );
                   })}
                 </div>

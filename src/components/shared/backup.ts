@@ -14,6 +14,7 @@ const DATA_KEYS = [
   "malyshdok:childProfiles:active",
   "malyshdok:childProfile",
   "malyshdok:vaccineStatus",
+  "malyshdok:vaccineDates",
   "malyshdok:checkupStatus",
   "malyshdok:medkit",
   "malyshdok:doseHistory",

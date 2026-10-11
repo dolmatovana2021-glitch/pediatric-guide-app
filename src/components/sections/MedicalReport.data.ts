@@ -10,7 +10,7 @@ import {
   MAX_AGE_MONTHS,
   WEIGHT_MAX_AGE_MONTHS,
 } from "@/components/shared/whoGrowthData";
-import { getStatuses } from "@/components/shared/vaccineStatus";
+import { getStatuses, getDoseDates } from "@/components/shared/vaccineStatus";
 import { vaccineRows } from "@/components/shared/vaccineData";
 import { allTeeth, permanentTeeth, toothState, type Tooth } from "@/components/shared/teethData";
 import { sleepNormFor, sleepVerdict, type SleepNorm, type SleepVerdict } from "@/components/shared/sleepData";
@@ -65,11 +65,14 @@ export function buildGrowthRows(
 
 export function buildDoneVaccines(): string[] {
   const vacStatuses = getStatuses();
+  const vacDates = getDoseDates();
   const doneVaccines: string[] = [];
   for (const row of vaccineRows) {
     for (const dose of row.doses) {
       if (vacStatuses[dose.id] === "done") {
-        doneVaccines.push(`${row.disease} — ${dose.label}`);
+        const d = vacDates[dose.id];
+        const extra = d ? ` (${fmtDate(d.date)}${d.note ? `, ${d.note}` : ""})` : "";
+        doneVaccines.push(`${row.disease} — ${dose.label}${extra}`);
       }
     }
   }

@@ -6,6 +6,55 @@ export type DoseStatus = "none" | "planned" | "done";
 
 const STORAGE_KEY = "malyshdok:vaccineStatus";
 const EVENT_NAME = "malyshdok:vaccineStatus:update";
+const DATES_KEY = "malyshdok:vaccineDates";
+
+export type DoseDate = { date: string; note?: string };
+type AllDates = Record<string, Record<string, DoseDate>>;
+
+function readDates(): AllDates {
+  try {
+    const raw = localStorage.getItem(DATES_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") return parsed as AllDates;
+    }
+  } catch {
+    /* ignore */
+  }
+  return {};
+}
+
+function writeDates(data: AllDates) {
+  try {
+    localStorage.setItem(DATES_KEY, JSON.stringify(data));
+  } catch {
+    /* ignore */
+  }
+  window.dispatchEvent(new CustomEvent(EVENT_NAME));
+}
+
+export function getDoseDates(): Record<string, DoseDate> {
+  return readDates()[childKey()] || {};
+}
+
+export function setDoseDate(doseId: string, value: DoseDate | null) {
+  const all = readDates();
+  const key = childKey();
+  const map = { ...(all[key] || {}) };
+  if (!value || !value.date) delete map[doseId];
+  else map[doseId] = value.note ? { date: value.date, note: value.note } : { date: value.date };
+  all[key] = map;
+  writeDates(all);
+}
+
+export function exportVaccineDates(): AllDates {
+  return readDates();
+}
+
+export function importVaccineDates(data: AllDates) {
+  if (!data || typeof data !== "object") return;
+  writeDates(data);
+}
 
 type AllStatuses = Record<string, Record<string, DoseStatus>>;
 
@@ -68,7 +117,11 @@ export function importVaccineStatuses(data: AllStatuses) {
 
 export function hasVaccineData(): boolean {
   const all = readAll();
-  return Object.values(all).some((m) => m && Object.keys(m).length > 0);
+  const d = readDates();
+  return (
+    Object.values(all).some((m) => m && Object.keys(m).length > 0) ||
+    Object.values(d).some((m) => m && Object.keys(m).length > 0)
+  );
 }
 
 export function cycleStatus(current: DoseStatus): DoseStatus {
@@ -79,13 +132,19 @@ export function cycleStatus(current: DoseStatus): DoseStatus {
 
 export function useVaccineStatuses(): {
   statuses: Record<string, DoseStatus>;
+  dates: Record<string, DoseDate>;
   toggle: (doseId: string) => void;
   setStatus: (doseId: string, status: DoseStatus) => void;
+  setDate: (doseId: string, value: DoseDate | null) => void;
 } {
   const [statuses, setStatuses] = useState<Record<string, DoseStatus>>({});
+  const [dates, setDates] = useState<Record<string, DoseDate>>({});
 
   useEffect(() => {
-    const refresh = () => setStatuses(getStatuses());
+    const refresh = () => {
+      setStatuses(getStatuses());
+      setDates(getDoseDates());
+    };
     refresh();
     window.addEventListener(EVENT_NAME, refresh);
     window.addEventListener("storage", refresh);
@@ -106,7 +165,12 @@ export function useVaccineStatuses(): {
     setDoseStatus(doseId, status);
   };
 
-  return { statuses, toggle, setStatus };
+  const setDate = (doseId: string, value: DoseDate | null) => {
+    setDoseDate(doseId, value);
+    if (value?.date && statuses[doseId] !== "done") setDoseStatus(doseId, "done");
+  };
+
+  return { statuses, dates, toggle, setStatus, setDate };
 }
 
 export function countDueVaccines(): number {
