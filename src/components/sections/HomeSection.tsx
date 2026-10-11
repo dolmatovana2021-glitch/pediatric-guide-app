@@ -4,7 +4,7 @@ import {
   Section,
   SectionWrapper,
 } from "@/components/shared/SectionShared";
-import { useChildProfile, calcAge } from "@/components/shared/childProfile";
+import { useChildProfile, calcAge, calcAgeFull, lastHeight, bloodLabel } from "@/components/shared/childProfile";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
 import { useSectionVisibility, isSectionVisible } from "@/components/shared/sectionVisibility";
@@ -82,9 +82,11 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
       <HomeHero
         name={profile.name || undefined}
         details={[age?.label, profile.weight ? `${profile.weight} кг` : ""].filter(Boolean).join(" · ")}
-        age={age?.label}
+        age={calcAgeFull(profile.birthDate) ?? undefined}
         weight={profile.weight ? `${profile.weight} кг` : undefined}
-        emoji={<ChildAvatar child={profile} size={54} emojiScale={0.6} />}
+        height={lastHeight(profile) !== null ? `${lastHeight(profile)} см` : undefined}
+        blood={bloodLabel(profile) ?? undefined}
+        emoji={<ChildAvatar child={profile} size={72} emojiScale={0.55} />}
         profileFilled={Boolean(profileFilled)}
         onEmergency={() => setSection("emergency")}
         onProfile={() => setSection("profile")}

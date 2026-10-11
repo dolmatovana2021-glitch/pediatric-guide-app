@@ -47,6 +47,8 @@ export type ChildProfile = {
   weight: string;
   gender: "boy" | "girl" | "";
   avatar?: string;
+  bloodGroup?: "" | "I" | "II" | "III" | "IV";
+  rhesus?: "" | "+" | "-";
   allergies: string;
   riskGroup: boolean;
   notifyVaccines: boolean;
@@ -596,6 +598,50 @@ export function useChildren(): { list: StoredChild[]; activeId: string } {
     };
   }, []);
   return state;
+}
+
+function plural(n: number, one: string, few: string, many: string) {
+  const n10 = n % 10;
+  const n100 = n % 100;
+  if (n10 === 1 && n100 !== 11) return one;
+  if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return few;
+  return many;
+}
+
+export function calcAgeFull(birthDate: string): string | null {
+  if (!birthDate) return null;
+  const b = new Date(birthDate + "T00:00:00");
+  if (isNaN(b.getTime())) return null;
+  const now = new Date();
+  let years = now.getFullYear() - b.getFullYear();
+  let months = now.getMonth() - b.getMonth();
+  let days = now.getDate() - b.getDate();
+  if (days < 0) {
+    months -= 1;
+    days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+  }
+  if (months < 0) {
+    years -= 1;
+    months += 12;
+  }
+  if (years < 0) return null;
+  const parts: string[] = [];
+  if (years > 0) parts.push(`${years} ${plural(years, "год", "года", "лет")}`);
+  if (months > 0) parts.push(`${months} мес`);
+  if (days > 0 || parts.length === 0) parts.push(`${days} ${plural(days, "день", "дня", "дней")}`);
+  return parts.join(" ");
+}
+
+export function lastHeight(p: Pick<ChildProfile, "measurements">): number | null {
+  const arr = Array.isArray(p.measurements) ? [...p.measurements] : [];
+  arr.sort((a, b) => b.date.localeCompare(a.date));
+  return arr.find((m) => m.height !== null)?.height ?? null;
+}
+
+export function bloodLabel(p: Pick<ChildProfile, "bloodGroup" | "rhesus">): string | null {
+  if (!p.bloodGroup) return null;
+  const rh = p.rhesus === "+" ? " Rh+" : p.rhesus === "-" ? " Rh−" : "";
+  return `${p.bloodGroup}${rh}`;
 }
 
 export function calcAge(birthDate: string): { years: number; months: number; label: string } | null {

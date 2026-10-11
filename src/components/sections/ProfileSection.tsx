@@ -251,6 +251,47 @@ export function ProfileSection() {
             </div>
           </div>
 
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground block mb-1.5">
+              Группа крови и резус-фактор
+            </label>
+            <div className="grid grid-cols-4 gap-2 mb-2">
+              {(["I", "II", "III", "IV"] as const).map((g) => (
+                <button
+                  key={g}
+                  type="button"
+                  onClick={() => update("bloodGroup", profile.bloodGroup === g ? "" : g)}
+                  className={`text-sm font-bold py-2 rounded-lg border transition ${
+                    profile.bloodGroup === g
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-mint-50 text-foreground border-mint-200 hover:bg-mint-100"
+                  }`}
+                >
+                  {g}
+                </button>
+              ))}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {([
+                { v: "+", label: "Rh+ положительный" },
+                { v: "-", label: "Rh− отрицательный" },
+              ] as const).map((r) => (
+                <button
+                  key={r.v}
+                  type="button"
+                  onClick={() => update("rhesus", profile.rhesus === r.v ? "" : r.v)}
+                  className={`text-xs font-semibold py-2 px-2 rounded-lg border transition ${
+                    profile.rhesus === r.v
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-mint-50 text-foreground border-mint-200 hover:bg-mint-100"
+                  }`}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <AvatarPicker
             value={profile.avatar}
             onChange={(v) => update("avatar", v)}
