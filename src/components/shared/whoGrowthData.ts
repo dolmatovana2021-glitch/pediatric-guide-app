@@ -1,3 +1,12 @@
+import {
+  HEIGHT_BOYS_5_19,
+  HEIGHT_GIRLS_5_19,
+  WEIGHT_BOYS_5_19,
+  WEIGHT_GIRLS_5_19,
+  BMI_BOYS_5_19,
+  BMI_GIRLS_5_19,
+} from "@/components/shared/whoGrowthData5to19";
+
 export type Gender = "boy" | "girl";
 export type Metric = "height" | "weight" | "bmi";
 
@@ -95,12 +104,21 @@ const BMI_GIRLS: Row[] = [
   [60, 12.9, 13.7, 15.2, 16.9, 18.8],
 ];
 
-export const MAX_AGE_MONTHS = 60;
+export const MAX_AGE_MONTHS = 228;
+export const WEIGHT_MAX_AGE_MONTHS = 120;
+
+export function maxAgeFor(metric: Metric): number {
+  return metric === "weight" ? WEIGHT_MAX_AGE_MONTHS : MAX_AGE_MONTHS;
+}
+
+const TABLES: Record<Metric, Record<Gender, Row[]>> = {
+  height: { boy: [...HEIGHT_BOYS, ...HEIGHT_BOYS_5_19], girl: [...HEIGHT_GIRLS, ...HEIGHT_GIRLS_5_19] },
+  weight: { boy: [...WEIGHT_BOYS, ...WEIGHT_BOYS_5_19], girl: [...WEIGHT_GIRLS, ...WEIGHT_GIRLS_5_19] },
+  bmi: { boy: [...BMI_BOYS, ...BMI_BOYS_5_19], girl: [...BMI_GIRLS, ...BMI_GIRLS_5_19] },
+};
 
 function table(metric: Metric, gender: Gender): Row[] {
-  if (metric === "weight") return gender === "boy" ? WEIGHT_BOYS : WEIGHT_GIRLS;
-  if (metric === "bmi") return gender === "boy" ? BMI_BOYS : BMI_GIRLS;
-  return gender === "boy" ? HEIGHT_BOYS : HEIGHT_GIRLS;
+  return TABLES[metric][gender];
 }
 
 export function calcBmi(heightCm: number, weightKg: number): number | null {
@@ -115,7 +133,7 @@ export function percentileCurveAt(
   months: number,
 ): [number, number, number, number, number] | null {
   const rows = table(metric, gender);
-  if (months < 0 || months > MAX_AGE_MONTHS) return null;
+  if (months < 0 || months > maxAgeFor(metric)) return null;
   let lo = rows[0];
   let hi = rows[rows.length - 1];
   for (let i = 0; i < rows.length - 1; i++) {
@@ -177,10 +195,12 @@ export function bmiVerdict(p: number | null): { label: string; tone: string } {
   return { label: "ожирение", tone: "text-rose-600" };
 }
 
-export function buildChartData(metric: Metric, gender: Gender, maxMonths: number) {
-  const step = maxMonths <= 12 ? 1 : maxMonths <= 24 ? 2 : 3;
+export function buildChartData(metric: Metric, gender: Gender, maxMonths: number, minMonths = 0) {
+  const span = maxMonths - minMonths;
+  const step = span <= 12 ? 1 : span <= 24 ? 2 : 3;
   const out: Record<string, number>[] = [];
-  for (let m = 0; m <= maxMonths; m += step) {
+  const end = Math.min(maxMonths, maxAgeFor(metric));
+  for (let m = minMonths; m <= end; m += step) {
     const c = percentileCurveAt(metric, gender, m);
     if (!c) continue;
     out.push({ month: m, p3: c[0], p15: c[1], p50: c[2], p85: c[3], p97: c[4] });

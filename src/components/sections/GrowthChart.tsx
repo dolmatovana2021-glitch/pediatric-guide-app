@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { GrowthCorridorChart } from "@/components/sections/GrowthCorridorChart";
+import { GrowthCorridorChart, fmtAge } from "@/components/sections/GrowthCorridorChart";
 import Icon from "@/components/ui/icon";
 import {
   addMeasurement,
@@ -13,7 +13,7 @@ import {
   percentileVerdict,
   bmiVerdict,
   calcBmi,
-  MAX_AGE_MONTHS,
+  maxAgeFor,
   type Metric,
 } from "@/components/shared/whoGrowthData";
 
@@ -52,7 +52,7 @@ export function GrowthChart({
         else
           value =
             m.height !== null && m.weight !== null ? calcBmi(m.height, m.weight) : null;
-        if (months === null || value === null || months > MAX_AGE_MONTHS) return null;
+        if (months === null || value === null || months > maxAgeFor(metric)) return null;
         return {
           month: Number(months.toFixed(1)),
           value: Number(value.toFixed(1)),
@@ -64,10 +64,33 @@ export function GrowthChart({
       .sort((a, b) => a!.month - b!.month) as { month: number; value: number; id: string; date: string }[];
   }, [measurements, metric, profile.birthDate, hasBirth]);
 
-  const maxMonths = useMemo(() => {
-    const maxPoint = points.length ? Math.max(...points.map((p) => p.month)) : 0;
-    return Math.min(MAX_AGE_MONTHS, Math.max(12, Math.ceil((maxPoint + 3) / 6) * 6));
-  }, [points]);
+  const ageNow = hasBirth ? ageInMonthsAt(profile.birthDate, new Date().toISOString().slice(0, 10)) : null;
+  const limit = maxAgeFor(metric);
+  const tooOld = ageNow !== null && ageNow > limit;
+  const hiddenOld = useMemo(() => {
+    if (!hasBirth) return 0;
+    return measurements.filter((m) => {
+      const mo = ageInMonthsAt(profile.birthDate, m.date);
+      const v = metric === "height" ? m.height : metric === "weight" ? m.weight : m.height !== null && m.weight !== null ? 1 : null;
+      return mo !== null && v !== null && mo > limit;
+    }).length;
+  }, [measurements, metric, profile.birthDate, hasBirth, limit]);
+
+  const { minMonths, maxMonths } = useMemo(() => {
+    const ms = points.map((p) => p.month);
+    const hiPoint = Math.max(ms.length ? Math.max(...ms) : 0, ageNow !== null ? Math.min(ageNow, limit) : 0);
+    const loPoint = ms.length ? Math.min(...ms) : hiPoint;
+    if (hiPoint <= 24) {
+      return { minMonths: 0, maxMonths: Math.min(limit, Math.max(12, Math.ceil((hiPoint + 3) / 6) * 6)) };
+    }
+    if (hiPoint <= 60) {
+      return { minMonths: 0, maxMonths: Math.min(limit, Math.ceil((hiPoint + 3) / 12) * 12) };
+    }
+    const max = Math.min(limit, Math.ceil((hiPoint + 6) / 12) * 12);
+    let min = Math.max(0, Math.floor((loPoint - 6) / 12) * 12);
+    if (max - min < 48) min = Math.max(0, max - 48);
+    return { minMonths: min, maxMonths: max };
+  }, [points, ageNow, limit]);
 
   const last = points.length ? points[points.length - 1] : null;
   const lastPercentile = last
@@ -101,7 +124,7 @@ export function GrowthChart({
             Рост, вес и ИМТ
           </p>
           <p className="text-[11px] text-muted-foreground">
-            Центильные коридоры ВОЗ, 0–5 лет
+            Центильные коридоры ВОЗ, 0–19 лет
           </p>
         </div>
       </div>
@@ -150,7 +173,7 @@ export function GrowthChart({
                 {last.value}
                 {meta.unit ? ` ${meta.unit}` : ""}
                 <span className="font-normal text-muted-foreground text-xs">
-                  {" "}· {Math.round(last.month)} мес
+                  {" "}· {fmtAge(last.month)}
                 </span>
               </p>
               {lastPercentile !== null && (
@@ -161,9 +184,20 @@ export function GrowthChart({
             </div>
           )}
 
+          {metric === "weight" && (tooOld || hiddenOld > 0) && (
+            <div className="bg-sky-50 border border-sky-200 rounded-2xl p-3 mb-3 flex items-start gap-2">
+              <Icon name="Info" size={14} className="text-sky-600 flex-shrink-0 mt-0.5" />
+              <p className="text-[12px] text-foreground leading-snug">
+                ВОЗ даёт нормы веса только до 10 лет — дальше вес оценивают по ИМТ, с учётом роста.
+                {hiddenOld > 0 && ` Замеры после 10 лет (${hiddenOld}) смотрите на вкладке «ИМТ».`}
+              </p>
+            </div>
+          )}
+
           <GrowthCorridorChart
             metric={metric}
             gender={gender}
+            minMonths={minMonths}
             maxMonths={maxMonths}
             points={points}
             unit={meta.unit}

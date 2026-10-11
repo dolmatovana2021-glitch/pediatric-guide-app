@@ -8,6 +8,7 @@ import {
   estimatePercentile,
   calcBmi,
   MAX_AGE_MONTHS,
+  WEIGHT_MAX_AGE_MONTHS,
 } from "@/components/shared/whoGrowthData";
 import { getStatuses } from "@/components/shared/vaccineStatus";
 import { vaccineRows } from "@/components/shared/vaccineData";
@@ -56,7 +57,7 @@ export function buildGrowthRows(
         weight: m.weight,
         bmi,
         hp: inRange && m.height !== null ? estimatePercentile("height", gender, months!, m.height) : null,
-        wp: inRange && m.weight !== null ? estimatePercentile("weight", gender, months!, m.weight) : null,
+        wp: inRange && m.weight !== null && months! <= WEIGHT_MAX_AGE_MONTHS ? estimatePercentile("weight", gender, months!, m.weight) : null,
         bp: inRange && bmi !== null ? estimatePercentile("bmi", gender, months!, bmi) : null,
       };
     });

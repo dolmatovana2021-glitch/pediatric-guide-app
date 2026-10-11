@@ -42,24 +42,28 @@ function fmtDate(d: string) {
   return `${day}.${m}.${y}`;
 }
 
-function fmtAge(m: number) {
+export function fmtAge(m: number) {
   const total = Math.round(m);
   if (total < 12) return `${total} мес`;
   const y = Math.floor(total / 12);
   const r = total % 12;
-  const yw = y === 1 ? "год" : y < 5 ? "года" : "лет";
+  const y10 = y % 10;
+  const y100 = y % 100;
+  const yw = y10 === 1 && y100 !== 11 ? "год" : y10 >= 2 && y10 <= 4 && (y100 < 12 || y100 > 14) ? "года" : "лет";
   return r ? `${y} ${yw} ${r} мес` : `${y} ${yw}`;
 }
 
 export function GrowthCorridorChart({
   metric,
   gender,
+  minMonths = 0,
   maxMonths,
   points,
   unit,
 }: {
   metric: Metric;
   gender: Gender;
+  minMonths?: number;
   maxMonths: number;
   points: CorridorPoint[];
   unit: string;
@@ -67,7 +71,7 @@ export function GrowthCorridorChart({
   const [selId, setSelId] = useState<string | null>(null);
   const clipId = `plot-${useId().replace(/:/g, "")}`;
 
-  const curves = useMemo(() => buildChartData(metric, gender, maxMonths), [metric, gender, maxMonths]);
+  const curves = useMemo(() => buildChartData(metric, gender, maxMonths, minMonths), [metric, gender, maxMonths, minMonths]);
 
   const { yMin, yMax, ticks } = useMemo(() => {
     const vals = curves.flatMap((c) => [c.p3, c.p97]).concat(points.map((p) => p.value));
@@ -84,12 +88,13 @@ export function GrowthCorridorChart({
     return { yMin: lo, yMax: hi, ticks: t };
   }, [curves, points]);
 
-  const x = (m: number) => PAD.l + (m / maxMonths) * (W - PAD.l - PAD.r);
+  const x = (m: number) => PAD.l + ((m - minMonths) / (maxMonths - minMonths)) * (W - PAD.l - PAD.r);
   const y = (v: number) => PAD.t + (1 - (v - yMin) / (yMax - yMin)) * (H - PAD.t - PAD.b);
 
-  const xStep = maxMonths <= 12 ? 3 : maxMonths <= 24 ? 6 : 12;
+  const span = maxMonths - minMonths;
+  const xStep = span <= 12 ? 3 : span <= 24 ? 6 : span <= 96 ? 12 : 24;
   const xTicks: number[] = [];
-  for (let m = 0; m <= maxMonths; m += xStep) xTicks.push(m);
+  for (let m = minMonths; m <= maxMonths; m += xStep) xTicks.push(m);
   const xLabel = (m: number) => (maxMonths <= 24 ? `${m}м` : m === 0 ? "0" : `${m / 12}г`);
 
   const linePath = (key: string) =>
