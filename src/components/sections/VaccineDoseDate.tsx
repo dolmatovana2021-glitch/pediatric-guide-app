@@ -10,16 +10,19 @@ function fmt(d: string) {
 export function VaccineDoseDate({
   value,
   minDate,
+  brands = [],
   onChange,
 }: {
   value: DoseDate | undefined;
   minDate?: string;
+  brands?: string[];
   onChange: (v: DoseDate | null) => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [date, setDate] = useState(value?.date ?? "");
   const [note, setNote] = useState(value?.note ?? "");
-  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
   useEffect(() => {
     if (!editing) {
@@ -59,8 +62,7 @@ export function VaccineDoseDate({
 
   return (
     <div className="rounded-xl bg-card border border-mint-200 p-2.5 space-y-2 animate-fade-in">
-      <div className="grid grid-cols-[1fr_1.2fr] gap-2">
-        <label className="block">
+      <label className="block">
           <span className="text-[10px] font-semibold text-muted-foreground block mb-1">Дата</span>
           <input
             type="date"
@@ -71,17 +73,40 @@ export function VaccineDoseDate({
             className="block w-full box-border appearance-none h-[36px] px-2 bg-mint-50 border border-mint-200 rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </label>
-        <label className="block">
-          <span className="text-[10px] font-semibold text-muted-foreground block mb-1">Препарат (необязательно)</span>
-          <input
-            type="text"
-            value={note}
-            maxLength={60}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Напр. Инфанрикс"
-            className="block w-full box-border h-[36px] px-2 bg-mint-50 border border-mint-200 rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-primary/30"
-          />
-        </label>
+      <div>
+        <span className="text-[10px] font-semibold text-muted-foreground block mb-1">
+          Вакцина (необязательно)
+        </span>
+        {brands.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-1.5">
+            {brands.map((b) => {
+              const active = note.trim() === b;
+              return (
+                <button
+                  key={b}
+                  type="button"
+                  onClick={() => setNote(active ? "" : b)}
+                  className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition active:scale-95 ${
+                    active
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-mint-50 text-foreground border-mint-200"
+                  }`}
+                >
+                  {active && <Icon name="Check" size={11} className="inline -mt-0.5 mr-0.5" />}
+                  {b}
+                </button>
+              );
+            })}
+          </div>
+        )}
+        <input
+          type="text"
+          value={note}
+          maxLength={60}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder={brands.length ? "Другая — впишите название" : "Название вакцины"}
+          className="block w-full box-border h-[36px] px-2 bg-mint-50 border border-mint-200 rounded-lg text-[13px] focus:outline-none focus:ring-2 focus:ring-primary/30"
+        />
       </div>
       <div className="flex items-center gap-2">
         <button

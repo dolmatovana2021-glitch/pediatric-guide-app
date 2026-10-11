@@ -9,6 +9,7 @@ import {
 import { useChildProfile, calcAge, saveChildProfile } from "@/components/shared/childProfile";
 import { ChildAvatar } from "@/components/shared/ChildAvatar";
 import { VaccineDoseDate } from "@/components/sections/VaccineDoseDate";
+import { brandsFor } from "@/components/shared/vaccineBrands";
 
 const statusStyle: Record<
   DoseStatus,
@@ -321,6 +322,7 @@ export function VaccinationSection() {
                       <VaccineDoseDate
                         value={dates[dose.id]}
                         minDate={profile.birthDate || undefined}
+                        brands={brandsFor(row.id)}
                         onChange={(v) => setDate(dose.id, v)}
                       />
                       </div>
