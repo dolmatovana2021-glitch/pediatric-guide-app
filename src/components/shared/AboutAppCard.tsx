@@ -41,8 +41,8 @@ export function AboutAppCard() {
         </ul>
 
         <div className="mt-4 pt-4 border-t border-border flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-mint-50 border border-mint-200 flex items-center justify-center flex-shrink-0">
-            <Icon name="GraduationCap" size={20} className="text-primary" />
+          <div className="w-14 h-14 rounded-2xl bg-white border border-border flex items-center justify-center flex-shrink-0 p-1.5">
+            <img src="/ysmu-logo.png" alt="Логотип ЯГМУ" className="w-full h-full object-contain" />
           </div>
           <div className="min-w-0">
             <p className="text-[11px] text-muted-foreground leading-tight">Разработано при поддержке</p>
