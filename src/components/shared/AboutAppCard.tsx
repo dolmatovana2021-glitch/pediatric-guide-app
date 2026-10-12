@@ -39,6 +39,19 @@ export function AboutAppCard() {
             </li>
           ))}
         </ul>
+
+        <div className="mt-4 pt-4 border-t border-border flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-mint-50 border border-mint-200 flex items-center justify-center flex-shrink-0">
+            <Icon name="GraduationCap" size={20} className="text-primary" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-[11px] text-muted-foreground leading-tight">Разработано при поддержке</p>
+            <p className="text-[13px] font-semibold text-foreground leading-snug mt-0.5">
+              Ярославского государственного медицинского университета
+            </p>
+            <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">ФГБОУ ВО ЯГМУ Минздрава России</p>
+          </div>
+        </div>
       </div>
 
       <div className="mt-3 bg-amber-50 border border-amber-200 rounded-3xl p-4 flex items-start gap-3">
