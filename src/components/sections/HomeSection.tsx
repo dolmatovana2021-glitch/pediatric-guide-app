@@ -11,6 +11,7 @@ import { useSectionVisibility, isSectionVisible } from "@/components/shared/sect
 import { HomeHero } from "@/components/sections/HomeHero";
 import { DailyTipCard } from "@/components/sections/DailyTipCard";
 import { InstallAppCard } from "@/components/shared/InstallAppCard";
+import { SurveyCard } from "@/components/shared/SurveyCard";
 import { BackupReminderCard } from "@/components/sections/BackupReminderCard";
 import { QuickTemperatureButton } from "@/components/sections/QuickTemperature";
 import { ChildAvatar } from "@/components/shared/ChildAvatar";
@@ -130,6 +131,8 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
       )}
 
       {(dueVaccines > 0 || dueCheckup) && <div className="h-2" />}
+
+      <SurveyCard />
 
       <InstallAppCard />
 
