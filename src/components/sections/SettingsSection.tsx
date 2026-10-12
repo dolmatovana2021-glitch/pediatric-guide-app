@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import Icon from "@/components/ui/icon";
+import { PrivacyPolicy } from "@/components/shared/PrivacyPolicy";
 import { ThemePicker } from "@/components/shared/ThemeToggle";
 import { SectionWrapper, SectionTitle } from "@/components/shared/SectionLayout";
 import { InstallAppCard } from "@/components/shared/InstallAppCard";
@@ -30,6 +32,15 @@ export function SettingsSection() {
   const age = calcAge(profile.birthDate);
 
   const suggestHideDevelopment = Boolean(age && age.years >= 3 && visibility.development);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [showPrivacy]);
+
+  if (showPrivacy) {
+    return <PrivacyPolicy onBack={() => setShowPrivacy(false)} />;
+  }
 
   return (
     <SectionWrapper>
@@ -124,6 +135,20 @@ export function SettingsSection() {
       </div>
 
       <AboutAppCard />
+
+      <button
+        onClick={() => setShowPrivacy(true)}
+        className="mt-3 w-full bg-card border border-border rounded-3xl p-4 flex items-center gap-3 shadow-sm active:scale-[0.98] transition-transform"
+      >
+        <div className="w-10 h-10 rounded-xl bg-mint-50 border border-mint-200 flex items-center justify-center flex-shrink-0">
+          <Icon name="ShieldCheck" size={20} className="text-primary" />
+        </div>
+        <div className="flex-1 min-w-0 text-left">
+          <p className="font-semibold text-foreground text-sm leading-tight">Политика конфиденциальности</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">Какие данные хранятся и где</p>
+        </div>
+        <Icon name="ChevronRight" size={18} className="text-muted-foreground flex-shrink-0" />
+      </button>
     </SectionWrapper>
   );
 }
