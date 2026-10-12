@@ -97,14 +97,14 @@
     var start = Date.now(), done = false;
     function hide() {
       if (done) return; done = true;
-      var wait = Math.max(0, 1400 - (Date.now() - start));
+      var wait = Math.max(0, 3200 - (Date.now() - start));
       setTimeout(function () {
         el.classList.add("splash-hide");
         setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 500);
       }, wait);
     }
     window.__hideSplash = hide;
-    setTimeout(hide, 6000);
+    setTimeout(hide, 8000);
   })();
 </script>
 <div id="root"></div>
