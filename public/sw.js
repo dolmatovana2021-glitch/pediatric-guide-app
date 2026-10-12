@@ -1,4 +1,4 @@
-const VERSION = "malyshdok-v3";
+const VERSION = "malyshdok-v4";
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 
@@ -10,6 +10,8 @@ const STATIC_FILES = [
   "/icon-512.png",
   "/apple-touch-icon.png",
   "/bear/main.webp?v=3",
+  "/bear/wave-body.webp",
+  "/bear/wave-paw.webp",
   "/bear/thermometer.webp?v=3",
   "/bear/sleep.webp?v=3",
   "/bear/school.webp?v=3",
