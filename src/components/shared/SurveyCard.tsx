@@ -1,6 +1,6 @@
 import Icon from "@/components/ui/icon";
 
-export const SURVEY_URL = "";
+export const SURVEY_URL = "https://docs.google.com/forms/d/e/1FAIpQLScWY8v3-pfmJ_sY6XoGUEmJD_0XeN4UZIgleIJjR6BhINeEfw/viewform";
 
 export function SurveyCard() {
   if (!SURVEY_URL) return null;
