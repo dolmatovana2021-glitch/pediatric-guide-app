@@ -10,6 +10,7 @@ import { useChildProfile, calcAge, saveChildProfile } from "@/components/shared/
 import { ChildAvatar } from "@/components/shared/ChildAvatar";
 import { VaccineDoseDate } from "@/components/sections/VaccineDoseDate";
 import { brandsFor } from "@/components/shared/vaccineBrands";
+import { TbDiagnostics } from "@/components/sections/TbDiagnostics";
 
 const statusStyle: Record<
   DoseStatus,
@@ -338,6 +339,8 @@ export function VaccinationSection() {
       <p className="text-[11px] text-muted-foreground leading-relaxed mt-5 px-1">
         {VACCINE_SOURCE} Точный график и препараты определяет ваш педиатр.
       </p>
+
+      <TbDiagnostics />
     </SectionWrapper>
   );
 }
