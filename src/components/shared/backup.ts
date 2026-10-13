@@ -20,6 +20,7 @@ const DATA_KEYS = [
   "malyshdok:doseHistory",
   "malyshdok:sectionVisibility",
   "malyshdok:theme",
+  "malyshdok:themeMode",
 ] as const;
 
 export type BackupFile = {

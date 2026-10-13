@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { ThemeColorSync } from "@/components/shared/ThemeColorSync";
+import { NightThemeScheduler } from "@/components/shared/NightThemeScheduler";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Survey from "./pages/Survey";
@@ -15,6 +16,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="malyshdok:theme" disableTransitionOnChange>
   <ThemeColorSync />
+  <NightThemeScheduler />
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />

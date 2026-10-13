@@ -9,6 +9,11 @@
       (function () {
         try {
           var t = localStorage.getItem("malyshdok:theme") || "system";
+          if (localStorage.getItem("malyshdok:themeMode") === "night") {
+            var h = new Date().getHours();
+            t = h >= 21 || h < 7 ? "dark" : "light";
+            localStorage.setItem("malyshdok:theme", t);
+          }
           var dark = t === "dark" || (t === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
           if (dark) document.documentElement.classList.add("dark");
           var metas = document.querySelectorAll('meta[name="theme-color"]');
