@@ -14,6 +14,8 @@ import {
   type TbRecord,
   type TbTestType,
 } from "@/components/shared/tbStatus";
+import { TbPhotoPicker, TbPhotoThumbs } from "@/components/sections/TbPhotos";
+import { deletePhoto } from "@/components/shared/photoUpload";
 
 function todayIso() {
   const n = new Date();
@@ -113,18 +115,28 @@ function RecordForm({
         </div>
       )}
 
+      <TbPhotoPicker photos={r.photos || []} onChange={(photos) => setR((p) => ({ ...p, photos }))} />
+
       <div className="flex gap-2">
         <button
           type="button"
           disabled={!r.date}
-          onClick={() => onSave({ ...r, size: r.size?.trim() || undefined })}
+          onClick={() => {
+            const keep = new Set((r.photos || []).map((p) => p.url));
+            (initial.photos || []).forEach((p) => !keep.has(p.url) && deletePhoto(p.url));
+            onSave({ ...r, size: r.size?.trim() || undefined, photos: r.photos?.length ? r.photos : undefined });
+          }}
           className="flex-1 bg-primary text-primary-foreground rounded-xl py-2.5 text-sm font-semibold disabled:opacity-50"
         >
           Сохранить
         </button>
         <button
           type="button"
-          onClick={onCancel}
+          onClick={() => {
+            const orig = new Set((initial.photos || []).map((p) => p.url));
+            (r.photos || []).forEach((p) => !orig.has(p.url) && deletePhoto(p.url));
+            onCancel();
+          }}
           className="px-4 bg-card border border-border text-foreground rounded-xl py-2.5 text-sm font-semibold"
         >
           Отмена
@@ -244,6 +256,7 @@ export function TbTracker() {
   };
 
   const remove = (id: string) => {
+    records.find((x) => x.id === id)?.photos?.forEach((p) => deletePhoto(p.url));
     save(records.filter((x) => x.id !== id));
     setEditing(null);
   };
@@ -335,6 +348,7 @@ export function TbTracker() {
                     {tbTypeLabel[r.type]} <span className="text-muted-foreground font-normal">· {fmtDate(r.date)}</span>
                   </p>
                   {r.size && <p className="text-[11px] text-muted-foreground mt-0.5">Уплотнение {r.size} мм</p>}
+                  {r.photos && r.photos.length > 0 && <TbPhotoThumbs photos={r.photos} />}
                 </div>
                 <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap ${tbResultMeta[r.result].chip}`}>
                   {tbResultMeta[r.result].label}

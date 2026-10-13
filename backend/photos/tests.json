@@ -1,0 +1,7 @@
+{
+  "tests": [
+    {"name": "CORS preflight", "method": "OPTIONS", "path": "/", "expectedStatus": 200},
+    {"name": "Upload without token", "method": "POST", "path": "/", "body": {"image": "", "contentType": "image/jpeg"}, "expectedStatus": 401, "expectedBody": {"error": "no_token"}, "bodyMatcher": "partial"},
+    {"name": "Delete without token", "method": "DELETE", "path": "/", "body": {"url": ""}, "expectedStatus": 401, "bodyMatcher": "partial"}
+  ]
+}

@@ -10,7 +10,11 @@ export type TbRecord = {
   type: TbTestType;
   result: TbResult;
   size?: string;
+  photos?: TbPhoto[];
 };
+
+export type TbPhotoKind = "site" | "doc";
+export type TbPhoto = { url: string; kind: TbPhotoKind };
 
 export const tbTypeLabel: Record<TbTestType, string> = {
   mantu: "Проба Манту",
