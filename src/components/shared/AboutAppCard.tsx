@@ -20,7 +20,7 @@ export function AboutAppCard() {
 
       <div className="bg-card border border-border rounded-3xl p-4 shadow-sm">
         <div className="flex items-center gap-3">
-          <img src="/icon-192.png" alt="" className="w-12 h-12 rounded-2xl shadow-sm flex-shrink-0" />
+          <img src="/icon-192.png?v=2" alt="" className="w-12 h-12 rounded-2xl shadow-sm flex-shrink-0" />
           <div className="min-w-0">
             <p className="font-caveat text-primary font-bold text-2xl leading-none">МалышДок</p>
             <p className="text-[11px] text-muted-foreground mt-1">Бесплатный помощник для родителей</p>

@@ -1,14 +1,14 @@
-const VERSION = "malyshdok-v11";
+const VERSION = "malyshdok-v12";
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 
 const STATIC_FILES = [
   "/",
   "/manifest.webmanifest",
-  "/favicon.png",
-  "/icon-192.png",
-  "/icon-512.png",
-  "/apple-touch-icon.png",
+  "/favicon.png?v=2",
+  "/icon-192.png?v=2",
+  "/icon-512.png?v=2",
+  "/apple-touch-icon.png?v=2",
   "/bear/main.webp?v=3",
   "/bear/wave.webp?v=5",
   "/bear/thermometer.webp?v=3",
