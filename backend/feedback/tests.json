@@ -1,0 +1,7 @@
+{
+  "tests": [
+    {"name": "CORS preflight", "method": "OPTIONS", "path": "/", "expectedStatus": 200},
+    {"name": "Empty message rejected", "method": "POST", "path": "/", "body": {"message": ""}, "expectedStatus": 400, "expectedBody": {"error": "empty_message"}, "bodyMatcher": "partial"},
+    {"name": "GET not allowed", "method": "GET", "path": "/", "expectedStatus": 405}
+  ]
+}
