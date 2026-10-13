@@ -56,7 +56,6 @@
         background:radial-gradient(circle,rgba(86,190,168,.28) 0%,rgba(86,190,168,0) 70%)}
       #splash .sp-bear{position:relative;width:230px;height:230px;animation:sp-in .5s ease-out both}
       #splash .sp-bear img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-      #splash .sp-paw{transform-origin:31.8% 55.7%;animation:sp-wave 1.6s ease-in-out .5s infinite}
       #splash .sp-title{margin-top:18px;font-family:Caveat,"Golos Text",cursive;font-weight:700;font-size:52px;line-height:1;color:hsl(168 45% 40%);
         animation:sp-up .6s ease .25s both}
       html.dark #splash .sp-title{color:hsl(168 50% 58%)}
@@ -66,7 +65,6 @@
       #splash .sp-dots i:nth-child(2){animation-delay:.2s}
       #splash .sp-dots i:nth-child(3){animation-delay:.4s}
       @keyframes sp-in{from{opacity:0}to{opacity:1}}
-      @keyframes sp-wave{0%,60%,100%{transform:rotate(0)}12%,36%{transform:rotate(10deg)}24%,48%{transform:rotate(-2deg)}}
       @keyframes sp-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
       @keyframes sp-dot{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
       @media (prefers-reduced-motion:reduce){#splash *{animation:none!important}}
@@ -78,8 +76,7 @@
 <div id="splash" aria-hidden="true">
   <div class="sp-halo"></div>
   <div class="sp-bear">
-    <img class="sp-paw" src="/bear/wave-paw.webp?v=2" alt="" width="230" height="230" decoding="async" fetchpriority="high">
-    <img src="/bear/wave-body.webp?v=2" alt="" width="230" height="230" decoding="async" fetchpriority="high">
+    <img src="/bear/wave.webp?v=1" alt="" width="230" height="230" decoding="async" fetchpriority="high">
   </div>
   <div class="sp-title">МалышДок</div>
   <div class="sp-sub">Привет! Здоровье малыша — под рукой</div>
