@@ -62,6 +62,7 @@ export type ChildProfile = {
   feeds?: FeedEntry[];
   tbTests?: TbRecord[];
   noBcg?: boolean;
+  tbRisk?: boolean;
 };
 
 export type StoredChild = ChildProfile & { id: string };

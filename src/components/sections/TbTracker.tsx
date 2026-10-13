@@ -208,6 +208,26 @@ function Banner({
   );
 }
 
+function Toggle({ on, onClick, title, hint }: { on: boolean; onClick: () => void; title: string; hint: string }) {
+  return (
+    <button type="button" onClick={onClick} className="w-full flex items-center gap-2.5 text-left">
+      <span
+        className={`w-10 rounded-full flex-shrink-0 relative transition-colors ${on ? "bg-primary" : "bg-muted-foreground/30"}`}
+        style={{ height: "22px" }}
+      >
+        <span
+          className={`absolute top-0.5 w-[18px] h-[18px] rounded-full bg-white shadow transition-transform ${
+            on ? "translate-x-[20px]" : "translate-x-0.5"
+          }`}
+        />
+      </span>
+      <span className="text-[11px] text-foreground leading-snug flex-1">
+        {title} <span className="text-muted-foreground">— {hint}</span>
+      </span>
+    </button>
+  );
+}
+
 export function TbTracker() {
   const profile = useChildProfile();
   const [editing, setEditing] = useState<string | null>(null);
@@ -251,27 +271,26 @@ export function TbTracker() {
 
       <PlanBanner plan={plan} />
 
-      <button
-        type="button"
-        onClick={() => saveChildProfile({ ...profile, noBcg: !profile.noBcg })}
-        className="w-full flex items-center gap-2.5 text-left"
-      >
-        <span
-          className={`w-10 rounded-full flex-shrink-0 relative transition-colors ${
-            profile.noBcg ? "bg-primary" : "bg-muted-foreground/30"
-          }`}
-          style={{ height: "22px" }}
-        >
-          <span
-            className={`absolute top-0.5 w-[18px] h-[18px] rounded-full bg-white shadow transition-transform ${
-              profile.noBcg ? "translate-x-[20px]" : "translate-x-0.5"
-            }`}
-          />
-        </span>
-        <span className="text-[11px] text-foreground leading-snug flex-1">
-          Ребёнок без прививки БЦЖ <span className="text-muted-foreground">— проба 2 раза в год до 8 лет</span>
-        </span>
-      </button>
+      <div className="space-y-2.5">
+        <Toggle
+          on={profile.noBcg === true}
+          onClick={() => saveChildProfile({ ...profile, noBcg: !profile.noBcg })}
+          title="Ребёнок без прививки БЦЖ"
+          hint="Манту 2 раза в год до 8 лет"
+        />
+        <Toggle
+          on={profile.tbRisk === true}
+          onClick={() => saveChildProfile({ ...profile, tbRisk: !profile.tbRisk })}
+          title="Группа риска по туберкулёзу"
+          hint="Диаскинтест 2 раза в год с 8 лет"
+        />
+        {profile.tbRisk && (
+          <p className="text-[11px] text-muted-foreground leading-snug pl-[50px]">
+            Сахарный диабет, язвенная болезнь, хронические гнойно-воспалительные болезни лёгких и почек, ВИЧ-инфекция,
+            длительный приём цитостатиков, кортикостероидов, ГИБП и др.
+          </p>
+        )}
+      </div>
 
       {editing === "new" ? (
         <RecordForm

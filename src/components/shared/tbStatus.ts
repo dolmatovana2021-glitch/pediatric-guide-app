@@ -76,11 +76,13 @@ export function calcTbPlan(p: ChildProfile): TbPlan {
   if (last && (last.result === "positive" || last.result === "hyper")) return { kind: "positive", last };
 
   const noBcg = p.noBcg === true;
+  const tbRisk = p.tbRisk === true;
   const firstAt = addMonths(birth, noBcg ? 6 : 12);
   let next = firstAt;
   if (last) {
     const lastD = parse(last.date);
-    const interval = noBcg && lastD < addMonths(birth, 8 * 12) ? 6 : 12;
+    const before8 = lastD < addMonths(birth, 8 * 12);
+    const interval = (noBcg && before8) || (tbRisk && !before8) ? 6 : 12;
     const fromLast = addMonths(lastD, interval);
     next = fromLast > firstAt ? fromLast : firstAt;
   }
