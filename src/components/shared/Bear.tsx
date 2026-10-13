@@ -11,23 +11,42 @@ const altText: Record<BearPose, string> = {
   sleep: "Спящий медвежонок",
   school: "Медвежонок с рюкзаком",
   firstaid: "Медвежонок с аптечкой",
-  night: "Медвежонок в пижаме",
+  night: "Медвежонок в пижаме с фонариком",
 };
 
 export function Bear({
   pose = "main",
-  nightAware = false,
   className = "",
+  dayOnly = false,
 }: {
   pose?: BearPose;
   nightAware?: boolean;
   className?: string;
+  dayOnly?: boolean;
 }) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const actual: BearPose = nightAware && mounted && resolvedTheme === "dark" ? "night" : pose;
+  const isNight = !dayOnly && mounted && resolvedTheme === "dark";
+  const actual: BearPose = isNight ? "night" : pose;
+
+  if (actual === "night") {
+    return (
+      <span className={`block select-none pointer-events-none ${className}`} aria-hidden={false}>
+        <span className="relative block w-full h-full">
+          <img
+            src={bearSrc("night")}
+            alt={altText.night}
+            draggable={false}
+            className="w-full h-full object-contain drop-shadow-[0_8px_14px_rgba(0,0,0,0.25)]"
+          />
+          <span className="bear-lantern-glow" />
+          <span className="bear-lantern-core" />
+        </span>
+      </span>
+    );
+  }
 
   return (
     <img

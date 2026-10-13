@@ -286,3 +286,46 @@
     margin: 14mm;
   }
 }
+
+@keyframes bear-lantern-flicker {
+  0% { opacity: .85; transform: scale(1); }
+  8% { opacity: .6; transform: scale(.94); }
+  12% { opacity: .95; transform: scale(1.04); }
+  30% { opacity: .75; transform: scale(.98); }
+  34% { opacity: 1; transform: scale(1.06); }
+  50% { opacity: .8; transform: scale(1); }
+  62% { opacity: .55; transform: scale(.92); }
+  66% { opacity: .9; transform: scale(1.03); }
+  82% { opacity: .7; transform: scale(.97); }
+  100% { opacity: .85; transform: scale(1); }
+}
+.bear-lantern-glow,
+.bear-lantern-core {
+  position: absolute;
+  left: 47%;
+  top: 61.5%;
+  border-radius: 9999px;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  transform-origin: center;
+}
+.bear-lantern-glow {
+  width: 52%;
+  height: 52%;
+  margin: -26% 0 0 -26%;
+  background: radial-gradient(circle, rgba(255, 214, 130, .85) 0%, rgba(255, 170, 60, .35) 28%, rgba(255, 150, 40, 0) 68%);
+  animation: bear-lantern-flicker 2.6s linear infinite;
+}
+.bear-lantern-core {
+  width: 11%;
+  height: 11%;
+  margin: -5.5% 0 0 -5.5%;
+  background: radial-gradient(circle, rgba(255, 250, 225, .95) 0%, rgba(255, 220, 140, .5) 45%, rgba(255, 200, 100, 0) 75%);
+  animation: bear-lantern-flicker 1.7s linear infinite reverse;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bear-lantern-glow,
+  .bear-lantern-core {
+    animation: none;
+  }
+}
