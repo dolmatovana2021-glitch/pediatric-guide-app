@@ -10,7 +10,7 @@ export function InstallAppCard({ force = false }: { force?: boolean }) {
     if (!force) return null;
     return (
       <div className="mb-5 rounded-3xl border border-mint-200 bg-mint-50 p-4 flex items-center gap-3">
-        <img src="/icon-192.png?v=2" alt="" className="w-11 h-11 rounded-2xl flex-shrink-0" />
+        <img src="/icon-192.png?v=3" alt="" className="w-11 h-11 rounded-2xl flex-shrink-0" />
         <div className="min-w-0">
           <p className="font-bold text-[14px] text-foreground">Приложение установлено</p>
           <p className="text-[11px] text-muted-foreground">Работает и без интернета</p>
@@ -41,7 +41,7 @@ export function InstallAppCard({ force = false }: { force?: boolean }) {
         </button>
       )}
       <div className="flex items-center gap-3 pr-6">
-        <img src="/icon-192.png?v=2" alt="" className="w-12 h-12 rounded-2xl shadow-sm flex-shrink-0" />
+        <img src="/icon-192.png?v=3" alt="" className="w-12 h-12 rounded-2xl shadow-sm flex-shrink-0" />
         <div className="min-w-0">
           <p className="font-bold text-[14px] text-foreground leading-tight">Установите МалышДок</p>
           <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">
