@@ -103,6 +103,10 @@ export function TbDiagnostics() {
             </div>
           ))}
         </div>
+        <p className="text-[11px] text-muted-foreground leading-snug mt-2">
+          * Сахарный диабет, язвенная болезнь, хронические гнойно-воспалительные болезни лёгких и почек, ВИЧ-инфекция,
+          длительный приём иммуносупрессивных препаратов. Подробнее — в карточке «Диаскинтест».
+        </p>
       </div>
 
       <div className="space-y-2.5 mb-3">
@@ -132,6 +136,16 @@ export function TbDiagnostics() {
                   <Block title="Кому и когда">
                     <p className="text-[12px] text-foreground leading-snug">{t.who}</p>
                   </Block>
+                  {t.risk && (
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+                      <p className="flex items-center gap-2 text-[12px] font-bold text-red-800 mb-1.5">
+                        <Icon name="ShieldAlert" size={15} className="text-red-500 flex-shrink-0" />
+                        {t.risk.title}
+                      </p>
+                      <p className="text-[12px] text-red-900 leading-snug mb-2">{t.risk.text}</p>
+                      <InfoList items={t.risk.groups} icon="Dot" iconClass="text-red-500" />
+                    </div>
+                  )}
                   <Block title="Что это">
                     <p className="text-[12px] text-foreground leading-snug">{t.what}</p>
                   </Block>
