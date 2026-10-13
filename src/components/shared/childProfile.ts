@@ -1,3 +1,4 @@
+import type { TbRecord } from "./tbStatus";
 import { useEffect, useState } from "react";
 
 export type Measurement = {
@@ -59,6 +60,8 @@ export type ChildProfile = {
   teeth?: Record<string, string>;
   sleep?: SleepEntry[];
   feeds?: FeedEntry[];
+  tbTests?: TbRecord[];
+  noBcg?: boolean;
 };
 
 export type StoredChild = ChildProfile & { id: string };

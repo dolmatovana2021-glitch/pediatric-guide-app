@@ -7,6 +7,7 @@ import {
 import { useChildProfile, calcAge, calcAgeFull, lastHeight, bloodLabel } from "@/components/shared/childProfile";
 import { useDueVaccines } from "@/components/shared/vaccineStatus";
 import { useDueCheckup } from "@/components/shared/checkupStatus";
+import { useTbPlan, isTbAttention, tbTypeLabel, fmtDate, daysWord } from "@/components/shared/tbStatus";
 import { useSectionVisibility, isSectionVisible } from "@/components/shared/sectionVisibility";
 import { HomeHero } from "@/components/sections/HomeHero";
 import { DailyTipCard } from "@/components/sections/DailyTipCard";
@@ -77,6 +78,12 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
   const dueWord =
     m10 === 1 && m100 !== 11 ? "прививку" : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? "прививки" : "прививок";
   const dueCheckup = useDueCheckup();
+  const tbPlan = useTbPlan();
+  const tbAlert = tbPlan && isTbAttention(tbPlan) && isVisible("vaccination") ? tbPlan : null;
+  const openTb = () => {
+    setSection("vaccination");
+    setTimeout(() => document.getElementById("tb-diagnostics")?.scrollIntoView({ behavior: "smooth", block: "start" }), 350);
+  };
 
   return (
     <SectionWrapper>
@@ -130,7 +137,31 @@ export function HomeSection({ setSection }: { setSection: (s: Section) => void }
         </button>
       )}
 
-      {(dueVaccines > 0 || dueCheckup) && <div className="h-2" />}
+      {tbAlert && (tbAlert.kind === "due" || tbAlert.kind === "planned") && (
+        <button
+          onClick={openTb}
+          className={`w-full mb-3 rounded-3xl p-3.5 border flex items-center gap-3 active:scale-[0.98] transition-transform ${
+            tbAlert.kind === "due" ? "border-violet-200 bg-violet-50" : "border-amber-200 bg-amber-50"
+          }`}
+        >
+          <div className={`w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 ${tbAlert.kind === "due" ? "bg-violet-100" : "bg-amber-100"}`}>
+            <span className="text-2xl">🔬</span>
+          </div>
+          <div className="flex-1 min-w-0 text-left">
+            <p className={`font-bold text-sm ${tbAlert.kind === "due" ? "text-violet-700" : "text-amber-700"}`}>
+              {tbAlert.kind === "due" ? "Пора" : "Скоро"}: {tbTypeLabel[tbAlert.test]}
+            </p>
+            <p className={`text-[11px] ${tbAlert.kind === "due" ? "text-violet-600/80" : "text-amber-600/80"}`}>
+              {tbAlert.kind === "due"
+                ? `Срок — ${fmtDate(tbAlert.next)}. Отметьте результат после проверки`
+                : `Около ${fmtDate(tbAlert.next)} — через ${tbAlert.daysLeft} ${daysWord(tbAlert.daysLeft)}`}
+            </p>
+          </div>
+          <Icon name="ChevronRight" size={18} className={`flex-shrink-0 ${tbAlert.kind === "due" ? "text-violet-400" : "text-amber-400"}`} />
+        </button>
+      )}
+
+      {(dueVaccines > 0 || dueCheckup || tbAlert) && <div className="h-2" />}
 
       <SurveyCard />
 

@@ -10,6 +10,7 @@ import {
   TB_SOURCE,
   type TbScaleItem,
 } from "@/components/shared/tbTestsData";
+import { TbTracker } from "@/components/sections/TbTracker";
 
 const scaleTone: Record<TbScaleItem["tone"], string> = {
   ok: "bg-emerald-50 border-emerald-200 text-emerald-800",
@@ -65,7 +66,7 @@ export function TbDiagnostics() {
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
-    <div className="mt-7">
+    <div id="tb-diagnostics" className="mt-7 scroll-mt-4">
       <div className="flex items-center gap-3 mb-3">
         <span className="w-11 h-11 rounded-2xl bg-sky-100 border border-sky-200 flex items-center justify-center text-[22px] flex-shrink-0">
           🔬
@@ -85,6 +86,8 @@ export function TbDiagnostics() {
           Ежегодная проверка помогает вовремя заметить инфекцию — до того, как появятся симптомы.
         </p>
       </div>
+
+      <TbTracker />
 
       <div className="bg-card border border-border rounded-2xl p-3.5 mb-3">
         <p className="font-bold text-sm text-foreground mb-2 flex items-center gap-2">
