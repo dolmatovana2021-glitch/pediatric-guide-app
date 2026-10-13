@@ -5,7 +5,6 @@ import { ThemePicker } from "@/components/shared/ThemeToggle";
 import { SectionWrapper, SectionTitle } from "@/components/shared/SectionLayout";
 import { InstallAppCard } from "@/components/shared/InstallAppCard";
 import { AboutAppCard } from "@/components/shared/AboutAppCard";
-import { FeedbackCard } from "@/components/shared/FeedbackCard";
 import {
   useSectionVisibility,
   setSectionVisible,
@@ -136,8 +135,6 @@ export function SettingsSection() {
       </div>
 
       <AboutAppCard />
-
-      <FeedbackCard />
 
       <button
         onClick={() => setShowPrivacy(true)}
