@@ -1,4 +1,4 @@
-const VERSION = "malyshdok-v10";
+const VERSION = "malyshdok-v11";
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 
