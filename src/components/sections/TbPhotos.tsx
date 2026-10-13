@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import Icon from "@/components/ui/icon";
-import { uploadPhoto } from "@/components/shared/photoUpload";
+import { uploadPhoto, usePhotoSrc } from "@/components/shared/photoUpload";
 import type { TbPhoto, TbPhotoKind } from "@/components/shared/tbStatus";
 
 const MAX_PHOTOS = 4;
@@ -9,6 +9,28 @@ export const photoKindLabel: Record<TbPhotoKind, string> = {
   site: "Место укола",
   doc: "Справка",
 };
+
+function PhotoImg({ photoRef, alt, className }: { photoRef: string; alt: string; className: string }) {
+  const { src, status } = usePhotoSrc(photoRef);
+  if (src) return <img src={src} alt={alt} className={className} />;
+  const icon = status === "loading" ? "Loader2" : status === "locked" ? "Lock" : "ImageOff";
+  return (
+    <span className={`${className} flex items-center justify-center bg-muted text-muted-foreground`} title={status === "locked" ? "Войдите в аккаунт, чтобы увидеть фото" : undefined}>
+      <Icon name={icon} size={16} className={status === "loading" ? "animate-spin" : ""} />
+    </span>
+  );
+}
+
+function ViewerImage({ photo }: { photo: TbPhoto }) {
+  const { src, status } = usePhotoSrc(photo.url);
+  if (src) return <img src={src} alt={photoKindLabel[photo.kind]} className="max-w-full max-h-[85vh] rounded-xl object-contain" />;
+  return (
+    <div className="text-white/80 text-sm flex flex-col items-center gap-2 text-center px-6">
+      <Icon name={status === "loading" ? "Loader2" : "Lock"} size={32} className={status === "loading" ? "animate-spin" : ""} />
+      {status === "loading" ? "Загружаю фото…" : status === "locked" ? "Фото доступно только после входа в аккаунт родителя" : "Фото не найдено"}
+    </div>
+  );
+}
 
 export function PhotoViewer({ photo, onClose }: { photo: TbPhoto; onClose: () => void }) {
   return (
@@ -24,7 +46,9 @@ export function PhotoViewer({ photo, onClose }: { photo: TbPhoto; onClose: () =>
       >
         <Icon name="X" size={22} />
       </button>
-      <img src={photo.url} alt={photoKindLabel[photo.kind]} className="max-w-full max-h-[85vh] rounded-xl object-contain" />
+      <div onClick={(e) => e.stopPropagation()}>
+        <ViewerImage photo={photo} />
+      </div>
       <p className="text-white/80 text-sm mt-3">{photoKindLabel[photo.kind]}</p>
     </div>
   );
@@ -47,7 +71,7 @@ export function TbPhotoThumbs({ photos }: { photos: TbPhoto[] }) {
             }}
             className="w-10 h-10 rounded-lg overflow-hidden border border-border bg-muted flex-shrink-0"
           >
-            <img src={p.url} alt={photoKindLabel[p.kind]} className="w-full h-full object-cover" loading="lazy" />
+            <PhotoImg photoRef={p.url} alt={photoKindLabel[p.kind]} className="w-full h-full object-cover" />
           </span>
         ))}
       </div>
@@ -111,7 +135,7 @@ export function TbPhotoPicker({
           {photos.map((p) => (
             <div key={p.url} className="relative aspect-square rounded-xl overflow-hidden border border-border bg-muted">
               <button type="button" onClick={() => setOpen(p)} className="w-full h-full">
-                <img src={p.url} alt={photoKindLabel[p.kind]} className="w-full h-full object-cover" />
+                <PhotoImg photoRef={p.url} alt={photoKindLabel[p.kind]} className="w-full h-full object-cover" />
               </button>
               <span className="absolute left-0 right-0 bottom-0 bg-black/55 text-white text-[9px] font-semibold text-center py-0.5 pointer-events-none">
                 {photoKindLabel[p.kind]}

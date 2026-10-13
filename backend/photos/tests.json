@@ -1,7 +1,8 @@
 {
   "tests": [
     {"name": "CORS preflight", "method": "OPTIONS", "path": "/", "expectedStatus": 200},
-    {"name": "Upload without token", "method": "POST", "path": "/", "body": {"image": "", "contentType": "image/jpeg"}, "expectedStatus": 401, "expectedBody": {"error": "no_token"}, "bodyMatcher": "partial"},
-    {"name": "Delete without token", "method": "DELETE", "path": "/", "body": {"url": ""}, "expectedStatus": 401, "bodyMatcher": "partial"}
+    {"name": "View without token", "method": "GET", "path": "/?ref=priv:private-photos/1/x.bin", "expectedStatus": 401, "expectedBody": {"error": "no_token"}, "bodyMatcher": "partial"},
+    {"name": "Upload without token", "method": "POST", "path": "/", "body": {"image": "", "contentType": "image/jpeg"}, "expectedStatus": 401, "bodyMatcher": "partial"},
+    {"name": "Delete without token", "method": "DELETE", "path": "/", "body": {"ref": ""}, "expectedStatus": 401, "bodyMatcher": "partial"}
   ]
 }

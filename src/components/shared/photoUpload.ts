@@ -1,7 +1,10 @@
+import { useEffect, useState } from "react";
 import func2url from "../../../backend/func2url.json";
 import { getToken } from "@/components/shared/auth";
 
 const PHOTOS_URL = (func2url as Record<string, string>).photos;
+const PRIV = "priv:";
+const LEGACY_CDN = "https://cdn.poehali.dev/";
 
 function loadImage(file: File): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -44,15 +47,99 @@ export async function uploadPhoto(file: File): Promise<string> {
   });
   if (!res.ok) throw new Error("upload_failed");
   const json = await res.json();
-  return json.url as string;
+  return json.ref as string;
 }
 
-export function deletePhoto(url: string) {
+export function deletePhoto(ref: string) {
   const token = getToken();
-  if (!token || url.startsWith("data:")) return;
+  if (!token || !ref.startsWith(PRIV)) return;
   fetch(PHOTOS_URL, {
     method: "DELETE",
     headers: { "Content-Type": "application/json", "X-Auth-Token": token },
-    body: JSON.stringify({ url }),
+    body: JSON.stringify({ ref }),
   }).catch(() => undefined);
+}
+
+const cache = new Map<string, string>();
+const pending = new Map<string, Promise<string>>();
+
+async function fetchPrivate(ref: string, token: string): Promise<string> {
+  const res = await fetch(`${PHOTOS_URL}?ref=${encodeURIComponent(ref)}`, {
+    headers: { "X-Auth-Token": token },
+    cache: "no-store",
+  });
+  if (res.status === 401 || res.status === 403) throw new Error("locked");
+  if (!res.ok) throw new Error("not_found");
+  const json = await res.json();
+  return json.image as string;
+}
+
+export async function migrateLegacyPhoto(url: string): Promise<string | null> {
+  const token = getToken();
+  if (!token) return null;
+  const res = await fetch(PHOTOS_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Auth-Token": token },
+    body: JSON.stringify({ action: "migrate", url }),
+  });
+  if (!res.ok) return null;
+  const json = await res.json();
+  return (json.ref as string) || null;
+}
+
+export const isLegacyPhoto = (ref: string) => ref.startsWith(LEGACY_CDN);
+
+export type PhotoState = { src: string | null; status: "ok" | "loading" | "locked" | "missing" };
+
+export function usePhotoSrc(ref: string): PhotoState {
+  const direct = ref.startsWith("data:");
+  const [state, setState] = useState<PhotoState>(() =>
+    direct ? { src: ref, status: "ok" } : cache.has(ref) ? { src: cache.get(ref)!, status: "ok" } : { src: null, status: "loading" },
+  );
+
+  useEffect(() => {
+    if (direct) {
+      setState({ src: ref, status: "ok" });
+      return;
+    }
+    if (cache.has(ref)) {
+      setState({ src: cache.get(ref)!, status: "ok" });
+      return;
+    }
+    const token = getToken();
+    if (!token || !ref.startsWith(PRIV)) {
+      setState({ src: null, status: "locked" });
+      return;
+    }
+    let alive = true;
+    setState({ src: null, status: "loading" });
+    let p = pending.get(ref);
+    if (!p) {
+      p = fetchPrivate(ref, token);
+      pending.set(ref, p);
+    }
+    p.then((src) => {
+      cache.set(ref, src);
+      if (alive) setState({ src, status: "ok" });
+    })
+      .catch((e: Error) => {
+        if (alive) setState({ src: null, status: e.message === "locked" ? "locked" : "missing" });
+      })
+      .finally(() => pending.delete(ref));
+    return () => {
+      alive = false;
+    };
+  }, [ref, direct]);
+
+  return state;
+}
+
+export function clearPhotoCache() {
+  cache.clear();
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener("malyshdok:auth:update", () => {
+    if (!getToken()) clearPhotoCache();
+  });
 }

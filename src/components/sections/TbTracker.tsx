@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icon from "@/components/ui/icon";
 import { useChildProfile, saveChildProfile } from "@/components/shared/childProfile";
 import {
@@ -15,7 +15,8 @@ import {
   type TbTestType,
 } from "@/components/shared/tbStatus";
 import { TbPhotoPicker, TbPhotoThumbs } from "@/components/sections/TbPhotos";
-import { deletePhoto } from "@/components/shared/photoUpload";
+import { deletePhoto, isLegacyPhoto, migrateLegacyPhoto } from "@/components/shared/photoUpload";
+import { getToken } from "@/components/shared/auth";
 
 function todayIso() {
   const n = new Date();
@@ -248,6 +249,34 @@ export function TbTracker() {
   const plan = calcTbPlan(profile);
 
   const save = (list: TbRecord[]) => saveChildProfile({ ...profile, tbTests: list });
+
+  useEffect(() => {
+    if (!getToken()) return;
+    const legacy = (profile.tbTests || []).some((r) => r.photos?.some((p) => isLegacyPhoto(p.url)));
+    if (!legacy) return;
+    let alive = true;
+    (async () => {
+      const map = new Map<string, string>();
+      for (const r of profile.tbTests || []) {
+        for (const p of r.photos || []) {
+          if (!isLegacyPhoto(p.url)) continue;
+          const ref = await migrateLegacyPhoto(p.url);
+          if (ref) map.set(p.url, ref);
+        }
+      }
+      if (!alive || map.size === 0) return;
+      saveChildProfile({
+        ...profile,
+        tbTests: (profile.tbTests || []).map((r) => ({
+          ...r,
+          photos: r.photos?.map((p) => ({ ...p, url: map.get(p.url) ?? p.url })),
+        })),
+      });
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [profile]);
 
   const upsert = (r: TbRecord) => {
     const list = records.filter((x) => x.id !== r.id);
