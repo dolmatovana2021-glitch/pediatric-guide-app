@@ -1,9 +1,39 @@
+import html
 import json
 import os
+import urllib.parse
+import urllib.request
 
 import psycopg2
 
 CATEGORIES = {'idea', 'bug', 'content', 'other'}
+CATEGORY_LABELS = {'idea': '💡 Идея', 'bug': '🐞 Ошибка', 'content': '📚 Материалы', 'other': '💬 Другое'}
+
+
+def _notify_telegram(fid: int, category: str, message: str, contact) -> bool:
+    token = os.environ.get('TELEGRAM_BOT_TOKEN')
+    chat_id = os.environ.get('TELEGRAM_CHAT_ID')
+    if not token or not chat_id:
+        return False
+    text = (
+        f"<b>Новое пожелание №{fid}</b>\n"
+        f"Тема: {CATEGORY_LABELS.get(category, category)}\n\n"
+        f"{html.escape(message[:3500])}\n\n"
+        f"Контакт: {html.escape(contact) if contact else 'не указан'}"
+    )
+    data = urllib.parse.urlencode({
+        'chat_id': chat_id,
+        'text': text,
+        'parse_mode': 'HTML',
+        'disable_web_page_preview': 'true',
+    }).encode()
+    try:
+        req = urllib.request.Request(f'https://api.telegram.org/bot{token}/sendMessage', data=data)
+        with urllib.request.urlopen(req, timeout=3) as r:
+            return r.status == 200
+    except Exception as e:
+        print(f'telegram notify failed: {type(e).__name__}')
+        return False
 
 
 def _cors() -> dict:
@@ -67,4 +97,5 @@ def handler(event: dict, context) -> dict:
         conn.commit()
     finally:
         conn.close()
+    _notify_telegram(new_id, category, message, contact)
     return _resp(200, {'ok': True, 'id': new_id})
