@@ -61,6 +61,42 @@ export function EmergencySection() {
                     ))}
                   </ul>
                 </div>
+                {"stenosisStages" in item && Array.isArray(item.stenosisStages) && (
+                  <div className="space-y-2">
+                    <p className="text-[12px] font-bold text-muted-foreground">Степени стеноза — как понять, насколько опасно</p>
+                    {item.stenosisStages.map((st, k) => {
+                      const tone =
+                        st.tone === "green"
+                          ? { wrap: "bg-emerald-50 border-emerald-200", badge: "bg-emerald-600 text-white", dot: "bg-emerald-600", act: "text-emerald-800" }
+                          : st.tone === "orange"
+                          ? { wrap: "bg-orange-50 border-orange-200", badge: "bg-orange-500 text-white", dot: "bg-orange-500", act: "text-orange-800" }
+                          : { wrap: "bg-red-50 border-red-200", badge: "bg-red-600 text-white", dot: "bg-red-600", act: "text-red-800" };
+                      return (
+                        <div key={k} className={`border rounded-xl p-3 ${tone.wrap}`}>
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${tone.badge}`}>{st.level}</span>
+                            <p className="text-xs font-bold text-foreground">{st.name}</p>
+                          </div>
+                          <ul className="space-y-1 mb-2">
+                            {st.signs.map((s, idx) => (
+                              <li key={idx} className="flex items-start gap-2 text-[13px] text-foreground leading-snug">
+                                <span className={`mt-1.5 w-1.5 h-1.5 rounded-full ${tone.dot} flex-shrink-0`} />
+                                {s}
+                              </li>
+                            ))}
+                          </ul>
+                          <p className={`text-[12px] font-semibold leading-snug ${tone.act}`}>{st.action}</p>
+                        </div>
+                      );
+                    })}
+                    {"stenosisWarning" in item && item.stenosisWarning && (
+                      <div className="flex items-start gap-2 bg-red-600 text-white rounded-xl p-3">
+                        <Icon name="TriangleAlert" size={16} className="flex-shrink-0 mt-0.5" />
+                        <p className="text-[12px] font-semibold leading-snug">{item.stenosisWarning}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="bg-red-50 border border-red-100 rounded-2xl p-3">
                   <p className="text-xs font-bold text-red-700 mb-1">Что делать</p>
                   <p className="text-sm text-foreground leading-relaxed">{item.action}</p>
