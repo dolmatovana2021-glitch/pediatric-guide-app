@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
+import { BudesonideCalc } from "@/components/sections/BudesonideCalc";
 import {
   emergencyItems,
   SectionWrapper,
@@ -107,6 +108,7 @@ export function EmergencySection() {
                     {item.footnote.text.map((t, k) => (
                       <p key={k} className="text-[13px] text-foreground leading-relaxed">{t}</p>
                     ))}
+                    {"calc" in item.footnote && item.footnote.calc === "budesonide" && <BudesonideCalc />}
                   </div>
                 )}
                 {"cprPlan" in item && Array.isArray(item.cprPlan) && (
