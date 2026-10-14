@@ -14,8 +14,8 @@ const schemes = [
 ];
 
 const methods = [
-  { id: "mouthpiece", label: "Мундштук" },
-  { id: "mask", label: "Маска" },
+  { id: "mask", label: "Маска · до 6 лет" },
+  { id: "mouthpiece", label: "Мундштук · с 6 лет" },
 ];
 
 const nebulaWord = (n: number) => (n === 1 ? "небула" : n < 5 ? "небулы" : "небул");
@@ -54,7 +54,7 @@ function Choice({
 export function BudesonideCalc() {
   const [conc, setConc] = useState("0.5");
   const [scheme, setScheme] = useState("once");
-  const [method, setMethod] = useState("mouthpiece");
+  const [method, setMethod] = useState("mask");
 
   const c = concentrations.find((x) => x.id === conc)!;
   const split = scheme === "split";
@@ -78,7 +78,7 @@ export function BudesonideCalc() {
       </div>
 
       <div className="space-y-1">
-        <p className="text-[11px] text-muted-foreground">Способ ингаляции</p>
+        <p className="text-[11px] text-muted-foreground">Способ ингаляции по возрасту</p>
         <Choice options={methods} value={method} onChange={setMethod} />
       </div>
 
@@ -96,7 +96,7 @@ export function BudesonideCalc() {
 
       <ul className="space-y-1 text-[11px] text-muted-foreground leading-snug">
         <li>• По инструкции: детям от 6 месяцев — 2 мг в сутки, сразу или в 2 приёма по 1 мг с интервалом 30 минут.</li>
-        <li>• Доза не зависит от способа ингаляции.</li>
+        <li>• Детям младше 6 лет — через детскую маску, с 6 лет — через мундштук. Доза от способа не зависит.</li>
         <li>
           • После ингаляции прополощите ребёнку рот водой
           {method === "mask" ? ", а также умойте лицо — на нём остаётся лекарство." : "."}
