@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { InhalationTimer } from "@/components/sections/InhalationTimer";
 
 const NEBULA_ML = 2;
 const DAILY_DOSE_MG = 2;
@@ -92,6 +93,7 @@ export function BudesonideCalc() {
             Вторую такую же ингаляцию — через 30 минут
           </p>
         )}
+        {split && <InhalationTimer portion={`Вторая доза: ${portion}`} />}
       </div>
 
       <ul className="space-y-1 text-[11px] text-muted-foreground leading-snug">
