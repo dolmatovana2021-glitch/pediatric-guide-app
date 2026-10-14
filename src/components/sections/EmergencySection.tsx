@@ -65,6 +65,14 @@ export function EmergencySection() {
                   <p className="text-xs font-bold text-red-700 mb-1">Что делать</p>
                   <p className="text-sm text-foreground leading-relaxed">{item.action}</p>
                 </div>
+                {"footnote" in item && item.footnote && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 space-y-1.5">
+                    <p className="text-xs font-bold text-amber-800 leading-snug">{item.footnote.title}</p>
+                    {item.footnote.text.map((t, k) => (
+                      <p key={k} className="text-[13px] text-foreground leading-relaxed">{t}</p>
+                    ))}
+                  </div>
+                )}
                 {"cprPlan" in item && Array.isArray(item.cprPlan) && (
                   <div className="space-y-2">
                     {item.cprPlan.map((plan, k) => {

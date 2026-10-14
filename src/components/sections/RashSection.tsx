@@ -6,6 +6,7 @@ import {
   Segmented,
 } from "@/components/shared/SectionLayout";
 import { RashElementsTable } from "@/components/sections/RashElementsTable";
+import { ChickenpoxReturnCalc } from "@/components/sections/ChickenpoxReturnCalc";
 import {
   rashCategories,
   RASH_DISCLAIMER,
@@ -101,6 +102,8 @@ function RashDetails({ item }: { item: RashItem }) {
         items={item.treatment}
         itemBg="bg-emerald-50 border-emerald-100"
       />
+
+      {item.id === "chickenpox" && <ChickenpoxReturnCalc />}
 
       <ListBlock
         icon="TriangleAlert"
