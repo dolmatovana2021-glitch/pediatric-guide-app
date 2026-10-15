@@ -33,6 +33,29 @@ const About = () => (
           </div>
         </div>
 
+        <div className="mt-4 bg-card border border-border rounded-3xl p-4 shadow-sm">
+          <p className="font-semibold text-foreground text-sm mb-2">Как появился МалышДок</p>
+          <p className="text-[13px] text-foreground leading-relaxed">
+            Когда ребёнок заболевает, родителям нужно быстро понять, что делать, а нужные сведения разбросаны по
+            разным источникам и не всегда надёжны. МалышДок появился, чтобы собрать проверенную справочную
+            информацию о здоровье ребёнка в одном понятном приложении.
+          </p>
+          <p className="font-semibold text-foreground text-sm mt-4 mb-2">Цели проекта</p>
+          <ul className="space-y-2">
+            {[
+              "Помочь родителям действовать спокойно и уверенно в трудной ситуации",
+              "Подсказать, когда нужно срочно обратиться к врачу",
+              "Не упускать прививки, плановые осмотры и сроки лекарств",
+              "Сделать разговор с педиатром точнее благодаря дневнику болезни",
+            ].map((g) => (
+              <li key={g} className="flex items-start gap-2 text-[12px] text-foreground leading-snug">
+                <Icon name="Target" size={14} className="text-primary flex-shrink-0 mt-0.5" />
+                <span>{g}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div className="-mt-4">
           <AboutAppCard />
         </div>
