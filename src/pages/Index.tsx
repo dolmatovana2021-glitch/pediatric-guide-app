@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { SiteFooter } from "@/components/shared/SiteFooter";
 import Icon from "@/components/ui/icon";
 import { Section } from "@/components/shared/SectionShared";
 import { HomeSection, FirstAidSection, EmergencySection, RedFlagsSection, VaccinationSection } from "@/components/sections/AidSections";
@@ -92,12 +92,7 @@ export default function Index() {
 
         <main className="flex-1 px-4 pt-2 pb-32">
           {renderSection()}
-          <footer className="mt-10 text-center text-xs text-muted-foreground space-y-1">
-            <Link to="/about" className="text-primary font-semibold underline underline-offset-2">
-              О проекте
-            </Link>
-            <p>© 2026 МалышДок</p>
-          </footer>
+          <SiteFooter />
         </main>
 
         <BottomNav
