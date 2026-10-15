@@ -91,6 +91,9 @@ export default function Index() {
 
         <main className="flex-1 px-4 pt-2 pb-32">
           {renderSection()}
+          <footer className="mt-10 text-center text-xs text-muted-foreground">
+            © 2026 МалышДок
+          </footer>
         </main>
 
         <BottomNav
