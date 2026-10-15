@@ -10,6 +10,7 @@ import { NightThemeScheduler } from "@/components/shared/NightThemeScheduler";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Survey from "./pages/Survey";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/survey" element={<Survey />} />
+          <Route path="/about" element={<About />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
