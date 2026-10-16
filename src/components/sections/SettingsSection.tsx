@@ -5,6 +5,7 @@ import { ThemePicker } from "@/components/shared/ThemeToggle";
 import { SectionWrapper, SectionTitle } from "@/components/shared/SectionLayout";
 import { InstallAppCard } from "@/components/shared/InstallAppCard";
 import { AboutAppCard } from "@/components/shared/AboutAppCard";
+import { DeleteServerDataCard } from "@/components/shared/DeleteServerDataCard";
 import {
   useSectionVisibility,
   setSectionVisible,
@@ -133,6 +134,8 @@ export function SettingsSection() {
         <Icon name="Info" size={14} className="flex-shrink-0 mt-0.5" />
         <span>Скрытые разделы можно вернуть здесь в любой момент.</span>
       </div>
+
+      <DeleteServerDataCard />
 
       <AboutAppCard />
 

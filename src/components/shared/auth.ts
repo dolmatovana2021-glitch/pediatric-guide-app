@@ -56,6 +56,26 @@ export function logout() {
   window.dispatchEvent(new CustomEvent(EVENT_NAME));
 }
 
+export async function deleteAccount(): Promise<void> {
+  const token = getToken();
+  if (!token) throw new Error("no_token");
+  const res = await fetch(`${AUTH_URL}?action=account`, {
+    method: "DELETE",
+    headers: { "X-Auth-Token": token },
+  });
+  if (!res.ok && res.status !== 401) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || "delete_failed");
+  }
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+  } catch {
+    /* ignore */
+  }
+  window.dispatchEvent(new CustomEvent(EVENT_NAME));
+}
+
 export async function requestCode(phone: string): Promise<{ demoCode?: string }> {
   const res = await fetch(`${AUTH_URL}?action=request_code`, {
     method: "POST",
