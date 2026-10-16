@@ -4,8 +4,11 @@ import Icon from "@/components/ui/icon";
 
 const SHARE_TEXT = "МалышДок — бесплатный помощник для родителей: первая помощь, болезни, прививки и развитие малыша. Работает даже без интернета.";
 
-const getUrl = () => `${window.location.origin}/`;
-const prettyUrl = () => window.location.host;
+const SITE_URL = "https://tvoymalyshdok.ru/";
+const SITE_HOST = "tvoymalyshdok.ru";
+
+const getUrl = () => SITE_URL;
+const prettyUrl = () => SITE_HOST;
 
 const targets: { id: string; label: string; icon: string; color: string; href: (url: string, text: string) => string }[] = [
   {
