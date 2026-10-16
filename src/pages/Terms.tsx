@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Icon from "@/components/ui/icon";
 import { SubPageLayout } from "@/components/shared/SubPageLayout";
+import { SITE_OWNER } from "@/components/shared/siteOwner";
 
 const sections: { icon: string; title: string; text: string[] }[] = [
   {
@@ -87,6 +88,24 @@ const Terms = () => (
           </Link>
           .
         </p>
+      </div>
+
+      <div className="bg-card border border-border rounded-3xl p-4 shadow-sm">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-9 h-9 rounded-xl bg-mint-50 border border-mint-200 flex items-center justify-center flex-shrink-0">
+            <Icon name="User" size={18} className="text-primary" />
+          </div>
+          <p className="font-semibold text-foreground text-sm leading-tight">Владелец сайта</p>
+        </div>
+        <p className="text-[13px] text-foreground leading-relaxed">{SITE_OWNER.name}</p>
+        {SITE_OWNER.email && (
+          <p className="text-[13px] text-foreground leading-relaxed mt-1">
+            Почта для связи:{" "}
+            <a href={`mailto:${SITE_OWNER.email}`} className="text-primary font-semibold underline underline-offset-2">
+              {SITE_OWNER.email}
+            </a>
+          </p>
+        )}
       </div>
     </div>
   </SubPageLayout>
