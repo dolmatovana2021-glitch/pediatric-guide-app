@@ -53,6 +53,19 @@
       },
       "expectedStatus": 401,
       "bodyMatcher": "partial"
+    },
+    {
+      "name": "Me with unknown token returns no user",
+      "method": "GET",
+      "path": "/?action=me",
+      "headers": {
+        "X-Auth-Token": "unknown-token"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "user": null
+      },
+      "bodyMatcher": "partial"
     }
   ]
 }

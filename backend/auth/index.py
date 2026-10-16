@@ -108,7 +108,7 @@ def handler(event: dict, context) -> dict:
             )
             row = cur.fetchone()
             if not row:
-                return _resp(401, {'error': 'invalid_token'})
+                return _resp(200, {'user': None})
             return _resp(200, {'user': {'id': row[0], 'phone': row[1]}})
         finally:
             conn.close()

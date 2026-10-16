@@ -46,6 +46,16 @@ export function logout() {
   window.dispatchEvent(new CustomEvent(EVENT_NAME));
 }
 
+export function clearSession() {
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+  } catch {
+    /* ignore */
+  }
+  window.dispatchEvent(new CustomEvent(EVENT_NAME));
+}
+
 export async function deleteAccount(): Promise<void> {
   const token = getToken();
   if (!token) throw new Error("no_token");
@@ -78,15 +88,25 @@ export function useAuth(): { user: AuthUser | null; loading: boolean } {
       setLoading(false);
     } else {
       fetch(`${AUTH_URL}?action=me`, { headers: { "X-Auth-Token": token } })
-        .then((r) => (r.ok ? r.json() : Promise.reject(r)))
-        .then((d) => {
-          if (active) setUser(d.user as AuthUser);
-        })
-        .catch(() => {
-          if (active) {
-            logout();
+        .then(async (r) => {
+          if (!active) return;
+          if (r.status === 401) {
+            clearSession();
+            setUser(null);
+            return;
+          }
+          if (!r.ok) return;
+          const d = await r.json();
+          if (!active) return;
+          if (d.user) {
+            setUser(d.user as AuthUser);
+          } else {
+            clearSession();
             setUser(null);
           }
+        })
+        .catch(() => {
+          /* нет интернета — данные на устройстве не трогаем */
         })
         .finally(() => {
           if (active) setLoading(false);
