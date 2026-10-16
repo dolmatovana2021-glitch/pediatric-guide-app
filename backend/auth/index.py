@@ -91,7 +91,7 @@ def handler(event: dict, context) -> dict:
             conn.commit()
         finally:
             conn.close()
-        return _resp(200, {'ok': True, 'demo_code': code})
+        return _resp(200, {'ok': True})
 
     if action == 'verify_code':
         phone = _normalize_phone(body.get('phone', ''))
