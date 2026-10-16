@@ -13,6 +13,9 @@ export function SiteFooter() {
         <Link to="/terms" className="text-primary font-semibold underline underline-offset-2">
           Соглашение
         </Link>
+        <Link to="/doctors" className="text-primary font-semibold underline underline-offset-2">
+          Для врачей
+        </Link>
       </div>
       <p>© 2026 МалышДок</p>
     </footer>
