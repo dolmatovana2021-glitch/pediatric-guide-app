@@ -7,27 +7,27 @@
       "expectedStatus": 200
     },
     {
-      "name": "Request code returns demo code",
+      "name": "Phone login disabled: request code",
       "method": "POST",
       "path": "/?action=request_code",
       "body": {
         "phone": "+79001234567"
       },
-      "expectedStatus": 200,
+      "expectedStatus": 410,
       "expectedBody": {
-        "ok": true
+        "error": "phone_login_disabled"
       },
       "bodyMatcher": "partial"
     },
     {
-      "name": "Verify wrong code fails",
+      "name": "Phone login disabled: verify code",
       "method": "POST",
       "path": "/?action=verify_code",
       "body": {
         "phone": "+79001234567",
         "code": "000000"
       },
-      "expectedStatus": 400,
+      "expectedStatus": 410,
       "bodyMatcher": "partial"
     },
     {

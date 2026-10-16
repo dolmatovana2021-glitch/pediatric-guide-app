@@ -26,16 +26,6 @@ export function getUser(): AuthUser | null {
   }
 }
 
-function saveAuth(token: string, user: AuthUser) {
-  try {
-    localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-  } catch {
-    /* ignore */
-  }
-  window.dispatchEvent(new CustomEvent(EVENT_NAME));
-}
-
 export function logout() {
   try {
     localStorage.removeItem(TOKEN_KEY);
@@ -76,29 +66,6 @@ export async function deleteAccount(): Promise<void> {
   window.dispatchEvent(new CustomEvent(EVENT_NAME));
 }
 
-export async function requestCode(phone: string): Promise<{ demoCode?: string }> {
-  const res = await fetch(`${AUTH_URL}?action=request_code`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ phone }),
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "request_failed");
-  return { demoCode: data.demo_code };
-}
-
-export async function verifyCode(phone: string, code: string): Promise<AuthUser> {
-  const res = await fetch(`${AUTH_URL}?action=verify_code`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ phone, code }),
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "verify_failed");
-  saveAuth(data.token, data.user);
-  return data.user as AuthUser;
-}
-
 export function useAuth(): { user: AuthUser | null; loading: boolean } {
   const [user, setUser] = useState<AuthUser | null>(getUser());
   const [loading, setLoading] = useState(true);
@@ -137,18 +104,4 @@ export function useAuth(): { user: AuthUser | null; loading: boolean } {
   }, []);
 
   return { user, loading };
-}
-
-export function formatPhoneInput(raw: string): string {
-  let digits = raw.replace(/\D/g, "");
-  if (digits.startsWith("8")) digits = "7" + digits.slice(1);
-  if (!digits.startsWith("7")) digits = "7" + digits;
-  digits = digits.slice(0, 11);
-  const p = digits.slice(1);
-  let out = "+7";
-  if (p.length > 0) out += " (" + p.slice(0, 3);
-  if (p.length >= 3) out += ") " + p.slice(3, 6);
-  if (p.length >= 6) out += "-" + p.slice(6, 8);
-  if (p.length >= 8) out += "-" + p.slice(8, 10);
-  return out;
 }

@@ -1,8 +1,5 @@
 import json
 import os
-import random
-import secrets
-from datetime import datetime, timedelta
 
 import boto3
 import psycopg2
@@ -26,13 +23,6 @@ def _resp(status: int, body: dict) -> dict:
     }
 
 
-def _normalize_phone(raw: str) -> str:
-    digits = ''.join(ch for ch in str(raw) if ch.isdigit())
-    if len(digits) == 11 and digits[0] == '8':
-        digits = '7' + digits[1:]
-    if len(digits) == 10:
-        digits = '7' + digits
-    return '+' + digits
 
 
 def _db():
@@ -96,7 +86,7 @@ def _delete_account(event: dict) -> dict:
 
 
 def handler(event: dict, context) -> dict:
-    '''Авторизация родителя по номеру телефона: запрос кода, проверка кода, проверка сессии и полное удаление аккаунта с сервера.'''
+    '''Личный кабинет: проверка текущего входа и полное удаление аккаунта с сервера. Вход по номеру телефона отключён.'''
     method = event.get('httpMethod', 'GET')
     if method == 'OPTIONS':
         return {'statusCode': 200, 'headers': _cors_headers(), 'isBase64Encoded': False, 'body': ''}
@@ -126,72 +116,7 @@ def handler(event: dict, context) -> dict:
     if method == 'DELETE' and action == 'account':
         return _delete_account(event)
 
-    if method != 'POST':
-        return _resp(405, {'error': 'method_not_allowed'})
-
-    try:
-        body = json.loads(event.get('body') or '{}')
-    except Exception:
-        return _resp(400, {'error': 'bad_json'})
-
-    if action == 'request_code':
-        phone = _normalize_phone(body.get('phone', ''))
-        if len(phone) != 12:
-            return _resp(400, {'error': 'invalid_phone'})
-        code = f'{random.randint(0, 999999):06d}'
-        expires = datetime.utcnow() + timedelta(minutes=5)
-        conn = _db()
-        try:
-            cur = conn.cursor()
-            cur.execute("UPDATE auth_codes SET used = TRUE WHERE phone = %s AND used = FALSE", (phone,))
-            cur.execute(
-                "INSERT INTO auth_codes (phone, code, expires_at) VALUES (%s, %s, %s)",
-                (phone, code, expires),
-            )
-            conn.commit()
-        finally:
-            conn.close()
-        return _resp(200, {'ok': True})
-
-    if action == 'verify_code':
-        phone = _normalize_phone(body.get('phone', ''))
-        code = str(body.get('code', '')).strip()
-        if len(phone) != 12 or not code:
-            return _resp(400, {'error': 'invalid_input'})
-        conn = _db()
-        try:
-            cur = conn.cursor()
-            cur.execute(
-                "SELECT id FROM auth_codes WHERE phone = %s AND code = %s AND used = FALSE "
-                "AND expires_at > NOW() ORDER BY id DESC LIMIT 1",
-                (phone, code),
-            )
-            row = cur.fetchone()
-            if not row:
-                return _resp(400, {'error': 'invalid_code'})
-            cur.execute("UPDATE auth_codes SET used = TRUE WHERE id = %s", (row[0],))
-
-            cur.execute("SELECT id FROM users WHERE phone = %s", (phone,))
-            user = cur.fetchone()
-            if user:
-                user_id = user[0]
-                cur.execute("UPDATE users SET last_login_at = NOW() WHERE id = %s", (user_id,))
-            else:
-                cur.execute(
-                    "INSERT INTO users (phone, last_login_at) VALUES (%s, NOW()) RETURNING id",
-                    (phone,),
-                )
-                user_id = cur.fetchone()[0]
-
-            token = secrets.token_hex(32)
-            expires = datetime.utcnow() + timedelta(days=30)
-            cur.execute(
-                "INSERT INTO sessions (token, user_id, expires_at) VALUES (%s, %s, %s)",
-                (token, user_id, expires),
-            )
-            conn.commit()
-            return _resp(200, {'ok': True, 'token': token, 'user': {'id': user_id, 'phone': phone}})
-        finally:
-            conn.close()
+    if action in ('request_code', 'verify_code'):
+        return _resp(410, {'error': 'phone_login_disabled'})
 
     return _resp(400, {'error': 'unknown_action'})
