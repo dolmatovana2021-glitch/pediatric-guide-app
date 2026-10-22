@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 import Icon from "@/components/ui/icon";
 
 const bears = [
-  { src: "/bears/bear-plaster.png", name: "С пластырем" },
-  { src: "/bears/bear-firstaid.png", name: "С аптечкой" },
-  { src: "/bears/bear-thermometer.png", name: "С градусником" },
-  { src: "/bears/bear-sleepy.png", name: "Сонный" },
-  { src: "/bears/bear-lantern.png", name: "С фонариком" },
+  { src: "/bears/bear-plaster.png?v=2", name: "С пластырем" },
+  { src: "/bears/bear-firstaid.png?v=2", name: "С аптечкой" },
+  { src: "/bears/bear-thermometer.png?v=2", name: "С градусником" },
+  { src: "/bears/bear-sleepy.png?v=2", name: "Сонный" },
+  { src: "/bears/bear-lantern.png?v=2", name: "С фонариком" },
+  { src: "/bears/bear-doctor-standing.png?v=2", name: "Доктор в полный рост" },
 ];
 
 const backgrounds = [
@@ -45,7 +46,7 @@ export default function Bears() {
           </div>
         </div>
         <h1 className={`mb-8 text-2xl font-semibold ${dark ? "text-white" : "text-neutral-900"}`}>Медвежата</h1>
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
           {bears.map((b) => (
             <figure key={b.src} className="flex flex-col items-center">
               <img src={b.src} alt={b.name} className="h-56 w-full object-contain" loading="lazy" />
