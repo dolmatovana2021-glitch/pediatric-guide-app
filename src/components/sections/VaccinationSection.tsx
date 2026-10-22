@@ -92,7 +92,7 @@ export function VaccinationSection() {
   return (
     <SectionWrapper>
       <SectionTitle
-        bear="main"
+        bear="plaster"
         emoji="💉"
         title="Вакцинация"
         subtitle="Календарь прививок 2026 — отмечайте выполненные и запланированные"

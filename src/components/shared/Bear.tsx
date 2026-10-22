@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 
-export type BearPose = "main" | "thermometer" | "sleep" | "school" | "firstaid" | "night";
+export type BearPose = "main" | "thermometer" | "sleep" | "school" | "firstaid" | "night" | "plaster";
 
-export const bearSrc = (pose: BearPose) => `/bear/${pose}.webp?v=3`;
+export const bearSrc = (pose: BearPose) => `/bear/${pose}.webp?v=4`;
 
 const altText: Record<BearPose, string> = {
   main: "Медвежонок-доктор",
@@ -12,6 +12,7 @@ const altText: Record<BearPose, string> = {
   school: "Медвежонок с рюкзаком",
   firstaid: "Медвежонок с аптечкой",
   night: "Медвежонок в пижаме с фонариком",
+  plaster: "Медвежонок с пластырем",
 };
 
 export function Bear({
